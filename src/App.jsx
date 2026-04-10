@@ -1,6 +1,8 @@
 // import {Card,CardContent,CardDescription,CardHeader,CardTitle,} from "@/components/ui/card"
 
-import HomePage from "Components/HomePage"
+import HomePage from "@/Pages/HomePage"
+import Login from "./Pages/Login"
+import Signup from "./Pages/Signup"
 import { Routes,Route } from "react-router"
 
 
