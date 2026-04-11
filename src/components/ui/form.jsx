@@ -42,16 +42,16 @@ const FormControl = React.forwardRef(({ ...props }, ref) => {
 })
 FormControl.displayName = "FormControl"
 
-const FormMessage = ({ children }) => {
+const FormMessage = ({ name }) => {
   const {
     formState: { errors },
   } = useFormContext()
 
-  const message = children || errors?.message
+  const error = errors[name]
 
-  if (!message) return null
+  if (!error) return null
 
-  return <p className="text-sm text-red-500">{message}</p>
+  return <p className="text-sm text-red-500">{error.message}</p>
 }
 
 export {

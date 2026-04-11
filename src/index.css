@@ -128,3 +128,27 @@
     @apply font-sans;
     }
 }
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animated-bg {
+  background: linear-gradient(
+    -45deg,
+    #0f172a, /* slate-900 */
+    #1e293b, /* slate-800 */
+    #334155, /* slate-700 */
+    #0f172a
+  );
+  background-size: 400% 400%;
+  animation: gradientShift 12s ease infinite;
+}
