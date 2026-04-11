@@ -16,9 +16,9 @@ import { Button } from "@/components/ui/button";
 
 const formSchema = z
   .object({
-    name: z.string().min(3, "Min Length Shd Be 3").max(15, "Max Length Shd Be 15"),
-    email: z.string().email("Invalid Email"),
-    password: z.string().min(5, "Min 5 chars").max(12, "Max 12 chars"),
+    name: z.string().min(3, "Min Length Should Be 3").max(15, "Max Length Should Be 15"),
+    email: z.email("Invalid Email"),
+    password: z.string().min(8, "Min 5 charachters").max(20, "Max 20 chars"),
     confirm: z.string(),
   })
   .refine((data) => data.password === data.confirm, {
@@ -65,9 +65,15 @@ function Signup() {
         border border-white/20 
         shadow-2xl text-white">
 
-        <h1 className="text-2xl font-bold mb-6 text-center">
-          Create an Account
-        </h1>
+        <div className="text-center space-y-2 mb-6">
+             <h1 className="text-4xl font-bold tracking-tight">
+                      Create an Account
+            </h1>
+
+            <p className="text-base text-muted-foreground">
+                        Sign up to start your coding journey
+            </p>
+          </div>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -78,12 +84,12 @@ function Signup() {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel className="pl-1">Name</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Enter name"
                       {...field}
-                      className={`bg-white/10 border-white/20 text-white placeholder:text-gray-300
+                      className={`bg-white/10 h-10 border-white/20 text-white placeholder:text-gray-300
                         ${
                           form.formState.errors.name
                             ? "border-red-500 focus-visible:ring-red-500"
@@ -105,12 +111,12 @@ function Signup() {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel className="pl-1">Email</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Enter email"
                       {...field}
-                       className={`bg-white/10 border-white/20 text-white placeholder:text-gray-300
+                       className={`bg-white/10 h-10 border-white/20 text-white placeholder:text-gray-300
                         ${
                           form.formState.errors.email
                             ? "border-red-500 focus-visible:ring-red-500"
@@ -131,13 +137,13 @@ function Signup() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel className="pl-1">Password</FormLabel>
                   <FormControl>
                     <Input
                       type="password"
                       placeholder="Enter password"
                       {...field}
-                      className={`bg-white/10 border-white/20 text-white placeholder:text-gray-300
+                      className={`bg-white/10 h-10 border-white/20 text-white placeholder:text-gray-300
                         ${
                           form.formState.errors.password
                             ? "border-red-500 focus-visible:ring-red-500"
@@ -160,13 +166,13 @@ function Signup() {
               name="confirm"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Confirm Password</FormLabel>
+                  <FormLabel className="pl-1">Confirm Password</FormLabel>
                   <FormControl>
                     <Input
                       type="password"
                       placeholder="Confirm password"
                       {...field}
-                      className={`bg-white/10 border-white/20 text-white placeholder:text-gray-300
+                      className={`bg-white/10 h-10 border-white/20 text-white placeholder:text-gray-300
                         ${
                           form.formState.errors.confirm
                             ? "border-red-500 focus-visible:ring-red-500"
@@ -184,8 +190,7 @@ function Signup() {
 
             <Button
               type="submit"
-              className="w-full bg-white text-black hover:bg-gray-200"
-            >
+              className="w-full h-12  bg-linear-to-br from-slate-900 via-slate-950 to-slate-900 text-lg transition-colors">
               Sign Up
             </Button>
 
