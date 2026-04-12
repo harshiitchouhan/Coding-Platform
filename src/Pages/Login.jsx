@@ -5,6 +5,7 @@ import { useDispatch , useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { loginUser } from "../Features/authSlice";
 import { useEffect } from "react";
+import { Link } from "react-router";
 
 import {
   Form,
@@ -151,10 +152,17 @@ function Login (){
                 type="submit"
                 className="w-full h-12 bg-linear-to-br from-slate-900 via-slate-950 to-slate-900 text-lg transition-colors"> 
                 Login   
-            </Button>     
+            </Button> 
 
-                  </form>
+            <div className="text-center text-sm text-gray-300">
+                <span className="pr-2">Don't have an Account</span>
+                
+                <Link to="/signup" className="text-blue-500 hover:text-blue-300 font-medium transition">
+                  Sign Up
+                </Link>
+            </div>    
 
+                </form>
                 </Form>
               </div>
             </div>

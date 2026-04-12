@@ -5,6 +5,7 @@ import { useDispatch , useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { registeredUser } from "../Features/authSlice";
 import { useEffect } from "react";
+import { Link } from "react-router";
 
 import {
   Form,
@@ -34,10 +35,13 @@ const formSchema = z.object({
 
 function Signup() {
 
+  // to dispatch an reducer
   const dispatch = useDispatch();
+  //to navigate to a page
   const navigate = useNavigate();
   const {isAuthenticated,loading,} = useSelector((state)=>state.auth);
 
+  // if isauth true then go to homepage
   useEffect(()=>{
     if(isAuthenticated){
       navigate("/")  // this navigate is diff from routing one
@@ -56,12 +60,14 @@ function Signup() {
     },
   });
 
+  // connecting backend and frontend
   function onSubmit(data) {
     dispatch(registeredUser(data));
   }
 
   return (
-<div className="min-h-screen w-full relative bg-black overflow-hidden">
+
+  <div className="min-h-screen w-full relative bg-black overflow-hidden">
 
   {/* X-style top glow background */}
   <div
@@ -78,11 +84,14 @@ function Signup() {
   {/* Content */}
   <div className="relative z-10 flex items-center justify-center min-h-screen">
 
-          {/* GLASS CARD */}
+      {/* GLASS CARD */}
+      
       <div className="w-full max-w-md rounded-2xl p-8 
         bg-white/10 backdrop-blur-xl 
         border border-white/20 
         shadow-2xl text-white">
+
+        {/* Heading of the signup Form */}
 
         <div className="text-center space-y-2 mb-6">
              <h1 className="text-4xl font-bold tracking-tight">
@@ -206,6 +215,8 @@ function Signup() {
               )}
             />
 
+            {/* Button Bana Diya To Submit Form */}
+
             <Button
                 type="submit"
                 disabled={loading}
@@ -220,6 +231,15 @@ function Signup() {
                   "Sign Up"
                 )}
             </Button>
+
+            {/* Redirecting to Login Page */}
+            <div className="text-center text-sm text-gray-300">
+                <span className="pr-2">Already have an account?</span>
+                
+                <Link to="/login" className="text-blue-500 hover:text-blue-300 font-medium transition">
+                  Login
+                </Link>
+            </div>
 
           </form>
         </Form>
