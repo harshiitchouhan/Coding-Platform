@@ -1,6 +1,10 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useDispatch , useSelector } from "react-redux";
+import { useNavigate } from "react-router";
+import { registeredUser } from "../Features/authSlice";
+import { useEffect } from "react";
 
 import {
   Form,
@@ -14,11 +18,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-const formSchema = z
-  .object({
+
+const formSchema = z.object({
     name: z.string().min(3, "Min Length Should Be 3").max(15, "Max Length Should Be 15"),
     email: z.email("Invalid Email"),
-    password: z.string().min(8, "Min 5 charachters").max(20, "Max 20 chars"),
+    password: z.string()
+  .min(5, "Password must be at least 5 characters").regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{5,}$/, 
+    "Password must include uppercase, lowercase, number, and special character"),
     confirm: z.string(),
   })
   .refine((data) => data.password === data.confirm, {
@@ -27,6 +33,19 @@ const formSchema = z
   });
 
 function Signup() {
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const {isAuthenticated,loading,} = useSelector((state)=>state.auth);
+
+  useEffect(()=>{
+    if(isAuthenticated){
+      navigate("/")  // this navigate is diff from routing one
+    }
+  },[isAuthenticated])
+
+  
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -38,7 +57,7 @@ function Signup() {
   });
 
   function onSubmit(data) {
-    console.log(data);
+    dispatch(registeredUser(data));
   }
 
   return (
@@ -70,10 +89,9 @@ function Signup() {
                       Create an Account
             </h1>
 
-            <p className="text-base text-muted-foreground">
-                        Sign up to start your coding journey
-            </p>
-          </div>
+            <p className="text-base text-muted-foreground"> Sign up to start your coding journey </p>
+          
+        </div>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -189,9 +207,18 @@ function Signup() {
             />
 
             <Button
-              type="submit"
-              className="w-full h-12  bg-linear-to-br from-slate-900 via-slate-950 to-slate-900 text-lg transition-colors">
-              Sign Up
+                type="submit"
+                disabled={loading}
+                className="w-full h-12 text-lg bg-linear-to-br from-slate-900 via-slate-950 to-slate-900 hover:opacity-90 transition-all disabled:opacity-60"
+              >
+                {loading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                    Creating Account...
+                  </div>
+                ) : (
+                  "Sign Up"
+                )}
             </Button>
 
           </form>
@@ -200,7 +227,9 @@ function Signup() {
     </div>
 
 
-  </div>
+</div>
+
+
 
 
   );

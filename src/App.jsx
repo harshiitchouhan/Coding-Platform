@@ -5,19 +5,26 @@ import Signup from "./Pages/Signup"
 import { Routes,Route, Navigate } from "react-router"
 import { useEffect } from "react"
 import { useDispatch , useSelector } from "react-redux"
-import { authCheck } from "authSlice"
+import { authCheck } from "./Features/authSlice"
 
 
 function App() {
 
+  
   // need to check isAuthenticated // if true -> Home Page else -> Login/Signup
-  const {isAuthenticated} = useSelector((state)=>state.auth);
+  const {isAuthenticated,loading} = useSelector((state)=>state.auth);
+  const dispatch = useDispatch();
 
   useEffect(()=>{
-    useDispatch(authCheck());
+    dispatch(authCheck());
   },[dispatch]);
 
+  if(loading){
+      return <div className="min-h-screen flex items-center justify-center">
+          <span className="loading loading-spinner loading-xl" ></span>
+        </div>
   
+    }
 
   return (
     <Routes>

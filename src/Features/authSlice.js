@@ -1,13 +1,13 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
-import axiosClient from "Utils/axiosClient";
+import axiosClient from "../Utils/axiosClient"
 
 export const registeredUser = createAsyncThunk(
     "auth/register",
     async(userData,{rejectWithValue})=>{
         try{
 
-            const response = await axios.post("/user/register" , userData);
+            const response = await axiosClient.post("/user/register" , userData);
             return response.data.user;
 
             // response kuch aisa hota hai
@@ -20,8 +20,8 @@ export const registeredUser = createAsyncThunk(
             // }
 
         }
-        catch(err){
-            return rejectWithValue(err);
+        catch(error){
+            return rejectWithValue(error.response?.data?.message || error.message);
         }
     }
 
@@ -31,11 +31,11 @@ export const loginUser = createAsyncThunk(
     "auth/login",
     async(credentials ,{rejectWithValue})=>{
         try{
-            const response = await axios.post("/user/login" , credentials);
+            const response = await axiosClient.post("/user/login" , credentials);
             return response.data.user;
         }
-        catch(err){
-            return rejectWithValue(err);
+        catch(error){
+            return rejectWithValue(error.response?.data?.message || error.message);
         }
     }
 )
@@ -44,12 +44,12 @@ export const authCheck = createAsyncThunk(
     "auth/check",
     async( _ , {rejectWithValue})=>{
         try{
-            const {data} = await axios.get("/user/check");
+            const {data} = await axiosClient.get("/user/check");
             return data.user;
 
         }
-        catch(err){
-            return rejectWithValue(err);
+        catch(error){
+            return rejectWithValue(error.response?.data?.message || error.message);
         }
     }
 )
@@ -58,11 +58,11 @@ export const logOut = createAsyncThunk(
     "auth/logout",
     async(_,{rejectWithValue})=>{
         try{
-            await axios.post("/user/logout")
+            await axiosClient.post("/user/logout")
             return null;
         }
-        catch(err){
-            return rejectWithValue(err);
+        catch(error){
+            return rejectWithValue(error.response?.data?.message || error.message);
         }
     }
 )
@@ -88,12 +88,13 @@ const authSlice = createSlice({
         .addCase(registeredUser.fulfilled , (state,action)=>{
             state.user = action.payload;
             state.loading = false;
-            state.isAuthenticated = !!action.payload
+            state.isAuthenticated = !!action.payload;
+            state.error = null;
         })
 
         //rejected
-        .addCase(registeredUser.rejected , (state)=>{
-            state.error = state.payload?.message || "Some Error Occured";
+        .addCase(registeredUser.rejected , (state,action)=>{
+            state.error = action.payload || "Some Error Occured";
             state.isAuthenticated = false;
             state.loading = false;
             state.user = null;
@@ -112,11 +113,12 @@ const authSlice = createSlice({
             state.user = action.payload;
             state.loading = false;
             state.isAuthenticated = !!action.payload
+            state.error = null;
         })
 
         //rejected
-        .addCase(loginUser.rejected , (state)=>{
-            state.error = state.payload?.message || "Some Error Occured";
+        .addCase(loginUser.rejected , (state,action)=>{
+            state.error = action.payload || "Some Error Occured";
             state.isAuthenticated = false;
             state.loading = false;
             state.user = null;
@@ -135,11 +137,12 @@ const authSlice = createSlice({
             state.user = action.payload;
             state.loading = false;
             state.isAuthenticated = !!action.payload
+            state.error = null;
         })
 
         //rejected
-        .addCase(authCheck.rejected , (state)=>{
-            state.error = state.payload?.message || "Some Error Occured";
+        .addCase(authCheck.rejected , (state,action)=>{
+            state.error = action.payload || "Some Error Occured";
             state.isAuthenticated = false;
             state.loading = false;
             state.user = null;
@@ -160,8 +163,8 @@ const authSlice = createSlice({
         })
 
         //rejected
-        .addCase(logOut.rejected , (state)=>{
-            state.error = state.payload?.message || "Some Error Occured";
+        .addCase(logOut.rejected , (state,action)=>{
+            state.error = action.payload || "Some Error Occured";
             state.isAuthenticated = false;
             state.loading = false;
             state.user = null;
@@ -170,4 +173,4 @@ const authSlice = createSlice({
         
 })
 
-export default authSlice.slicers; 
+export default authSlice.reducer; 

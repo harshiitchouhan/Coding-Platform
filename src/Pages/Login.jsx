@@ -1,6 +1,10 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useDispatch , useSelector } from "react-redux";
+import { useNavigate } from "react-router";
+import { loginUser } from "../Features/authSlice";
+import { useEffect } from "react";
 
 import {
   Form,
@@ -24,6 +28,17 @@ const formSchema = z
 
 function Login (){
 
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const {isAuthenticated} = useSelector((state)=>state.auth);
+
+    useEffect(()=>{
+      if(isAuthenticated){
+        navigate("/")  // this navigate is diff from routing one
+      }
+    },[isAuthenticated])
+
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -35,7 +50,7 @@ function Login (){
       });
     
       function onSubmit(data) {
-        console.log(data);
+        dispatch(loginUser(data));
       }
 
     return(
