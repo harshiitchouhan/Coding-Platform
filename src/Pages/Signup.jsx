@@ -4,8 +4,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch , useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { registeredUser } from "../Features/authSlice";
-import { useEffect } from "react";
+import { useEffect,useState } from "react";
 import { Link } from "react-router";
+import { Eye, EyeOff } from 'lucide-react';
+
 
 import {
   Form,
@@ -41,6 +43,9 @@ function Signup() {
   const navigate = useNavigate();
   const {isAuthenticated,loading,} = useSelector((state)=>state.auth);
 
+  const [showPassword, setShowPassword] = useState(false);  // for password show and hide
+  const [showConfirm, setShowConfirm] = useState(false);  // for confirm show and hide eye
+
   // if isauth true then go to homepage
   useEffect(()=>{
     if(isAuthenticated){
@@ -64,6 +69,7 @@ function Signup() {
   function onSubmit(data) {
     dispatch(registeredUser(data));
   }
+  
 
   return (
 
@@ -166,54 +172,97 @@ function Signup() {
                 <FormItem>
                   <FormLabel className="pl-1">Password</FormLabel>
                   <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Enter password"
-                      {...field}
-                      className={`bg-white/10 h-10 border-white/20 text-white placeholder:text-gray-300
-                        ${
-                          form.formState.errors.password
-                            ? "border-red-500 focus-visible:ring-red-500"
-                            : form.formState.touchedFields.password
-                            ? "border-green-500 focus-visible:ring-green-500"
-                            : ""
-                        }
-                      `} 
+                      <div className="relative">
 
-                    />
-                  </FormControl>
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Enter password"
+                          {...field}
+                          className={`bg-white/10 h-10 border-white/20 text-white placeholder:text-gray-300 pr-10
+                            ${
+                              form.formState.errors.password
+                                ? "border-red-500 focus-visible:ring-red-500"
+                                : form.formState.touchedFields.password
+                                ? "border-green-500 focus-visible:ring-green-500"
+                                : ""
+                            }
+                          `}
+                        />
+
+                        {/* Eye Toggle Button */}
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 
+                                    text-white/40 hover:text-white 
+                                    bg-white/5 hover:bg-white/10 
+                                    p-1.5 rounded-md 
+                                    transition-all duration-200"
+                        >
+                          {showPassword ? (
+                            <EyeOff className="h-4 w-4" />
+                          ) : (
+                            <Eye className="h-4 w-4" />
+                          )}
+                        </button>
+
+                      </div>
+                    </FormControl>
                   <FormMessage name = "password" />
                 </FormItem>
               )}
             />
 
-            {/* Confirm */}
-            <FormField
-              control={form.control}
-              name="confirm"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="pl-1">Confirm Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Confirm password"
-                      {...field}
-                      className={`bg-white/10 h-10 border-white/20 text-white placeholder:text-gray-300
-                        ${
-                          form.formState.errors.confirm
-                            ? "border-red-500 focus-visible:ring-red-500"
-                            : form.formState.touchedFields.confirm
-                            ? "border-green-500 focus-visible:ring-green-500"
-                            : ""
-                        }
-                      `} 
-                    />
-                  </FormControl>
-                  <FormMessage name ="confirm" />
-                </FormItem>
-              )}
-            />
+            {/* Confirm Password */}
+              <FormField
+                control={form.control}
+                name="confirm"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="pl-1">Confirm Password</FormLabel>
+
+                    <FormControl>
+                      <div className="relative">
+
+                        <Input
+                          type={showConfirm ? "text" : "password"}
+                          placeholder="Confirm Password"
+                          {...field}
+                          className={`bg-white/10 h-10 border-white/20 text-white placeholder:text-gray-300 pr-10
+                            ${
+                                  form.formState.errors.confirm
+                                ? "border-red-500 focus-visible:ring-red-500"
+                                : form.formState.touchedFields.confirm
+                                ? "border-green-500 focus-visible:ring-green-500"
+                                : ""
+                            }
+                          `}
+                        />
+
+                        {/* Eye Toggle Button */}
+                        <button
+                          type="button"
+                          onClick={() => setShowConfirm(!showConfirm)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 
+                                    text-white/40 hover:text-white 
+                                    bg-white/5 hover:bg-white/10 
+                                    p-1.5 rounded-md 
+                                    transition-all duration-200"
+                        >
+                          {showConfirm ? (
+                            <EyeOff className="h-4 w-4" />
+                          ) : (
+                            <Eye className="h-4 w-4" />
+                          )}
+                        </button>
+
+                      </div>
+                    </FormControl>
+
+                    <FormMessage name="confirm" />
+                  </FormItem>
+                )}
+              />
 
             {/* Button Bana Diya To Submit Form */}
 

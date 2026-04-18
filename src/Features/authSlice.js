@@ -40,19 +40,19 @@ export const loginUser = createAsyncThunk(
     }
 )
 
-export const authCheck = createAsyncThunk(
-    "auth/check",
-    async( _ , {rejectWithValue})=>{
-        try{
-            const {data} = await axiosClient.get("/user/check");
-            return data.user;
+// export const authCheck = createAsyncThunk(
+//     "auth/check",
+//     async( _ , {rejectWithValue})=>{
+//         try{
+//             const {data} = await axiosClient.get("/user/check");
+//             return data.user;
 
-        }
-        catch(error){
-            return rejectWithValue(error.response?.data?.message || error.message);
-        }
-    }
-)
+//         }
+//         catch(error){
+//             return rejectWithValue(error.response?.data?.message || error.message);
+//         }
+//     }
+// )
 
 export const logOut = createAsyncThunk(
     "auth/logout",
@@ -60,6 +60,19 @@ export const logOut = createAsyncThunk(
         try{
             await axiosClient.post("/user/logout")
             return null;
+        }
+        catch(error){
+            return rejectWithValue(error.response?.data?.message || error.message);
+        }
+    }
+)
+
+export const loadUser = createAsyncThunk(
+    "auth/loadUser",
+    async(_,{rejectWithValue})=>{
+        try{
+            const response = await axiosClient.get("/user/me")
+            return response.data.user;
         }
         catch(error){
             return rejectWithValue(error.response?.data?.message || error.message);
@@ -127,26 +140,26 @@ const authSlice = createSlice({
 
         //authCheck
         //Pending
-            .addCase(authCheck.pending , (state)=>{
-            state.loading = true;
-            state.error = null;
-        })
+        //     .addCase(authCheck.pending , (state)=>{
+        //     state.loading = true;
+        //     state.error = null;
+        // })
 
-        //fulfilled
-        .addCase(authCheck.fulfilled , (state,action)=>{
-            state.user = action.payload;
-            state.loading = false;
-            state.isAuthenticated = !!action.payload
-            state.error = null;
-        })
+        // //fulfilled
+        // .addCase(authCheck.fulfilled , (state,action)=>{
+        //     state.user = action.payload;
+        //     state.loading = false;
+        //     state.isAuthenticated = !!action.payload
+        //     state.error = null;
+        // })
 
-        //rejected
-        .addCase(authCheck.rejected , (state,action)=>{
-            state.error = action.payload || "Some Error Occured";
-            state.isAuthenticated = false;
-            state.loading = false;
-            state.user = null;
-        })
+        // //rejected
+        // .addCase(authCheck.rejected , (state,action)=>{
+        //     state.error = action.payload || "Some Error Occured";
+        //     state.isAuthenticated = false;
+        //     state.loading = false;
+        //     state.user = null;
+        // })
 
         //Logout
             .addCase(logOut.pending , (state)=>{
@@ -164,6 +177,26 @@ const authSlice = createSlice({
 
         //rejected
         .addCase(logOut.rejected , (state,action)=>{
+            state.error = action.payload || "Some Error Occured";
+            state.isAuthenticated = false;
+            state.loading = false;
+            state.user = null;
+        })
+
+        // refresh
+        .addCase(loadUser.pending,(state,action)=>{
+            state.loading = true;
+            state.error = null;
+        })
+
+        .addCase(loadUser.fulfilled , (state,action)=>{
+            state.user = action.payload;
+            state.loading = false;
+            state.isAuthenticated = !!action.payload;
+            state.error = null;
+        })
+
+        .addCase(loadUser.rejected , (state,action)=>{
             state.error = action.payload || "Some Error Occured";
             state.isAuthenticated = false;
             state.loading = false;

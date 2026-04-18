@@ -7,6 +7,9 @@ import { loginUser } from "../Features/authSlice";
 import { useEffect } from "react";
 import { Link } from "react-router";
 
+import { Eye, EyeOff } from 'lucide-react';
+import { useState } from 'react';
+
 import {
   Form,
   FormControl,
@@ -33,6 +36,7 @@ function Login (){
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const {isAuthenticated} = useSelector((state)=>state.auth);
+  const [showPassword, setShowPassword] = useState(false);
 
     useEffect(()=>{
       if(isAuthenticated){
@@ -125,22 +129,42 @@ function Login (){
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="pl-1">Password</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="password"
-                              placeholder="Enter password"
-                              {...field}
-                              className={`bg-white/10 h-10 border-white/20 text-white placeholder:text-gray-300
-                                ${
-                                  form.formState.errors.password
-                                    ? "border-red-500 focus-visible:ring-red-500"
-                                    : form.formState.touchedFields.password
-                                    ? "border-green-500 focus-visible:ring-green-500"
-                                    : ""
-                                }
-                              `} 
-        
-                            />
+                            <FormControl>
+                            <div className="relative">
+                              
+                              <Input
+                                type={showPassword ? "text" : "password"}
+                                placeholder="Enter password"
+                                {...field}
+                                className={`bg-white/10 h-10 border-white/20 text-white placeholder:text-gray-300 pr-10
+                                  ${
+                                    form.formState.errors.password
+                                      ? "border-red-500 focus-visible:ring-red-500"
+                                      : form.formState.touchedFields.password
+                                      ? "border-green-500 focus-visible:ring-green-500"
+                                      : ""
+                                  }
+                                `}
+                              />
+
+                              {/* Eye Icon */}
+                              <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 
+                                          text-white/40 hover:text-white 
+                                          bg-white/5 hover:bg-white/10 
+                                          p-1.5 rounded-md 
+                                          transition-all duration-200"
+                              >
+                                {showPassword ? (
+                                  <EyeOff className="h-4 w-4" />
+                                ) : (
+                                  <Eye className="h-4 w-4" />
+                                )}
+                              </button>
+
+                            </div>
                           </FormControl>
                           <FormMessage name = "password" />
                         </FormItem>
