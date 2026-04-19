@@ -43,6 +43,7 @@ function Login (){
         navigate("/")  // this navigate is diff from routing one
       }
     },[isAuthenticated])
+    
 
     const form = useForm({
         resolver: zodResolver(formSchema),

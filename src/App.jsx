@@ -10,12 +10,13 @@ import { useDispatch , useSelector } from "react-redux"
 // import { authCheck } from "./Features/authSlice"
 import Authloader from "./Pages/Authloader"
 import { loadUser } from "./Features/authSlice"
+import Problem from "./Pages/Problem"
+import AdminPanel from "./Pages/AdminPanel"
 
 
 
 function App() {
-
-
+  
   
   // need to check isAuthenticated // if true -> Home Page else -> Login/Signup
   const {isAuthenticated,loading,user} = useSelector((state)=>state.auth);
@@ -28,7 +29,6 @@ function App() {
 
   // bring back user details if he/she refreshes the page
     useEffect(() => {
-    // console.log("App mounted, calling loadUser")
     dispatch(loadUser());
 }, [dispatch]);
 
@@ -91,6 +91,16 @@ if (loading) return null; // prevents flicker completely
       <Route path="/signup" element={isAuthenticated?<Navigate to={"/"}/>:<Signup></Signup>}></Route>
       <Route path="/about" element={<About/>}></Route>
       <Route path="/career" element={<Careers/>}></Route>
+      <Route path="/problems" element={<Problem/>}></Route>
+      <Route path="/admin" element={<AdminPanel/>} ></Route>
+      {/* <Route
+        path="/admin"
+        element={
+          isAuthenticated && user?.role === "admin"
+            ? <AdminPanel />
+            : <Navigate to="/" />
+        }
+      /> */}
 
     </Routes>
   )
