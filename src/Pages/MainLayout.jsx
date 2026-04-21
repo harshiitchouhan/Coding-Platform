@@ -1,7 +1,7 @@
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
-export default function MainLayout({ children }) {
+export default function MainLayout({ children , showFooter = true }) {
   return (
     <div className="min-h-screen w-full relative bg-black overflow-hidden text-white">
 
@@ -21,12 +21,12 @@ export default function MainLayout({ children }) {
         <Navbar />
 
         {/* Page Content */}
-        <main className="grow px-6 md:px-16 pt-24 pb-10">
+        <main className="grow">
           {children}
         </main>
 
         {/* Footer */}
-        <Footer />
+        {showFooter && <Footer />}
 
       </div>
     </div>

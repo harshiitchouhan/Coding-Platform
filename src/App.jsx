@@ -12,6 +12,7 @@ import Authloader from "./Pages/Authloader"
 import { loadUser } from "./Features/authSlice"
 import Problem from "./Pages/Problem"
 import AdminPanel from "./Pages/AdminPanel"
+import ProblemPage from "./Pages/ProblemPage"
 
 
 
@@ -93,6 +94,7 @@ if (loading) return null; // prevents flicker completely
       <Route path="/career" element={<Careers/>}></Route>
       <Route path="/problems" element={<Problem/>}></Route>
       <Route path="/admin" element={<AdminPanel/>} ></Route>
+      <Route path="/problem/:id" element={<ProblemPage/>}></Route>
       {/* <Route
         path="/admin"
         element={

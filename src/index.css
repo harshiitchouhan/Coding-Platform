@@ -145,3 +145,26 @@ body {
 body::-webkit-scrollbar {
   display: none;
 } */
+
+/* COMMON */
+.gutter {
+  background-color: rgba(255,255,255,0.08);
+}
+
+/* 👉 LEFT-RIGHT SPLIT */
+.gutter.gutter-horizontal {
+  cursor: col-resize;
+  width: 6px;
+}
+
+/* 👉 TOP-BOTTOM SPLIT */
+.gutter.gutter-vertical {
+  cursor: row-resize;
+  height: 6px;
+}
+
+/* HOVER EFFECT */
+.gutter:hover {
+ background-color: #7c3aed;
+
+}

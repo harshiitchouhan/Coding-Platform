@@ -24,7 +24,7 @@ export default function Hero(){
                 className="px-6 py-3 rounded-xl bg-cyan-400 text-black font-semibold 
                 hover:bg-cyan-300 transition-all duration-300 shadow-[0_0_20px_rgba(56,189,248,0.4)]"
             >
-                🚀 Start Solving
+                Start Solving
             </Link>
 
           </div>
@@ -214,13 +214,13 @@ export default function Hero(){
 
                     {/* Heading */}
                     <h2 className="text-3xl md:text-5xl font-semibold">
-                    Ready to crack your dream company? 🎯
+                    Ready to crack your dream company? 
                     </h2>
 
                     {/* Hinglish Line */}
                     <p className="text-gray-400 mt-4 text-lg">
                     Offer chahiye Google, Amazon jaisi companies se?  
-                    Toh ab sirf dekhna band karo — practice shuru karo aur apna DSA solid banao 💪
+                    Toh ab sirf dekhna band karo — practice shuru karo aur apna DSA solid banao 
                     </p>
 
                     {/* Buttons */}
@@ -231,7 +231,7 @@ export default function Hero(){
                         className="px-6 py-3 rounded-xl bg-cyan-400 text-black font-semibold 
                         hover:bg-cyan-300 transition-all duration-300 shadow-[0_0_20px_rgba(56,189,248,0.4)]"
                     >
-                        🚀 Start Solving
+                         Start Solving
                     </Link>
 
                     </div>

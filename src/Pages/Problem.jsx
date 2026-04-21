@@ -159,9 +159,9 @@ return (
             </SelectTrigger>
             <SelectContent className="bg-purple-500/10 backdrop-blur-xl text-white border border-purple-400/30">
                 <SelectItem value="all">All Difficulty</SelectItem>
-                <SelectItem value="Easy">Easy</SelectItem>
-                <SelectItem value="Medium">Medium</SelectItem>
-                <SelectItem value="Hard">Hard</SelectItem>
+                <SelectItem value="easy">Easy</SelectItem>
+                <SelectItem value="medium">Medium</SelectItem>
+                <SelectItem value="hard">Hard</SelectItem>
             </SelectContent>
             </Select>
 

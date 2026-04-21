@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import logo from "../CodeBit.png";
 
 export default function Footer() {
   return (
@@ -7,7 +8,7 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto px-6 flex flex-col items-center text-center">
 
         {/* LOGO */}
-        <img src="./Assets/CodeBit.png" alt="logo" className="h-10 mb-4" />
+        <img src={logo} alt="logo" className="h-10 mb-4" />
 
         {/* TAGLINE */}
         <p className="text-gray-300 text-md max-w-md">

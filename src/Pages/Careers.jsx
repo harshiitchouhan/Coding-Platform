@@ -20,7 +20,7 @@ export default function Careers() {
         {/* HERO */}
         <section className="px-6 md:px-16 pt-24 text-center max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-6xl font-bold bg-linear-to-r from-cyan-300 via-sky-400 to-fuchsia-500 text-transparent bg-clip-text">
-            Join CodeBit 🚀
+            Join CodeBit 
           </h1>
 
           <p className="mt-6 text-gray-400 text-lg">

@@ -81,13 +81,13 @@ export default function About() {
         <section className="mt-24 px-6 md:px-16 max-w-4xl mx-auto text-center">
 
           <h2 className="text-3xl md:text-4xl font-semibold">
-            Meet the Founder 👨‍💻
+            Meet the Founder 
           </h2>
 
           <div className="mt-10 p-8 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
 
             <p className="text-lg text-gray-300">
-              Hi, I’m <span className="text-cyan-300 font-semibold">Harshit Chouhan</span> 👋
+              Hi, I’m <span className="text-cyan-300 font-semibold">Harshit Chouhan</span> 
             </p>
 
             <p className="mt-4 text-gray-400 leading-relaxed">
@@ -106,7 +106,7 @@ export default function About() {
         {/* MISSION */}
         <section className="mt-24 px-6 md:px-16 max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-semibold">
-            Our Mission 🎯
+            Our Mission 
           </h2>
 
           <p className="mt-6 text-gray-400 text-lg">
@@ -120,7 +120,7 @@ export default function About() {
         <section className="mt-24 mb-24 px-6 md:px-16 max-w-5xl mx-auto text-center">
 
           <h2 className="text-3xl md:text-4xl font-semibold">
-            Future Goals 🚀
+            Future Goals 
           </h2>
 
           <div className="mt-10 grid md:grid-cols-3 gap-6">

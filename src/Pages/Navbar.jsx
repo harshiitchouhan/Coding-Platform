@@ -9,6 +9,7 @@ import { User } from "lucide-react";
 import { Link } from "react-router";
 import { logOut } from "@/Features/authSlice";
 import { useDispatch, useSelector } from "react-redux";
+import logo from "../CodeBit.png";
 
 function Navbar() {
 
@@ -26,11 +27,10 @@ function Navbar() {
       
       {/* Left: Logo */}
       <div className="flex items-center">
-        <img 
-          src="./Assets/CodeBit.png" 
-          alt="Codebit logo" 
-          className="h-8 sm:h-10 w-auto object-contain"
-        />
+        <Link to="/">
+        <img src={logo} className="h-8 sm:h-10 w-auto object-contain" alt="Codebit logo" />
+      </Link>
+      
       </div>
 
       {/* Center: Links */}
