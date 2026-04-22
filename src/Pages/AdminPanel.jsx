@@ -42,6 +42,11 @@ const formSchema = z.object({
 
         })
     ).length(3,"All Three Languages Required"),
+    functionSignature: z.object({
+    cpp: z.string().min(1, "C++ signature required"),
+    javascript: z.string().min(1, "JS signature required"),
+    java: z.string().min(1, "Java signature required"),
+  }),
 
 
 
@@ -70,6 +75,12 @@ export default function AdminPanel(){
         { language: "java", completeCode: "" },
         { language: "javascript", completeCode: "" },
         ],
+        functionName: "",
+          functionSignature: {
+            cpp: "",
+            javascript: "",
+            java: ""
+          },
   },
 });
 
@@ -103,11 +114,12 @@ export default function AdminPanel(){
             // console.log("SUBMIT DATA:", data);
             await axiosClient.post("/problem/create",data);
             alert("Problem Created Succesfully");
-            navigate("/")
+            // navigate("/")
 
         }
         catch(err){
-            alert(`Error: ${err.response?.data?.message || err.message}`)
+            console.log(err.response?.data);
+            alert(JSON.stringify(err.response?.data));
         }
     }
 
@@ -254,6 +266,42 @@ export default function AdminPanel(){
           </button>
         </div>
 
+      {/* Function */}
+        <input
+          placeholder="Function Name (e.g. add)"
+          {...register("functionName")}
+          className="w-full p-3 rounded-lg bg-white/10 border border-white/20"
+        />
+        {errors.functionName && (
+          <p className="text-red-400">{errors.functionName.message}</p>
+        )}
+
+        {/* function signature */}
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold">Function Signature</h2>
+
+          {/* C++ */}
+          <textarea
+            placeholder="int add(int a, int b)"
+            {...register("functionSignature.cpp")}
+            className="w-full p-3 rounded-lg bg-white/10 border border-white/20"
+          />
+
+          {/* JavaScript */}
+          <textarea
+            placeholder="function add(a, b)"
+            {...register("functionSignature.javascript")}
+            className="w-full p-3 rounded-lg bg-white/10 border border-white/20"
+          />
+
+          {/* Java */}
+          <textarea
+            placeholder="public static int add(int a, int b)"
+            {...register("functionSignature.java")}
+            className="w-full p-3 rounded-lg bg-white/10 border border-white/20"
+          />
+        </div>
+
         {/* Starter Code */}
         <div className="space-y-4">
           <h2 className="text-xl font-semibold">Starter Code</h2>
@@ -317,7 +365,7 @@ export default function AdminPanel(){
           type="submit"
           className="w-full py-3 rounded-xl bg-linear-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 transition-all duration-300 font-semibold text-lg shadow-lg hover:shadow-xl hover:scale-[1.02]"
         >
-          Submit Problem 🚀
+          Submit Problem 
         </button>
 
       </form>

@@ -49,7 +49,7 @@ export default function ProblemPage() {
         <div className="min-w-125 flex flex-col bg-[#111827] p-4">
         <RightPanel
             problemId={problem._id}
-            startCode={problem.startCode}
+            functionSignature={problem.functionSignature}
         />
         </div>
 

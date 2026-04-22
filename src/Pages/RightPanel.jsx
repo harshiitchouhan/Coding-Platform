@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import Editor from "@monaco-editor/react";
 import axiosClient from "@/Utils/axiosClient";
 import { ChevronDown } from "lucide-react";
@@ -8,9 +8,9 @@ import Split from "react-split";
 import { Rocket } from "lucide-react";
 
 
-export default function RightPanel({ problemId, startCode }) {
+export default function RightPanel({ problemId, functionSignature }) {
 
-  const [code, setCode] = useState(startCode?.js || "");
+  const [codeMap, setCodeMap] = useState({cpp: "",js: "",java: ""});
   const [language, setLanguage] = useState("cpp");
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
@@ -23,6 +23,18 @@ export default function RightPanel({ problemId, startCode }) {
   setTheme((prev) => (prev === "vs-dark" ? "light" : "vs-dark"));
 };
 
+  // this is for fucntions of each language cpp- fnc add(int a,intb) js alag java ke liye alag
+    useEffect(() => {
+      if (functionSignature) {
+      setCodeMap({
+        cpp: functionSignature.cpp || "",
+        js: functionSignature.js || "",
+        java: functionSignature.java || "",
+      });
+    }
+}, [functionSignature]);
+  
+
   // RUN CODE
   const handleRun = async () => {
     try {
@@ -30,7 +42,7 @@ export default function RightPanel({ problemId, startCode }) {
       setOutput("Running...");
 
       const res = await axiosClient.post(`/submission/run/${problemId}`, {
-        code: code, 
+        code: codeMap[language],
         language,
       });
 
@@ -61,14 +73,14 @@ export default function RightPanel({ problemId, startCode }) {
     }
   };
 
-  // 🔥 SUBMIT CODE
+  // SUBMIT CODE
   const handleSubmit = async () => {
     try {
       setLoading(true);
       setOutput("Submitting...");
 
       const res = await axiosClient.post(`/submission/submit/${problemId}`, {
-        code: code, // 
+        code: codeMap[language],
         language,
       });
 
@@ -95,7 +107,10 @@ export default function RightPanel({ problemId, startCode }) {
 
 // to reset the editor screen
   const handleReset = () => {
-  setCode(" ");
+  setCodeMap((prev) => ({
+    ...prev,
+    [language]: functionSignature?.[language] || "",
+  }));
 };
 
 // to copy the editor screen
@@ -224,8 +239,10 @@ export default function RightPanel({ problemId, startCode }) {
                 height="100%"
                 theme={theme}
                 language={language}
-                value={code}
-                onChange={(value) => setCode(value)}
+                value={codeMap[language]}
+                onChange={(value) =>
+                  setCodeMap((prev) => ({ ...prev, [language]: value }))
+                }
                 options={{
                 fontSize: fontSize
                 }}
