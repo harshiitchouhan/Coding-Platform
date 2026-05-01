@@ -1,16 +1,15 @@
-import { useState,useEffect } from "react";
+import { useState,useEffect ,useRef } from "react";
 import Editor from "@monaco-editor/react";
 import axiosClient from "@/Utils/axiosClient";
 import { ChevronDown } from "lucide-react";
 import { Settings,Sun,Moon } from "lucide-react";
 import { RotateCcw, Copy, Maximize2 } from "lucide-react";
 import Split from "react-split";
-import { Rocket } from "lucide-react";
+import { Rocket} from "lucide-react";
 
+export default function RightPanel({ problemId, problem }) {
 
-export default function RightPanel({ problemId, functionSignature }) {
-
-  const [codeMap, setCodeMap] = useState({cpp: "",js: "",java: ""});
+  const [codeMap, setCodeMap] = useState({cpp: "",javascript: "",java: ""});
   const [language, setLanguage] = useState("cpp");
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
@@ -18,22 +17,58 @@ export default function RightPanel({ problemId, functionSignature }) {
   const [showSettings, setShowSettings] = useState(false);
   const [theme, setTheme] = useState("vs-dark");
   const [fontSize, setFontSize] = useState(14);
+  const [activeTab, setActiveTab] = useState("testcase"); // 
+
+  const settingsRef = useRef(null);
+
+
+  function normalizeInput(input) {
+    return input
+      .split("\n")
+      .map(line => {
+        if (line.includes("=")) {
+          return line.split("=")[1].trim();
+        }
+        return line.trim();
+      })
+      .filter(line => line.length > 0)
+      .join("\n");
+  }
 
   const toggleTheme = () => {
-  setTheme((prev) => (prev === "vs-dark" ? "light" : "vs-dark"));
-};
+    setTheme((prev) => (prev === "vs-dark" ? "light" : "vs-dark"));
+  };
 
-  // this is for fucntions of each language cpp- fnc add(int a,intb) js alag java ke liye alag
-    useEffect(() => {
-      if (functionSignature) {
-      setCodeMap({
-        cpp: functionSignature.cpp || "",
-        js: functionSignature.js || "",
-        java: functionSignature.java || "",
-      });
-    }
-}, [functionSignature]);
-  
+// editor mei prewritten code dikhana
+useEffect(() => {
+  if (problem?.startCode) {
+    const map = {
+      cpp: "",
+      javascript: "",
+      java: "",
+    };
+
+    problem.startCode.forEach((item) => {
+      map[item.language] = item.boilerCode;
+    });
+
+    setCodeMap(map);
+  }
+}, [problem]);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (settingsRef.current && !settingsRef.current.contains(e.target)) {
+        setShowSettings(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   // RUN CODE
   const handleRun = async () => {
@@ -41,34 +76,50 @@ export default function RightPanel({ problemId, functionSignature }) {
       setLoading(true);
       setOutput("Running...");
 
+      const finalInput =
+        activeTab === "custom" ? normalizeInput(input) : "";
+
       const res = await axiosClient.post(`/submission/run/${problemId}`, {
         code: codeMap[language],
         language,
+        input: finalInput, 
       });
 
+      // console.log("RUN RESPONSE:", res.data);
+      // console.log("INPUT RECEIVED:", req.body.input);
       const results = res.data;
 
       let outputText = "";
 
       results.forEach((test, i) => {
-        outputText += `Test ${i + 1}:\n`;
+      outputText += `Test ${i + 1}:\n`;
 
-        if (test.stdout) {
-          outputText += `Output: ${test.stdout}\n`;
-        }
+      if (test.stdout !== null && test.stdout !== undefined) {
+        outputText += `Output: ${test.stdout.trim()}\n`;
+      }
 
-        if (test.stderr) {
-          outputText += `Error: ${test.stderr}\n`;
-        }
+      if (test.stderr) {
+        outputText += `Error: ${test.stderr}\n`;
+      }
 
-        outputText += "\n";
-      });
+      if (!test.stdout && !test.stderr) {
+        outputText += `Output: (no output)\n`;
+      }
+
+      outputText += "\n";
+    });
 
       setOutput(outputText);
 
     } catch (err) {
-      setOutput("Error running code");
-    } finally {
+  console.log("RUN ERROR:", err.response?.data || err.message);
+
+  setOutput(
+    err.response?.data?.message ||
+    err.response?.data ||
+    "Error running code"
+  );
+} finally {
       setLoading(false);
     }
   };
@@ -79,9 +130,13 @@ export default function RightPanel({ problemId, functionSignature }) {
       setLoading(true);
       setOutput("Submitting...");
 
+      const finalInput =
+        activeTab === "custom" ? normalizeInput(input) : "";
+
       const res = await axiosClient.post(`/submission/submit/${problemId}`, {
         code: codeMap[language],
         language,
+        input: finalInput, 
       });
 
       const data = res.data;
@@ -89,13 +144,13 @@ export default function RightPanel({ problemId, functionSignature }) {
       const total = data.testCasesTotal || data.testCasesPassed;
 
       setOutput({
-      status: data.status,
-      passed: data.testCasesPassed,
-      total,
-      runtime: data.runtime,
-      memory: data.memory,
-      error: data.errorMsg
-    });
+        status: data.status,
+        passed: data.testCasesPassed,
+        total,
+        runtime: data.runtime,
+        memory: data.memory,
+        error: data.errorMsg
+      });
 
     } catch (err) {
       setOutput("Submission failed");
@@ -104,229 +159,228 @@ export default function RightPanel({ problemId, functionSignature }) {
     }
   };
 
+const handleReset = () => {
+  const defaultCode =
+    problem?.startCode?.find((item) => item.language === language)?.boilerCode || "";
 
-// to reset the editor screen
-  const handleReset = () => {
   setCodeMap((prev) => ({
     ...prev,
-    [language]: functionSignature?.[language] || "",
+    [language]: defaultCode,
   }));
 };
 
-// to copy the editor screen
-  const handleCopy = () => {
-  navigator.clipboard.writeText(code);
-};
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(codeMap[language] || "");
+    } catch (err) {
+      console.error("Copy failed:", err);
+    }
+  };
 
-// for full screen but its not doing like i wanted only right panel to be full screen
-  const handleFullScreen = () => {
-};
+  const handleFullScreen = () => {};
 
   return (
     <div className="flex flex-col h-full">
 
       {/* TOP BAR */}
-    <div className="flex items-center justify-between px-4 pr-8 py-2 mb-2 rounded-lg bg-[#0B0F1A] border border-white/10">
+      <div className="flex items-center justify-between px-4 pr-8 py-2 mb-2 rounded-lg bg-[#0B0F1A] border border-white/10">
 
-    <div className="relative">
-
-        <select
+        <div className="relative">
+          <select
             value={language}
             onChange={(e) => setLanguage(e.target.value)}
             className="appearance-none bg-[#1F2937] px-3 pr-8 py-1.5 rounded-md text-sm outline-none text-gray-200"
-        >
+          >
             <option value="cpp">C++</option>
-            <option value="js">JavaScript</option>
+            <option value="javascript">JavaScript</option>
             <option value="java">Java</option>
-        </select>
+          </select>
 
-        <ChevronDown 
+          <ChevronDown 
             size={16} 
             className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" 
-        />
-
-    </div>
-
-        {/* RIGHT: ICON ACTIONS */}
-        <div className="flex items-center gap-3">
-
-            <button
-                onClick={handleReset}
-                className="p-2 rounded-md hover:bg-white/10 transition"
-                title="Reset Code"
-            >
-            <RotateCcw size={16} />
-            </button>
-
-            <button
-                onClick={handleCopy}
-                className="p-2 rounded-md hover:bg-white/10 transition"
-                title="Copy Code"
-            >
-            <Copy size={16} />
-            </button>
-
-            <button
-                onClick={handleFullScreen}
-                className="p-2 rounded-md hover:bg-white/10 transition"
-                title="Fullscreen"
-            >
-            <Maximize2 size={16} />
-            </button>
-
+          />
         </div>
 
-        {/* Top mei jo theme and font size h */}
-        <button
-            onClick={() => setShowSettings(!showSettings)}
-            className="p-2 rounded-md bg-[#1F2937] hover:bg-[#374151] transition"
-            >
-            <Settings size={16} />
+        <div className="flex items-center gap-3">
+          <button onClick={handleReset} className="p-2 hover:bg-white/10"><RotateCcw size={16} /></button>
+          <button onClick={handleCopy} className="p-2 hover:bg-white/10"><Copy size={16} /></button>
+          <button onClick={handleFullScreen} className="p-2 hover:bg-white/10"><Maximize2 size={16} /></button>
+        </div>
+
+        <button onClick={() => setShowSettings(!showSettings)} className="p-2 bg-[#1F2937]">
+          <Settings size={16} />
         </button>
 
-        {showSettings && (
-            <div className="absolute right-4 top-12 w-56 bg-[#111827] border border-white/10 rounded-xl shadow-lg p-4 z-50">
+      </div>
 
-                {/* Theme Toggle */}
-                <div className="flex items-center justify-between mb-4">
-                <span className="text-sm text-gray-300">Theme</span>
+      <div className="flex-1 overflow-hidden">
 
-                <button
-                    onClick={() =>
-                    setTheme((prev) => (prev === "vs-dark" ? "light" : "vs-dark"))
-                    }
-                    className="p-1.5 rounded bg-[#1F2937] hover:bg-[#374151]"
-                >
-                    {theme === "vs-dark" ? <Sun size={14} /> : <Moon size={14} />}
-                </button>
-                </div>
+        <Split direction="vertical" sizes={[60, 40]} minSize={[200, 120]} className="flex flex-col h-full">
 
-                {/* Font Size */}
-                <div className="mb-2">
-                    <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm text-gray-300">Font Size</span>
-                        <span className="text-xs text-gray-400">{fontSize}px</span>
-                    </div>
+          {/* EDITOR */}
+          <Editor
+            height="100%"
+            theme={theme}
+            language={language}
+            value={codeMap[language]}
+            onChange={(value) =>
+              setCodeMap((prev) => ({ ...prev, [language]: value }))
+            }
+          />
 
-                    <input
-                        type="range"
-                        min="12"
-                        max="24"
-                        step="1"
-                        value={fontSize}
-                        onChange={(e) => setFontSize(Number(e.target.value))}
-                        className="w-full accent-purple-500 cursor-pointer"
-                    />
-                </div>
+          {/* OUTPUT + INPUT */}
+          <div className="flex flex-col bg-[#0B0F1A]">
 
-            </div>
-            )}
-    </div>
+            <div className="flex items-center justify-between border-b border-white/10 px-3">
 
-        <div  className="flex-1 overflow-hidden">
+  {/* LEFT: TABS */}
+        <div className="flex">
+          <button
+            onClick={() => setActiveTab("testcase")}
+            className={`px-4 py-2 text-sm ${
+              activeTab === "testcase"
+                ? "border-b-2 border-purple-500 text-white"
+                : "text-gray-400"
+            }`}
+          >
+            Testcases
+          </button>
 
-        <Split
-            direction="vertical"
-            sizes={[75, 25]}
-            minSize={[200, 120]}
-            gutterSize={6}
-            className="flex flex-col h-full"
-        >
+          {/* <button
+            onClick={() => setActiveTab("custom")}
+            className={`px-4 py-2 text-sm ${
+              activeTab === "custom"
+                ? "border-b-2 border-purple-500 text-white"
+                : "text-gray-400"
+            }`}
+          >
+            Custom Input
+          </button> */}
+          
+        </div>
 
-            {/* EDITOR (same code) */}
-            <div  className="rounded-lg overflow-hidden border border-white/10">
-            <Editor
-                height="100%"
-                theme={theme}
-                language={language}
-                value={codeMap[language]}
-                onChange={(value) =>
-                  setCodeMap((prev) => ({ ...prev, [language]: value }))
-                }
-                options={{
-                fontSize: fontSize
-                }}
-            />
-            </div>
+        {/* RIGHT: BUTTONS */}
+        <div className="flex gap-3 py-2">
+          <button
+            onClick={handleRun}
+            className="bg-purple-600 hover:bg-purple-500 px-4 py-1.5 rounded-md text-sm text-white"
+          >
+            ▶ Run
+          </button>
 
-            {/* OUTPUT + RUN SECTION (same code just merged) */}
-            <div className="flex flex-col bg-[#0B0F1A] border border-white/10 rounded-lg">
+          <button
+            onClick={handleSubmit}
+            className="bg-cyan-400 hover:bg-cyan-500 px-4 py-1.5 rounded-md text-sm text-white flex items-center gap-2"
+          >
+            <Rocket size={14} />
+            Submit
+          </button>
+        </div>
 
-            {/* RUN / SUBMIT (same buttons) */}
-            <div className="flex justify-end gap-3 p-3 border-t border-white/10">
-                <button
-                onClick={handleRun}
-                className="bg-purple-600 hover:bg-purple-500 px-4 py-1.5 rounded-md text-sm"
-                >
-                ▶ Run
-                </button>
+      </div>
 
-                <button className="bg-cyan-500 hover:bg-cyan-400 text-black font-semibold px-4 py-1.5 rounded-md flex items-center gap-2"
-                onClick={handleSubmit}>
-                <Rocket size={16} />
-                Submit
-                </button>
-            </div>
-
-            {/* Horixonatal Line dedi taki badhiya lage */}
-            <div className="border-b border-white/10 mb-2" />
+            {/* CUSTOM INPUT
+            {activeTab === "custom" && (
+              <textarea
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder={`nums = [2,7,11,15]\ntarget = 9`}
+                className="w-full h-32 p-2 bg-black text-white"
+              />
+            )} */}
 
             {/* OUTPUT */}
-            <div className="flex-1 p-4 text-sm overflow-auto">
+            {activeTab === "testcase" && (
+              <div className="flex-1 text-sm overflow-auto">
 
-                {typeof output === "string" ? (
-                    <div className="text-gray-400 whitespace-pre-wrap">{output}</div>
-                ) : output ? (
+              {/* RUN OUTPUT */}
+              {typeof output === "string" ? (
+                <div className="text-gray-400 whitespace-pre-wrap p-4">
+                  {output || "Run code to see output..."}
+                </div>
+              ) : output ? (
 
-                    <div className="space-y-4">
+                /* SUBMIT OUTPUT CARD */
+                <div className="space-y-5 animate-fadeIn p-4">
 
-                    {/* STATUS BADGE */}
+                  {/* Status Header */}
+                  <div className="flex items-center gap-3">
                     <div
-                        className={`inline-block px-3 py-1 rounded-md text-sm font-medium
-                            ${
-                            output.status === "accepted"
-                                ? "bg-emerald-500/10 text-emerald-400"
-                                : "bg-red-500/10 text-red-400"
-                            }`}
-                        >
-                        {output.status === "accepted" && "Accepted "}
-                        {output.status === "wrong answer" && "Wrong Answer "}
-                        {output.status === "tle" && "Time Limit Exceeded"}
-                        {output.status === "compile error" && "Compilation Error "}
-                        {output.status === "runtime error" && "Runtime Error "}
+                      className={`w-9 h-9 rounded-full flex items-center justify-center text-lg
+                        ${output.status === "accepted"
+                          ? "bg-emerald-500/10 text-emerald-400"
+                          : "bg-red-500/10 text-red-400"
+                        }`}
+                    >
+                      {output.status === "accepted" ? "✓" : "✕"}
                     </div>
 
-                    {/* TESTCASE RESULT */}
-                    <div className="text-gray-300">
-                        Testcases Passed: {output.passed} / {output.total} 
+                    <div>
+                      <h2
+                        className={`text-xl font-bold ${
+                          output.status === "accepted"
+                            ? "text-emerald-400"
+                            : "text-red-400"
+                        }`}
+                      >
+                        {output.status === "accepted" ? "Accepted" : output.status}
+                      </h2>
+
+                      <p className="text-xs text-gray-400">
+                        {output.passed} / {output.total} testcases passed
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Stats */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-xl">
+                    <div className="rounded-xl bg-[#111827] border border-white/10 p-4">
+                      <p className="text-xs text-gray-400 mb-1">Passed</p>
+                      <p className="text-lg font-semibold text-white">
+                        {output.passed}/{output.total}
+                      </p>
                     </div>
 
-                    {/* RUNTIME + MEMORY */}
-                    <div className="flex gap-6 text-gray-400">
-                        <span>Runtime: {output.runtime} ms</span>
-                        <span>Memory: {output.memory} KB</span>
+                    <div className="rounded-xl bg-[#111827] border border-white/10 p-4">
+                      <p className="text-xs text-gray-400 mb-1">Runtime</p>
+                      <p className="text-lg font-semibold text-white">
+                        {output.runtime} ms
+                      </p>
                     </div>
 
-                    {/* ERROR MESSAGE */}
-                    {output.status !== "accepted" && output.error && (
-                        <div className="mt-3 p-3 rounded-md bg-black/40 border border-white/10 text-red-400 text-xs whitespace-pre-wrap">
-                        {output.error}
-                        </div>
-                    )}
-
+                    <div className="rounded-xl bg-[#111827] border border-white/10 p-4">
+                      <p className="text-xs text-gray-400 mb-1">Memory</p>
+                      <p className="text-lg font-semibold text-white">
+                        {output.memory} KB
+                      </p>
                     </div>
+                  </div>
 
-                ) : (
-                    <div className="text-gray-500">Run code to see output...</div>
-                )}
+                  {/* Error */}
+                  {output.status !== "accepted" && output.error && (
+                    <div className="rounded-xl bg-red-500/10 border border-red-500/20 p-4 text-red-400 text-sm whitespace-pre-wrap">
+                      {output.error}
+                    </div>
+                    
+                  )}
+                  
+                </div>
 
-            </div>
+              ) : (
+                <div className="text-gray-500 p-4">
+                  Run code to see output...
+                </div>
+              )}
 
-         </div>
-    </Split>
+              </div>
+      )}
+
+          </div>
+
+        </Split>
+      </div>
 
     </div>
-
-</div>
   );
 }

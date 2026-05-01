@@ -7,16 +7,22 @@ import {
 
 import { User } from "lucide-react";
 import { Link } from "react-router";
-import { logOut } from "@/Features/authSlice";
+import { logOut } from "../Redux/Features/Auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import logo from "../CodeBit.png";
+import { useNavigate } from "react-router";
 
 function Navbar() {
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const {user} = useSelector((state)=>state.auth);
     const handleLogout = ()=>{
+      if (error.response?.status === 401) {
         dispatch(logOut());
+        window.location.href = "/login";
+      }
+        navigate("/login");  
     }
 
 
@@ -55,6 +61,14 @@ function Navbar() {
 
           <DropdownMenuContent className="bg-white/5 backdrop-blur-md border border-white/10 text-white">
             <DropdownMenuItem>Profile</DropdownMenuItem>
+            {user?.role === "admin" && (
+            <DropdownMenuItem
+              onClick={() => navigate("/admin")}
+              className="text-blue-400 cursor-pointer"
+            >
+              Admin Panel
+            </DropdownMenuItem>
+          )}
             <DropdownMenuItem onClick={handleLogout} className="text-red-500">
               Logout
             </DropdownMenuItem>

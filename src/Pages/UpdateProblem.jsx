@@ -1,9 +1,11 @@
-import MainLayout from "./MainLayout";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import axiosClient from "@/Utils/axiosClient";
+import { useParams } from "react-router";
+import MainLayout from "./MainLayout";
+import { updateProblem } from "@/Redux/Features/problem/problemSlice";
 
 
 const formSchema = z.object({
@@ -55,7 +57,7 @@ const formSchema = z.object({
 
 })
 
-export default function AdminPanel(){
+export default function UpdateProblem(){
 
     const navigate = useNavigate();
     const {
@@ -112,19 +114,22 @@ export default function AdminPanel(){
     });
 
 
-    const onSubmit= async(data)=>{
-        try{
-            // console.log("SUBMIT DATA:", data);
-            await axiosClient.post("/problem/create",data);
-            alert("Problem Created Succesfully");
-            // navigate("/")
+    const {id} = useParams();
+      const onSubmit = async (data) => {
+        try {
+          const res = await axiosClient.put(`/problem/update/${id}`, data);
 
+          dispatch(updateProblem(res.data)); // ye store se data la rha
+
+          alert("Problem Updated Successfully");
+
+          navigate("/admin/update"); // update wale pg pr bhej do
+
+        } catch (err) {
+          console.log(err.response?.data);
+          alert(JSON.stringify(err.response?.data));
         }
-        catch(err){
-            // console.log(err.response?.data);
-            alert(JSON.stringify(err.response?.data));
-        }
-    }
+};
 
     
     return(
@@ -134,18 +139,10 @@ export default function AdminPanel(){
         
         <div className="max-w-4xl mx-auto px-6">
         <h1 className="text-3xl font-bold mb-8 text-center">
-            Create Problem
+            Update Problem
         </h1>
 
-    <form className="space-y-8"
-      onSubmit={handleSubmit(
-        onSubmit,
-        (errors) => {
-          // console.log("FORM ERRORS:", errors);
-          alert("Form has errors. Check console.");
-        }
-      )}
-    >
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
 
         {/* Title */}
         <input
@@ -222,11 +219,10 @@ export default function AdminPanel(){
           {visibleFields.map((field, index) => (
             <div key={field.id} className="bg-white/5 p-4 rounded-xl mb-4 space-y-3 border border-white/10">
               
-              <textarea
-                defaultValue={field.input} 
-                placeholder="Input (each value on new line)"
+              <input
+                placeholder="Input"
                 {...register(`visibleTestCases.${index}.input`)}
-                className="w-full p-2 rounded-md bg-white/10 border border-white/20 h-20 resize-none"
+                className="w-full p-2 rounded-md bg-white/10 border border-white/20"
               />
 
               <input
@@ -267,11 +263,10 @@ export default function AdminPanel(){
           {hiddenFields.map((field, index) => (
             <div key={field.id} className="bg-white/5 p-4 rounded-xl mb-4 space-y-3 border border-white/10">
               
-              <textarea
-                defaultValue={field.input} 
-                placeholder="Input (each value on new line)"
+              <input
+                placeholder="Input"
                 {...register(`hiddenTestCases.${index}.input`)}
-                className="w-full p-2 rounded-md bg-white/10 border border-white/20 h-20 resize-none"
+                className="w-full p-2 rounded-md bg-white/10 border border-white/20"
               />
 
               <input

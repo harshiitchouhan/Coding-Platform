@@ -3,7 +3,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch , useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-import { loginUser } from "../Features/authSlice";
+import { loginUser } from "../Redux/Features/Auth/authSlice";
 import { useEffect } from "react";
 import { Link } from "react-router";
 

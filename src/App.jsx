@@ -1,18 +1,28 @@
+import { lazy, Suspense } from "react";
 
-import HomePage from "@/Pages/HomePage"
-import Login from "./Pages/Login"
-import Signup from "./Pages/Signup"
-import About from "./Pages/About"
-import Careers from "./Pages/Careers"
+const HomePage = lazy(() => import("./Pages/HomePage"));
+const Login = lazy(() => import("./Pages/Login"));
+const Signup = lazy(() => import("./Pages/Signup"));
+
+const Admin = lazy(() => import("./Pages/Admin"));
+const AdminPanel = lazy(() => import("./Pages/AdminPanel"));
+const UpdateProblem = lazy(()=> import ("./Pages/UpdateProblem"));
+const UpdateList = lazy(()=> import("./Pages/UpdateList"))
+const DeleteProblem = lazy(() => import("./Pages/DeleteProblem"));
+
+const ProblemPage = lazy(() => import("./Pages/ProblemPage"));
+const About = lazy(() => import("./Pages/About"));
+const Careers = lazy(() => import("./Pages/Careers"));
+const Problem = lazy(() => import("./Pages/Problem"));
+const Spinner = lazy(()=> import("./Pages/Spinner"))
+
 import { Routes,Route, Navigate } from "react-router"
 import {useState, useEffect } from "react"
 import { useDispatch , useSelector } from "react-redux"
-// import { authCheck } from "./Features/authSlice"
+import { loadUser } from "./Redux/Features/Auth/authSlice"
 import Authloader from "./Pages/Authloader"
-import { loadUser } from "./Features/authSlice"
-import Problem from "./Pages/Problem"
-import AdminPanel from "./Pages/AdminPanel"
-import ProblemPage from "./Pages/ProblemPage"
+
+
 
 
 
@@ -84,27 +94,147 @@ if (loading) return null; // prevents flicker completely
 
 
   return (
-    <Routes>
+    // <Routes>
 
-      <Route path="/" element={isAuthenticated ? <HomePage></HomePage> : <Navigate to={"/signup"}/>}></Route>
-      {/* <Route path="/" element={<HomePage/>}></Route> */}
-      <Route path="/login" element={isAuthenticated?<Navigate to={"/"}/>:<Login></Login>} ></Route>
-      <Route path="/signup" element={isAuthenticated?<Navigate to={"/"}/>:<Signup></Signup>}></Route>
-      <Route path="/about" element={<About/>}></Route>
-      <Route path="/career" element={<Careers/>}></Route>
-      <Route path="/problems" element={<Problem/>}></Route>
-      <Route path="/admin" element={<AdminPanel/>} ></Route>
-      <Route path="/problem/:id" element={<ProblemPage/>}></Route>
-      {/* <Route
-        path="/admin"
-        element={
-          isAuthenticated && user?.role === "admin"
-            ? <AdminPanel />
-            : <Navigate to="/" />
-        }
-      /> */}
+    //   {/* HomePage and Login */}
+    //   <Route path="/" element={isAuthenticated ? <HomePage></HomePage> : <Navigate to={"/signup"}/>}></Route>
+    //   {/* <Route path="/" element={<HomePage/>}></Route> */}
+    //   <Route path="/login" element={isAuthenticated?<Navigate to={"/"}/>:<Login></Login>} ></Route>
+    //   <Route path="/signup" element={isAuthenticated?<Navigate to={"/"}/>:<Signup></Signup>}></Route>
 
-    </Routes>
+    //   {/* Admin Panel */}
+    //   <Route path="/admin" element={isAuthenticated && user?.role === "admin" ? <Admin/> : <Navigate to="/" />} ></Route>
+    //   <Route path="/admin/create" element={isAuthenticated && user?.role === "admin" ? <AdminPanel /> : <Navigate to="/" />}/>
+    //   <Route path="/admin/update" element={isAuthenticated && user?.role === "admin" ? <UpdateProblem /> : <Navigate to="/" />}/>
+    //   <Route path="/admin/delete" element={isAuthenticated && user?.role === "admin" ? <DeleteProblem /> : <Navigate to="/" />}/>
+
+    //   {/* Editor Wala Page */}
+    //   <Route path="/problem/:id" element={<ProblemPage/>}></Route>
+
+    //   {/* Footer Pages */}
+    //   <Route path="/about" element={<About/>}></Route>
+    //   <Route path="/career" element={<Careers/>}></Route>
+    //   <Route path="/problems" element={<Problem/>}></Route>
+    //   {/* <Route path="/admin/create" element={<AdminPanel/>}></Route>
+    //   <Route path="/admin/update" element={<UpdateProblem/>}></Route>
+    //   <Route path="/admin/delete" element={<DeleteProblem/>}></Route> */}
+    // </Routes>
+<Routes>
+
+  <Route
+    path="/"
+    element={
+      <Suspense fallback={<Spinner />}>
+        {isAuthenticated ? <HomePage /> : <Navigate to="/signup" />}
+      </Suspense>
+    }
+  />
+
+    {/* <Route path="/" element={<HomePage/>}></Route> */}
+
+  <Route
+    path="/login"
+    element={
+      <Suspense fallback={<Spinner />}>
+        {isAuthenticated ? <Navigate to="/" /> : <Login />}
+      </Suspense>
+    }
+  />
+
+  <Route
+    path="/signup"
+    element={
+      <Suspense fallback={<Spinner />}>
+        {isAuthenticated ? <Navigate to="/" /> : <Signup />}
+      </Suspense>
+    }
+  />
+
+  {/* Admin */}
+  <Route
+    path="/admin"
+    element={
+      <Suspense fallback={<Spinner />}>
+        {isAuthenticated && user?.role === "admin" ? <Admin /> : <Navigate to="/" />}
+      </Suspense>
+    }
+  />
+
+  <Route
+    path="/admin/create"
+    element={
+      <Suspense fallback={<Spinner />}>
+        {isAuthenticated && user?.role === "admin" ? <AdminPanel /> : <Navigate to="/" />}
+      </Suspense>
+    }
+  />
+
+  <Route
+    path="/admin/update"
+    element={
+      <Suspense fallback={<Spinner />}>
+        {isAuthenticated && user?.role === "admin" ? <UpdateList /> : <Navigate to="/" />}
+      </Suspense>
+    }
+  />
+
+    <Route
+    path="/admin/update/:id"
+    element={
+      <Suspense fallback={<Spinner />}>
+        {isAuthenticated && user?.role === "admin" ? <UpdateProblem /> : <Navigate to="/" />}
+      </Suspense>
+    }
+  />
+
+  <Route
+    path="/admin/delete"
+    element={
+      <Suspense fallback={<Spinner />}>
+        {isAuthenticated && user?.role === "admin" ? <DeleteProblem /> : <Navigate to="/" />}
+      </Suspense>
+    }
+  />
+
+  {/* Problem Page */}
+  <Route
+    path="/problem/:id"
+    element={
+      <Suspense fallback={<Spinner />}>
+        <ProblemPage />
+      </Suspense>
+    }
+  />
+
+  {/* Others */}
+  <Route
+    path="/about"
+    element={
+      <Suspense fallback={<Spinner />}>
+        <About />
+      </Suspense>
+    }
+  />
+
+  <Route
+    path="/career"
+    element={
+      <Suspense fallback={<Spinner />}>
+        <Careers />
+      </Suspense>
+    }
+  />
+
+  <Route
+    path="/problems"
+    element={
+      <Suspense fallback={<Spinner />}>
+        <Problem />
+      </Suspense>
+    }
+  />
+
+</Routes>
   )
 }
 
