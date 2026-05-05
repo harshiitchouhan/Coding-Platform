@@ -2,9 +2,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch , useSelector } from "react-redux";
-import { useNavigate } from "react-router";
 import { loginUser } from "../Redux/Features/Auth/authSlice";
-import { useEffect } from "react";
 import { Link } from "react-router";
 
 import { Eye, EyeOff } from 'lucide-react';
@@ -34,25 +32,23 @@ function Login (){
 
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const {isAuthenticated} = useSelector((state)=>state.auth);
+  const {error} = useSelector((state)=>state.auth);
   const [showPassword, setShowPassword] = useState(false);
 
-    useEffect(()=>{
-      if(isAuthenticated){
-        navigate("/")  // this navigate is diff from routing one
-      }
-    },[isAuthenticated])
+    // useEffect(()=>{
+    //   if(isAuthenticated){
+    //     navigate("/")  // this navigate is diff from routing one
+    //   }
+    // },[isAuthenticated])
     
 
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
-          name: "",
           email: "",
           password: "",
-          confirm: "",
         },
+        mode: "onSubmit",
       });
     
       function onSubmit(data) {
@@ -172,7 +168,12 @@ function Login (){
                       )}
                     />
 
-
+            
+            {error && (
+              <div className="text-red-400 text-sm bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
+                {error}
+              </div>
+            )}
             <Button
                 type="submit"
                 className="w-full h-12 bg-linear-to-br from-slate-900 via-slate-950 to-slate-900 text-lg transition-colors"> 

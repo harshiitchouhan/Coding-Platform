@@ -197,7 +197,7 @@ const authSlice = createSlice({
         })
 
         .addCase(loadUser.rejected , (state,action)=>{
-            state.error = action.payload || "Some Error Occured";
+            state.error = null;
             state.isAuthenticated = false;
             state.loading = false;
             state.user = null;

@@ -26,7 +26,7 @@ function HomePage() {
             <Navbar />
 
             {/* Hero */}
-            <div className="pt-16">
+            <div >
               <Hero />
             </div>
 

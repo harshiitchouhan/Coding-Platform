@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from "react-router";
-import { Plus, Edit, Trash2 } from "lucide-react";
+import { Plus, Edit, Trash2, Video } from "lucide-react";
 
 export default function Admin() {
   const navigate = useNavigate();
@@ -32,6 +32,15 @@ export default function Admin() {
       color: "text-red-400",
       ring: "ring-red-500/20",
       route: "/admin/delete",
+    },
+    {
+      key: "video",
+      title: "Uplaod & Delete Video",
+      description: "Upload and Delete Video in the Editorial Section",
+      icon: Video,
+      color: "text-pink-400",
+      ring: "ring-pink-500/20",
+      route: "/admin/video",
     },
   ];
 

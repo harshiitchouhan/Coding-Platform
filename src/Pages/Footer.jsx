@@ -17,21 +17,24 @@ export default function Footer() {
 
         {/* LINKS */}
         <div className="flex flex-wrap justify-center gap-8 mt-8 text-gray-300 text-md">
-          <Link to="/problems" className="hover:text-white transition">
-            Problems
-          </Link>
-          <Link to="/submissions" className="hover:text-white transition">
-            Submissions
-          </Link>
+          
           <Link to="/about" className="hover:text-white transition">
             About
           </Link>
+
+          <Link to="/problems" className="hover:text-white transition">
+            Problems
+          </Link>
+
+          <Link to="/interview" className="hover:text-white transition">
+            Interview
+          </Link>
+
           <Link to="/career" className="hover:text-white transition">
             Careers
           </Link>
-          <Link to="/" className="hover:text-white transition">
-            FAQs
-          </Link>
+
+          
         </div>
 
         {/* SOCIALS */}

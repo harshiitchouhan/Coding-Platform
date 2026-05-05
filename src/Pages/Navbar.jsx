@@ -18,11 +18,9 @@ function Navbar() {
     const navigate = useNavigate();
     const {user} = useSelector((state)=>state.auth);
     const handleLogout = ()=>{
-      if (error.response?.status === 401) {
         dispatch(logOut());
-        window.location.href = "/login";
-      }
-        navigate("/login");  
+        navigate("/login");
+ 
     }
 
 
@@ -43,7 +41,7 @@ function Navbar() {
       <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 gap-x-6 lg:gap-x-10 text-white">
         <Link to="/" className="hover:text-blue-400">Home</Link>
         <Link to="/problems" className="hover:text-blue-400">Problems</Link>
-        <Link to="/submissions" className="hover:text-blue-400">Submissions</Link>
+        <Link to="/interview" className="hover:text-blue-400">Interview</Link>
       </div>
 
       {/* Right: User */}
@@ -60,7 +58,11 @@ function Navbar() {
           </DropdownMenuTrigger>
 
           <DropdownMenuContent className="bg-white/5 backdrop-blur-md border border-white/10 text-white">
-            <DropdownMenuItem>Profile</DropdownMenuItem>
+          <DropdownMenuItem 
+          onClick={() => navigate("/profile")}>
+              Profile
+          </DropdownMenuItem>
+
             {user?.role === "admin" && (
             <DropdownMenuItem
               onClick={() => navigate("/admin")}

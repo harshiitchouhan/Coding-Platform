@@ -4,16 +4,38 @@ import { Trash2 } from "lucide-react";
 import MainLayout from "./MainLayout";
 import { useSelector, useDispatch } from "react-redux";
 import { setProblems, deleteProblem} from "../Redux/Features/problem/problemSlice"
+import Pagination from "./Pagination";
 
 
-export default function AdminProblems() {
+export default function DeleteProblem() {
   // const [problems, setProblems] = useState([]);
 
   const problems = useSelector((state) => state.problems.problems);
   const dispatch = useDispatch();
   const [selectedId, setSelectedId] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [search, setSearch] = useState("");
   const [confirmText, setConfirmText] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const filteredProblems = problems.filter((p) =>
+  p.title.toLowerCase().includes(search.toLowerCase())
+  );
+  const problemsPerPage = 8;
+
+  const totalPages = Math.ceil(filteredProblems.length / problemsPerPage);
+
+  const startIndex = (currentPage - 1) * problemsPerPage;
+
+  const currentProblems = filteredProblems.slice(
+    startIndex,
+    startIndex + problemsPerPage
+  );
+
+  // Reset page on search
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search]);
 
   // fetch all problems
   useEffect(() => {
@@ -66,6 +88,14 @@ export default function AdminProblems() {
 
       <h1 className="text-4xl text-gray-300 text-center font-bold mt-10 mb-10">Delete Problems</h1>
 
+      <div className="max-w-5xl mx-auto mb-5">
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search problem by title..."
+          className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+        />
+      </div>
       {/* TABLE */}
       <div className="max-w-5xl mx-auto overflow-x-auto">
 
@@ -85,7 +115,7 @@ export default function AdminProblems() {
 
             {/* BODY */}
             <tbody>
-              {problems.map((p) => (
+              {currentProblems.map((p) => (
                 <tr
                   key={p._id}
                   className="border-b border-white/10 hover:bg-white/5 transition"
@@ -110,6 +140,11 @@ export default function AdminProblems() {
           </table>
 
           </div>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            setCurrentPage={setCurrentPage}
+          />
         </div>
 
       {/* MODAL */}

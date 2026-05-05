@@ -7,10 +7,12 @@ import { RotateCcw, Copy, Maximize2 } from "lucide-react";
 import Split from "react-split";
 import { Rocket} from "lucide-react";
 
-export default function RightPanel({ problemId, problem }) {
+// tHEY are cooming from parent problem page
+export default function RightPanel({problemId, problem, language, setLanguage, codeMap, setCodeMap,}) {
 
-  const [codeMap, setCodeMap] = useState({cpp: "",javascript: "",java: ""});
-  const [language, setLanguage] = useState("cpp");
+  // sTATE lIFTING
+  // const [codeMap, setCodeMap] = useState({cpp: "",javascript: "",java: ""});
+  // const [language, setLanguage] = useState("cpp");
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [loading, setLoading] = useState(false); 
@@ -18,7 +20,23 @@ export default function RightPanel({ problemId, problem }) {
   const [theme, setTheme] = useState("vs-dark");
   const [fontSize, setFontSize] = useState(14);
   const [activeTab, setActiveTab] = useState("testcase"); // 
+  const [submitCooldown, setSubmitCooldown] = useState(0);
+  const [submitting, setSubmitting] = useState(false);
 
+  const startSubmitCooldown = (seconds = 10) => {
+  setSubmitCooldown(seconds);
+
+  const timer = setInterval(() => {
+    setSubmitCooldown((prev) => {
+      if (prev <= 1) {
+        clearInterval(timer);
+        return 0;
+      }
+
+      return prev - 1;
+    });
+  }, 1000);
+};
   const settingsRef = useRef(null);
 
 
@@ -35,9 +53,9 @@ export default function RightPanel({ problemId, problem }) {
       .join("\n");
   }
 
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === "vs-dark" ? "light" : "vs-dark"));
-  };
+  // const toggleTheme = () => {
+  //   setTheme((prev) => (prev === "vs-dark" ? "light" : "vs-dark"));
+  // };
 
 // editor mei prewritten code dikhana
 useEffect(() => {
@@ -92,22 +110,24 @@ useEffect(() => {
       let outputText = "";
 
       results.forEach((test, i) => {
-      outputText += `Test ${i + 1}:\n`;
+        outputText += `Test ${i + 1}:\n`;
 
-      if (test.stdout !== null && test.stdout !== undefined) {
-        outputText += `Output: ${test.stdout.trim()}\n`;
-      }
+        const stdout = test.stdout?.trim();
+        const stderr = test.stderr?.trim();
+        const compileError = test.compile_output?.trim();
 
-      if (test.stderr) {
-        outputText += `Error: ${test.stderr}\n`;
-      }
+        if (stdout) {
+          outputText += `Output:\n${stdout}\n`;
+        } else if (stderr) {
+          outputText += `Runtime Error:\n${stderr}\n`;
+        } else if (compileError) {
+          outputText += `Compile Error:\n${compileError}\n`;
+        } else {
+          outputText += `No output produced.\n`;
+        }
 
-      if (!test.stdout && !test.stderr) {
-        outputText += `Output: (no output)\n`;
-      }
-
-      outputText += "\n";
-    });
+        outputText += "\n";
+      });
 
       setOutput(outputText);
 
@@ -126,38 +146,60 @@ useEffect(() => {
 
   // SUBMIT CODE
   const handleSubmit = async () => {
-    try {
-      setLoading(true);
-      setOutput("Submitting...");
+  if (submitting || submitCooldown > 0) return;
 
-      const finalInput =
-        activeTab === "custom" ? normalizeInput(input) : "";
+  try {
+    setSubmitting(true);
+    setOutput("Submitting...");
 
-      const res = await axiosClient.post(`/submission/submit/${problemId}`, {
-        code: codeMap[language],
-        language,
-        input: finalInput, 
-      });
+    const finalInput =
+      activeTab === "custom" ? normalizeInput(input) : "";
 
-      const data = res.data;
+    const res = await axiosClient.post(`/submission/submit/${problemId}`, {
+      code: codeMap[language],
+      language,
+      input: finalInput,
+    });
 
-      const total = data.testCasesTotal || data.testCasesPassed;
+    const data = res.data;
+
+    const total = data.testCasesTotal || data.testCasesPassed;
+
+    setOutput({
+      status: data.status,
+      passed: data.testCasesPassed,
+      total,
+      runtime: data.runtime,
+      memory: data.memory,
+      error: data.errorMsg,
+    });
+
+    // successful submit ke baad 10 sec cooldown
+    startSubmitCooldown(10);
+
+  } catch (err) {
+    if (err.response?.status === 429) {
+      const retryAfter = err.response?.data?.retryAfter || 10;
+
+      startSubmitCooldown(retryAfter);
 
       setOutput({
-        status: data.status,
-        passed: data.testCasesPassed,
-        total,
-        runtime: data.runtime,
-        memory: data.memory,
-        error: data.errorMsg
+        status: "Rate Limited",
+        error: err.response?.data?.message || `Wait ${retryAfter}s before submitting again`,
       });
 
-    } catch (err) {
-      setOutput("Submission failed");
-    } finally {
-      setLoading(false);
+      return;
     }
-  };
+
+    setOutput({
+      status: "Error",
+      error: err.response?.data?.message || "Submission failed",
+    });
+
+  } finally {
+    setSubmitting(false);
+  }
+};
 
 const handleReset = () => {
   const defaultCode =
@@ -208,15 +250,60 @@ const handleReset = () => {
           <button onClick={handleFullScreen} className="p-2 hover:bg-white/10"><Maximize2 size={16} /></button>
         </div>
 
-        <button onClick={() => setShowSettings(!showSettings)} className="p-2 bg-[#1F2937]">
-          <Settings size={16} />
-        </button>
+      <div className="relative" ref={settingsRef}>
+
+      <button
+        onClick={() => setShowSettings(!showSettings)}
+        className="p-2 rounded-md bg-[#1F2937] hover:bg-[#374151] transition"
+      >
+        <Settings size={16} />
+      </button>
+
+      {showSettings && (
+        <div className="absolute right-0 top-12 w-56 bg-[#111827] border border-white/10 rounded-xl shadow-lg p-4 z-50">
+
+          {/* Theme Toggle */}
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-sm text-gray-300">Theme</span>
+
+            <button
+              onClick={() =>
+                setTheme((prev) => (prev === "vs-dark" ? "light" : "vs-dark"))
+              }
+              className="p-1.5 rounded bg-[#1F2937] hover:bg-[#374151]"
+            >
+              {theme === "vs-dark" ? <Sun size={14} /> : <Moon size={14} />}
+            </button>
+          </div>
+
+          {/* Font Size */}
+          <div className="mb-2">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm text-gray-300">Font Size</span>
+              <span className="text-xs text-gray-400">{fontSize}px</span>
+            </div>
+
+            <input
+              type="range"
+              min="12"
+              max="24"
+              step="1"
+              value={fontSize}
+              onChange={(e) => setFontSize(Number(e.target.value))}
+              className="w-full accent-purple-500 cursor-pointer"
+            />
+          </div>
+
+        </div>
+      )}
+
+    </div>
 
       </div>
 
       <div className="flex-1 overflow-hidden">
 
-        <Split direction="vertical" sizes={[60, 40]} minSize={[200, 120]} className="flex flex-col h-full">
+        <Split direction="vertical" sizes={[60, 40]} minSize={[200, 80]} className="flex flex-col h-full">
 
           {/* EDITOR */}
           <Editor
@@ -227,6 +314,9 @@ const handleReset = () => {
             onChange={(value) =>
               setCodeMap((prev) => ({ ...prev, [language]: value }))
             }
+            options={{
+              fontSize: fontSize,
+            }}
           />
 
           {/* OUTPUT + INPUT */}
@@ -234,7 +324,7 @@ const handleReset = () => {
 
             <div className="flex items-center justify-between border-b border-white/10 px-3">
 
-  {/* LEFT: TABS */}
+        {/* LEFT: TABS */}
         <div className="flex">
           <button
             onClick={() => setActiveTab("testcase")}
@@ -264,17 +354,28 @@ const handleReset = () => {
         <div className="flex gap-3 py-2">
           <button
             onClick={handleRun}
-            className="bg-purple-600 hover:bg-purple-500 px-4 py-1.5 rounded-md text-sm text-white"
+            className="bg-green-600 hover:bg-green-700 px-4 py-1.5 rounded-md text-sm text-white"
           >
             ▶ Run
           </button>
 
           <button
             onClick={handleSubmit}
-            className="bg-cyan-400 hover:bg-cyan-500 px-4 py-1.5 rounded-md text-sm text-white flex items-center gap-2"
+            disabled={submitting || submitCooldown > 0}
+            className={`px-4 py-1.5 rounded-md text-sm text-white flex items-center gap-2
+              ${
+                submitting || submitCooldown > 0
+                  ? "bg-gray-600 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-700"
+              }`}
           >
             <Rocket size={14} />
-            Submit
+
+            {submitting
+              ? "Submitting..."
+              : submitCooldown > 0
+              ? `Wait ${submitCooldown}s`
+              : "Submit"}
           </button>
         </div>
 
@@ -374,7 +475,7 @@ const handleReset = () => {
               )}
 
               </div>
-      )}
+        )}
 
           </div>
 

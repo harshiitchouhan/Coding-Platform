@@ -3,7 +3,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch , useSelector } from "react-redux";
 import { useNavigate } from "react-router";
-import { registeredUser } from "../Redux/Features/auth/authSlice";
+import { registeredUser } from "../Redux/Features/Auth/authSlice";
 import { useEffect,useState } from "react";
 import { Link } from "react-router";
 import { Eye, EyeOff } from 'lucide-react';
@@ -41,7 +41,7 @@ function Signup() {
   const dispatch = useDispatch();
   //to navigate to a page
   const navigate = useNavigate();
-  const {isAuthenticated,loading,} = useSelector((state)=>state.auth);
+  const {isAuthenticated,loading,error} = useSelector((state)=>state.auth);
 
   const [showPassword, setShowPassword] = useState(false);  // for password show and hide
   const [showConfirm, setShowConfirm] = useState(false);  // for confirm show and hide eye
@@ -263,6 +263,12 @@ function Signup() {
                   </FormItem>
                 )}
               />
+
+            {error && (
+              <div className="text-red-400 text-sm bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
+                {error}
+              </div>
+            )}
 
             {/* Button Bana Diya To Submit Form */}
 

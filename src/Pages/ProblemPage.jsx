@@ -11,6 +11,17 @@ export default function ProblemPage() {
 
   const [problem, setProblem] = useState(null);
 
+  //state lifting
+  const [aiMessages, setAiMessages] = useState([]);
+
+  const [language, setLanguage] = useState("cpp");
+
+  const [codeMap, setCodeMap] = useState({
+    cpp: "",
+    javascript: "",
+    java: "",
+  });
+
   useEffect(() => {
     const fetchProblem = async () => {
       try {
@@ -25,7 +36,7 @@ export default function ProblemPage() {
     fetchProblem();
   }, [id]);
 
-// random problem ke time use hua
+// pick random problem ke time use hua
 if (!problem)
   return (
     <MainLayout showFooter={false}>
@@ -67,28 +78,38 @@ if (!problem)
   return (
   <MainLayout showFooter={false}>
         
-    <div className="h-screen flex bg-[#0B0F1A] text-gray-200">
+  <div className="h-[calc(100vh-72px)] flex bg-[#0B0F1A] text-gray-200 overflow-hidden">
 
     <Split
       className="flex flex-1 w-full h-full overflow-hidden"
-      sizes={[45,55]}
-      minSize={[400, 500]}
+      sizes={[47,53]}
+      minSize={[500, 500]}
       gutterSize={6}
     >
 
       {/* LEFT */}
       <div className="overflow-y-auto h-full min-w-0">
         <div className="max-w-3xl mx-auto px-6 py-5">
-          <LeftPanel problem={problem} />
+        <LeftPanel
+            problem={problem}
+            // state lifting
+            aiMessages={aiMessages}
+            setAiMessages={setAiMessages}
+          />
         </div>
       </div>
 
       {/* RIGHT */}
       <div className="flex-1 min-w-0 flex flex-col bg-[#111827] p-4 overflow-hidden">
         <RightPanel
-          problemId={problem._id}
-          problem={problem}
-        />
+            problemId={problem._id}
+            problem={problem}
+            // state lifting
+            language={language}
+            setLanguage={setLanguage}
+            codeMap={codeMap}
+            setCodeMap={setCodeMap}
+          />
       </div>
 
     </Split>

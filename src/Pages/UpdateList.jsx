@@ -4,12 +4,36 @@ import { useSelector, useDispatch } from "react-redux";
 import { setProblems } from "../Redux/Features/problem/problemSlice";
 import { useNavigate } from "react-router";
 import MainLayout from "./MainLayout";
+import Pagination from "./Pagination";
+import { useState } from "react";
 
 export default function UpdateList() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const problems = useSelector((state) => state.problems.problems);
+  const [search, setSearch] = useState("");
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  
+    const filteredProblems = problems.filter((p) =>
+    p.title.toLowerCase().includes(search.toLowerCase())
+    );
+    const problemsPerPage = 8;
+  
+    const totalPages = Math.ceil(filteredProblems.length / problemsPerPage);
+  
+    const startIndex = (currentPage - 1) * problemsPerPage;
+  
+    const currentProblems = filteredProblems.slice(
+      startIndex,
+      startIndex + problemsPerPage
+    );
+  
+    // Reset page on search
+    useEffect(() => {
+      setCurrentPage(1);
+    }, [search]);
 
   // Fetch only if Redux empty
   useEffect(() => {
@@ -35,6 +59,16 @@ export default function UpdateList() {
         <h1 className="text-3xl font-bold text-center mb-8">
           Update Problems
         </h1>
+
+        {/* Search Bar */}
+        <div className="max-w-5xl mx-auto mb-5">
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search problem by title..."
+          className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+        />
+      </div>
 
         {/* Table */}
         <div className="max-w-5xl mx-auto overflow-x-auto border border-white/10 rounded-xl">
@@ -62,7 +96,7 @@ export default function UpdateList() {
                   </td>
                 </tr>
               ) : (
-                problems.map((p, index) => {
+                currentProblems.map((p, index) => {
 
                   const level =
                     p.difficultyLevel.charAt(0).toUpperCase() +
@@ -122,7 +156,13 @@ export default function UpdateList() {
             </tbody>
 
           </table>
+
         </div>
+        <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              setCurrentPage={setCurrentPage}
+        />
 
       </div>
     </MainLayout>

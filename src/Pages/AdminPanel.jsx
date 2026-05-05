@@ -51,6 +51,10 @@ const formSchema = z.object({
 
   functionName: z.string().min(1, "Function Name is Required"),
 
+  constraints: z.string().optional(),
+  companies: z.string().optional(),
+  hints: z.string().optional(),
+
 
 
 })
@@ -85,6 +89,10 @@ export default function AdminPanel(){
             java: ""
           },
   },
+        constraints: "",
+        companies: "",
+        hints: "",
+        inputFields:"",
 });
 
     const {
@@ -112,19 +120,52 @@ export default function AdminPanel(){
     });
 
 
-    const onSubmit= async(data)=>{
-        try{
-            // console.log("SUBMIT DATA:", data);
-            await axiosClient.post("/problem/create",data);
-            alert("Problem Created Succesfully");
-            // navigate("/")
+    // const onSubmit= async(data)=>{
+    //     try{
+    //         // console.log("SUBMIT DATA:", data);
+    //         await axiosClient.post("/problem/create",data);
+    //         alert("Problem Created Succesfully");
+    //         // navigate("/")
 
+    //     }
+    //     catch(err){
+    //         // console.log(err.response?.data);
+    //         alert(JSON.stringify(err.response?.data));
+    //     }
+    // }
+    const onSubmit = async (data) => {
+        try {
+          const payload = {
+            ...data,
+
+            // convert "Amazon, Google" → ["Amazon", "Google"]
+            companies: data.companies
+              ? data.companies.split(",").map(c => c.trim()).filter(Boolean)
+              : [],
+
+            // convert textarea lines → array
+            hints: data.hints
+              ? data.hints.split("\n").map(h => h.trim()).filter(Boolean)
+              : [],
+
+            // INPUT FEIDLS(EG NumS AND tARGET)
+            inputFields: data.inputFields
+          ? data.inputFields.split("\n").map(f => f.trim()).filter(Boolean)
+          : [],
+
+            // keep constraints as string
+            constraints: data.constraints || "",
+          };
+
+          // console.log("FINAL PAYLOAD:", payload);
+
+          await axiosClient.post("/problem/create", payload);
+
+          alert("Problem Created Successfully");
+        } catch (err) {
+          alert(JSON.stringify(err.response?.data));
         }
-        catch(err){
-            // console.log(err.response?.data);
-            alert(JSON.stringify(err.response?.data));
-        }
-    }
+      };
 
     
     return(
@@ -214,6 +255,33 @@ export default function AdminPanel(){
         </select>
 
       </div>
+
+      <input
+      {...register("companies")}
+      placeholder=" Company Tags (Amazon, Google, Microsoft)"
+      className="w-full p-3 rounded-lg bg-white/10 border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+
+      <textarea
+        {...register("constraints")}
+        placeholder="2 <= nums.length <= 10^4"
+        className="w-full p-3 rounded-lg bg-white/10 border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+
+      <textarea
+      {...register("hints")}
+      placeholder="Enter hints line by line"
+      className="w-full p-3 rounded-lg bg-white/10 border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+
+
+      <textarea
+        {...register("inputFields")}
+        placeholder={`Input Fields (one per line)`}
+        className="w-full p-3 rounded-lg bg-white/10 border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        rows={3}
+      />
+          
 
         {/* Visible Test Cases */}
         <div>

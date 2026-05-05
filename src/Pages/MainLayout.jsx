@@ -1,11 +1,10 @@
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import { Outlet } from "react-router";
 
-export default function MainLayout({ children , showFooter = true }) {
+export default function MainLayout({ children, showFooter = true }) {
   return (
     <div className="min-h-screen w-full relative bg-black overflow-hidden text-white">
-
-      {/* Background Glow (same as homepage) */}
       <div
         className="absolute inset-0 z-0"
         style={{
@@ -14,20 +13,14 @@ export default function MainLayout({ children , showFooter = true }) {
         }}
       />
 
-      {/* Content Layer */}
       <div className="relative z-10 flex flex-col min-h-screen">
-
-        {/* Navbar */}
         <Navbar />
 
-        {/* Page Content */}
         <main className="grow">
-          {children}
+          {children ? children : <Outlet />}
         </main>
 
-        {/* Footer */}
         {showFooter && <Footer />}
-
       </div>
     </div>
   );

@@ -15,12 +15,26 @@ const About = lazy(() => import("./Pages/About"));
 const Careers = lazy(() => import("./Pages/Careers"));
 const Problem = lazy(() => import("./Pages/Problem"));
 const Spinner = lazy(()=> import("./Pages/Spinner"))
+const AdminVideo = lazy(()=> import("./Pages/AdminVideo"))
+const AdminUpload = lazy(()=> import("./Pages/AdminUpload"));
+const Profile = lazy(()=> import("./Pages/Profile"));
+
+// const InterviewLayout = lazy(()=> import("./Pages/InterviewLayout"));
+// const InterviewHome = lazy(()=> import("./Pages/InterviewHome"));
+// const QuizPage = lazy(()=> import("./Pages/QuizPage"));
+// const ResultPage = lazy(()=> import("./Pages/ResultPage"));
+// // const InterviewWrapper = lazy (()=>import ("./Pages/InterViewWrapper"))
+
+
+// import ProfilePage from "./pages/ProfilePage";
 
 import { Routes,Route, Navigate } from "react-router"
 import {useState, useEffect } from "react"
 import { useDispatch , useSelector } from "react-redux"
 import { loadUser } from "./Redux/Features/Auth/authSlice"
 import Authloader from "./Pages/Authloader"
+import Interview from "./Pages/Interview";
+// import MainLayout from "./Pages/MainLayout";
 
 
 
@@ -130,7 +144,9 @@ if (loading) return null; // prevents flicker completely
     }
   />
 
-    {/* <Route path="/" element={<HomePage/>}></Route> */}
+    <Route path="/interview" element={<Interview/>}></Route>
+    <Route path="/profile" element={<Profile />} />
+    
 
   <Route
     path="/login"
@@ -169,6 +185,7 @@ if (loading) return null; // prevents flicker completely
     }
   />
 
+
   <Route
     path="/admin/update"
     element={
@@ -192,6 +209,24 @@ if (loading) return null; // prevents flicker completely
     element={
       <Suspense fallback={<Spinner />}>
         {isAuthenticated && user?.role === "admin" ? <DeleteProblem /> : <Navigate to="/" />}
+      </Suspense>
+    }
+  />
+
+    <Route
+    path="/admin/upload/:problemId"
+    element={
+      <Suspense fallback={<Spinner />}>
+        {isAuthenticated && user?.role === "admin" ? <AdminUpload /> : <Navigate to="/" />}
+      </Suspense>
+    }
+  />
+
+    <Route
+    path="/admin/video"
+    element={
+      <Suspense fallback={<Spinner />}>
+        {isAuthenticated && user?.role === "admin" ? <AdminVideo /> : <Navigate to="/" />}
       </Suspense>
     }
   />
