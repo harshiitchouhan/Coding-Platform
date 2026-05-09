@@ -7,18 +7,48 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# Runtime files
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Dependency directories
+node_modules/
+
+# Build folders
+dist/
+dist-ssr/
+build/
+coverage/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Local config files
 *.local
 
-# Editor directories and files
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE / Editor
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# Cache files
+.cache/
+.parcel-cache/
+vite.svg
+
+# Optional
+uploads/
+temp/
