@@ -2,7 +2,7 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import { Outlet } from "react-router";
 
-export default function MainLayout({ children, showFooter = true }) {
+export default function MainLayout({ children, showFooter = true, showNavbar=true }) {
   return (
     <div className="min-h-screen w-full relative bg-black overflow-hidden text-white">
       <div
@@ -14,7 +14,7 @@ export default function MainLayout({ children, showFooter = true }) {
       />
 
       <div className="relative z-10 flex flex-col min-h-screen">
-        <Navbar />
+        {showNavbar && <Navbar />}
 
         <main className="grow">
           {children ? children : <Outlet />}

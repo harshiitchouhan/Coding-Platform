@@ -6,6 +6,7 @@ import axiosClient from "@/Utils/axiosClient";
 import { useParams } from "react-router";
 import MainLayout from "./MainLayout";
 import { updateProblem } from "@/Redux/Features/problem/problemSlice";
+import AdminNavbar from "./AdminNavbar";
 
 
 const formSchema = z.object({
@@ -173,8 +174,10 @@ export default function UpdateProblem(){
           };
     
   return(
-        <MainLayout>
-            <div className="min-h-screen text-white py-4 flex justify-center">
+
+        <MainLayout showNavbar={false}>
+          <AdminNavbar></AdminNavbar>
+            <div className="min-h-screen text-white py-12 flex justify-center">
             <div className="w-full max-w-4xl p-8 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl shadow-black/30">
             
             <div className="max-w-4xl mx-auto px-6">

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import axiosClient from "@/Utils/axiosClient";
+import AdminNavbar from "./AdminNavbar";
 
 
 const formSchema = z.object({
@@ -169,8 +170,11 @@ export default function AdminPanel(){
 
     
     return(
-    <MainLayout>
-        <div className="min-h-screen text-white py-4 flex justify-center">
+    <MainLayout showNavbar={false}>
+      
+        <AdminNavbar></AdminNavbar>
+        <div className="min-h-screen text-white py-10 flex justify-center">
+          
         <div className="w-full max-w-4xl p-8 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl shadow-black/30">
         
         <div className="max-w-4xl mx-auto px-6">

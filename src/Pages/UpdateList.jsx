@@ -6,6 +6,7 @@ import { useNavigate } from "react-router";
 import MainLayout from "./MainLayout";
 import Pagination from "./Pagination";
 import { useState } from "react";
+import AdminNavbar from "./AdminNavbar";
 
 export default function UpdateList() {
   const dispatch = useDispatch();
@@ -52,8 +53,9 @@ export default function UpdateList() {
   }, [problems.length]);
 
   return (
-    <MainLayout>
-      <div className="min-h-screen  text-white p-6">
+    <MainLayout showNavbar={false}>
+      <AdminNavbar></AdminNavbar>
+      <div className="min-h-screen  text-white p-12">
 
         {/* Heading */}
         <h1 className="text-3xl font-bold text-center mb-8">

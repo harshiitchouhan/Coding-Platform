@@ -4,7 +4,9 @@ export default function Pagination({ currentPage, totalPages, setCurrentPage }) 
   if (totalPages <= 1) return null;
 
   return (
+    
 <div className="flex justify-center items-center gap-2 mt-6">
+    
 
         <button
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}

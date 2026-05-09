@@ -89,86 +89,121 @@ export default function About() {
       </nav>
 
       {/* Hero */}
-      <section className="relative z-10 mx-auto max-w-7xl px-6 pt-24 pb-16">
-        <div className="grid lg:grid-cols-2 gap-14 items-center">
-          <div>
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-cyan-300/20 bg-cyan-300/10 px-4 py-2 text-sm text-cyan-200 animate-pulse">
-              <Sparkles size={16} />
-              Built for future developers
-            </div>
+      <div className="relative z-20 flex flex-col md:flex-row items-center justify-center px-6 md:px-16 pt-16 md:pt-20 gap-12">
 
-            <h1 className="text-5xl md:text-7xl font-black leading-tight">
+        {/* LEFT SIDE */}
+        <div className="flex-1 space-y-6 md:pl-20 lg:pl-30 text-center md:text-left">
+          <h1 className="text-5xl md:text-7xl font-black leading-tight">
               About{" "}
               <span className="bg-linear-to-r from-cyan-300 via-sky-400 to-blue-500 bg-clip-text text-transparent">
                 CodeBit
               </span>
             </h1>
 
-            <p className="mt-6 max-w-xl text-lg leading-8 text-slate-300">
+          <p className="text-gray-400 text-xl max-w-md">
               CodeBit is a modern coding platform designed to help students
               master DSA, improve problem-solving skills, prepare for
               placements, and learn with real-time feedback.
-            </p>
+          </p>
 
-            <div className="mt-9 flex flex-wrap gap-4">
-              <Link
+          <div className="mt-9 flex flex-wrap gap-4">
+            <Link
                 to="/problems"
-                className="group rounded-full bg-white px-6 py-3 font-semibold text-black hover:bg-cyan-200 transition"
-              >
-                Explore Problems
-                <ArrowRight className="ml-2 inline group-hover:translate-x-1 transition" size={18} />
-              </Link>
+                className="px-6 py-3 rounded-xl bg-cyan-400 text-black font-semibold 
+                hover:bg-cyan-300 transition-all duration-300 shadow-[0_0_20px_rgba(56,189,248,0.4)]"
+            >
+                Start Solving
+            </Link>
 
-              <Link
+            <Link
                 to="/interview"
                 className="rounded-full border border-white/15 bg-white/5 px-6 py-3 font-semibold text-white hover:bg-white/10 transition"
               >
                 Practice Interview
               </Link>
-            </div>
-          </div>
 
-          {/* Floating Card */}
-          <div className="relative">
-            <div className="absolute -inset-4 rounded-[2rem] bg-cyan-400/20 blur-3xl animate-pulse" />
-
-            <div className="relative rounded-[2rem] border border-white/10 bg-white/6 p-6 backdrop-blur-xl shadow-2xl">
-              <div className="rounded-2xl bg-black/70 border border-white/10 p-5">
-                <div className="flex gap-2 mb-5">
-                  <span className="h-3 w-3 rounded-full bg-red-400" />
-                  <span className="h-3 w-3 rounded-full bg-yellow-400" />
-                  <span className="h-3 w-3 rounded-full bg-green-400" />
-                </div>
-
-                <pre className="text-sm md:text-base text-slate-300 leading-7 overflow-hidden">
-                  {`class CodeBit {
-                    constructor() {
-                      this.goal = "Master DSA";
-                      this.power = "Practice + AI";
-                    }
-
-                    startJourney() {
-                      return "Placement Ready";
-                    }
-                  }`}
-                                  </pre>
-                                </div>
-
-              <div className="mt-6 grid grid-cols-2 gap-4">
-                {stats.map((item, index) => (
-                  <div
-                    key={index}
-                    className="rounded-2xl border border-white/10 bg-black/40 p-4 text-center hover:-translate-y-1 hover:border-cyan-300/40 transition"
-                  >
-                    <h3 className="text-2xl font-bold text-cyan-300">{item.value}</h3>
-                    <p className="mt-1 text-sm text-slate-400">{item.label}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
-      </section>
+
+      {/* RIGHT SIDE */}
+
+    <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4 md:pr-20 lg:pr-30 w-full max-w-xl">
+
+        {/* ARRAY */}
+        <div className="group p-5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md 
+          flex flex-col items-center justify-center text-center
+          hover:scale-110 hover:border-cyan-400/40 transition-all duration-300">
+
+              <h3 className="text-cyan-300 font-semibold text-lg">
+              Arrays
+              </h3>
+
+              <p className="text-gray-300 text-xs mt-2">
+              Sliding Window • Two Pointers • Binary Search
+              </p>
+
+              <div className="mt-2 text-gray-400 text-sm font-mono">
+              Optimization Patterns
+              </div>
+          </div>
+
+          {/* LINKED LIST */}
+          <div className="group p-5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md 
+          flex flex-col items-center justify-center text-center
+          hover:scale-110 hover:border-purple-400/40 transition-all duration-300">
+
+              <h3 className="text-cyan-300 font-semibold text-lg">
+              Linked List
+              </h3>
+
+              <p className="text-gray-300 text-xs mt-2">
+              Reverse • Cycle Detection • Middle
+              </p>
+
+              <div className="mt-2 text-gray-400 text-sm font-mono">
+                  Pointer Manipulation
+              </div>
+          </div>
+
+      {/* TREE */}
+          <div className="group p-5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md 
+          flex flex-col items-center justify-center text-center
+          hover:scale-110 hover:border-green-400/40 transition-all duration-300">
+
+              <h3 className="text-cyan-300 font-semibold text-lg">
+              Trees
+              </h3>
+
+              <p className="text-gray-300 text-xs mt-2">
+              DFS • BFS • Traversals
+              </p>
+
+              <div className="mt-2 text-gray-400 text-sm font-mono">
+              Recursive Structures
+          </div>
+      </div>
+
+      {/* GRAPH */}
+      <div className="group p-5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md 
+      flex flex-col items-center justify-center text-center
+      hover:scale-110 hover:border-pink-400/40 transition-all duration-300">
+
+          <h3 className="text-cyan-300 font-semibold text-lg">
+          Graphs
+          </h3>
+
+          <p className="text-gray-300 text-xs mt-2">
+          Spanning Trees • Shortest Path
+          </p>
+
+          <div className="my-2 text-gray-400 text-sm font-mono">
+          Node Connectivity
+          </div>
+      </div>
+
+      </div>
+
+      </div>
 
       {/* Mission */}
       <section className="relative z-10 mx-auto max-w-7xl px-6 py-16">
@@ -207,62 +242,83 @@ export default function About() {
       </section>
 
       {/* Journey */}
-      <section className="relative z-10 mx-auto max-w-7xl px-6 py-16">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-full bg-white/5 border border-white/10 px-4 py-2 text-sm text-slate-300">
+        <section className="relative z-10 mx-auto max-w-7xl px-6 py-20">
+          {/* Header */}
+          <div className="mx-auto max-w-3xl text-center">
+            <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-400/10 px-4 py-2 text-sm text-cyan-200">
               <Rocket size={16} className="text-cyan-300" />
               Your coding journey
             </div>
 
-            <h2 className="mt-6 text-4xl md:text-5xl font-bold">
+            <h2 className="mt-6 text-4xl md:text-5xl font-black leading-tight text-white">
               From beginner to confident problem solver.
             </h2>
 
-            <p className="mt-5 text-slate-400 leading-7">
+            <p className="mt-5 text-slate-400 text-lg leading-8">
               CodeBit is made for students who want a clear path. You practice,
               test, submit, learn from mistakes, and improve every single day.
             </p>
+          </div>
 
-            <div className="mt-8 space-y-4">
-              {timeline.map((step, index) => (
-                <div
-                  key={index}
-                  className="flex items-center gap-4 rounded-2xl border border-white/10 bg-white/4 p-4 hover:bg-white/8 transition"
-                >
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-cyan-300/15 text-cyan-300 font-bold">
-                    {index + 1}
+          {/* Content */}
+          <div className="mt-14 grid gap-8 lg:grid-cols-[1.05fr_0.95fr] items-stretch">
+            {/* Timeline */}
+            <div className="rounded-[2rem] border border-white/10 bg-white/4 p-6 md:p-8 backdrop-blur-xl">
+              <h3 className="mb-6 text-xl font-bold text-white">
+                How CodeBit helps you grow
+              </h3>
+
+              <div className="space-y-4">
+                {timeline.map((step, index) => (
+                  <div
+                    key={index}
+                    className="group flex items-center gap-4 rounded-2xl border border-white/10 bg-black/25 p-4 transition-all duration-300 hover:border-cyan-400/30 hover:bg-cyan-400/5"
+                  >
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-cyan-300/15 text-cyan-300 font-bold">
+                      {index + 1}
+                    </div>
+
+                    <p className="text-slate-300 group-hover:text-white transition">
+                      {step}
+                    </p>
                   </div>
-                  <p className="text-slate-300">{step}</p>
-                </div>
-              ))}
+                ))}
+              </div>
+            </div>
+
+            {/* Difference */}
+            <div className="rounded-[2rem] border border-cyan-400/20 bg-cyan-400/4 p-6 md:p-8 backdrop-blur-xl">
+              <h3 className="text-2xl font-bold mb-7 flex items-center gap-3 text-white">
+                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-300/10 border border-cyan-300/20">
+                  <Target className="text-cyan-300" size={22} />
+                </span>
+                What makes CodeBit different?
+              </h3>
+
+              <div className="grid gap-4">
+                {[
+                  "Clean and modern problem-solving interface",
+                  "Visible and hidden test case support",
+                  "AI assistant for DSA-focused help",
+                  "Editorial videos and explanation support",
+                  "Admin problem validation before publishing",
+                  "Profile, streaks, acceptance rate, and progress tracking",
+                ].map((point, index) => (
+                  <div
+                    key={index}
+                    className="flex items-start gap-3 rounded-2xl border border-white/10 bg-black/25 p-4"
+                  >
+                    <CheckCircle2
+                      className="mt-0.5 text-cyan-300 shrink-0"
+                      size={20}
+                    />
+                    <p className="text-slate-300">{point}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-
-          <div className="rounded-[2rem] border border-white/10 bg-white/5 p-7 backdrop-blur-xl">
-            <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
-              <Target className="text-cyan-300" />
-              What makes CodeBit different?
-            </h3>
-
-            <div className="space-y-5">
-              {[
-                "Clean and modern problem-solving interface",
-                "Visible and hidden test case support",
-                "AI assistant for DSA-focused help",
-                "Editorial videos and explanation support",
-                "Admin problem validation before publishing",
-                "Profile, streaks, acceptance rate, and progress tracking",
-              ].map((point, index) => (
-                <div key={index} className="flex gap-3">
-                  <CheckCircle2 className="mt-1 text-cyan-300 shrink-0" size={20} />
-                  <p className="text-slate-300">{point}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
 
       {/* Community CTA */}
       <section className="relative z-10 mx-auto max-w-7xl px-6 py-20">

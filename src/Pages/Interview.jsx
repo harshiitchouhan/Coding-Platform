@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState} from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router";
 import {
   Brain,
@@ -12,6 +13,7 @@ import {
   ChevronUp,
 } from "lucide-react";
 import Footer from "./Footer";
+import profile from "../profile.png"
 
 const questions = [
   {
@@ -202,6 +204,7 @@ export default function Interview() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [search, setSearch] = useState("");
   const [openIndex, setOpenIndex] = useState(null);
+  const {user} = useSelector((state)=>state.auth);
 
   const filteredQuestions = questions.filter((item) => {
     const matchCategory =
@@ -241,12 +244,18 @@ export default function Interview() {
             <Link to="/interview" className="hover:text-cyan-300 transition">Interview</Link>
           </div>
 
-          <Link
-            to="/problems"
-            className="rounded-full bg-cyan-400 px-5 py-2 text-sm font-semibold text-black hover:bg-cyan-300 transition shadow-[0_0_25px_rgba(34,211,238,0.35)]"
-          >
-            Start Coding
-          </Link>
+          <div className="cursor-pointer flex items-center gap-2 px-2 sm:px-3 py-2 rounded-full hover:bg-white/10 transition">
+              
+              <img
+                src={user?.profileImage || profile}
+                alt="profile"
+                className="h-8 w-8 rounded-full object-cover border border-white/10"
+              />
+
+              <div className="hidden sm:block text-sm font-medium">
+                {user?.name}
+              </div>
+            </div>
         </div>
       </nav>
 
@@ -273,9 +282,11 @@ export default function Interview() {
             </p>
 
             <div className="mt-8 flex flex-wrap gap-4">
+              <Link to={"/problems"}>
               <button className="rounded-xl bg-cyan-400 px-6 py-3 font-semibold text-black hover:bg-cyan-300 transition shadow-lg shadow-cyan-500/20">
                 Start Practice
               </button>
+              </Link>
               <button className="rounded-xl border border-white/10 bg-white/5 px-6 py-3 font-semibold text-gray-200 hover:bg-white/10 transition">
                 {questions.length}+ Questions
               </button>

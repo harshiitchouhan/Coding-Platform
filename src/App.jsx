@@ -18,6 +18,10 @@ const Spinner = lazy(()=> import("./Pages/Spinner"))
 const AdminVideo = lazy(()=> import("./Pages/AdminVideo"))
 const AdminUpload = lazy(()=> import("./Pages/AdminUpload"));
 const Profile = lazy(()=> import("./Pages/Profile"));
+const AdminUsers = lazy(()=> import("./Pages/AdminUsers"));
+const AdminUserDetails = lazy(()=> import("./Pages/AdminUserDetails")); 
+const NotFoundPage = lazy(()=> import("./Pages/NotFoundPage"));
+
 
 // const InterviewLayout = lazy(()=> import("./Pages/InterviewLayout"));
 // const InterviewHome = lazy(()=> import("./Pages/InterviewHome"));
@@ -146,6 +150,10 @@ if (loading) return null; // prevents flicker completely
 
     <Route path="/interview" element={<Interview/>}></Route>
     <Route path="/profile" element={<Profile />} />
+    <Route path="/admin/users" element={<AdminUsers />} />
+    <Route path="/admin/users/:id" element={<AdminUserDetails />} />
+    <Route path="*" element={<NotFoundPage />} />
+    
     
 
   <Route

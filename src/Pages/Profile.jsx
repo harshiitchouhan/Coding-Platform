@@ -14,6 +14,8 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
+import { loadUser } from "../Redux/Features/Auth/authSlice"
 import {
   PieChart,
   Pie,
@@ -29,22 +31,106 @@ import {
 
 import axiosClient from "@/Utils/axiosClient";
 import MainLayout from "./MainLayout";
+import axios from "axios";
+import defaultAvatar  from "../profile.png"
 
 const DIFFICULTY_COLORS = ["#22c55e", "#eab308", "#ef4444"];
 
 
 export default function Profile() {
+  const dispatch = useDispatch();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const problemsPerPage = 5;
+  const [showEditModal, setShowEditModal] = useState(false);
+
+  const [editData, setEditData] = useState({
+    name: "",
+    bio: "",
+    github: "",
+    linkedin: "",
+  });
+  const [updating, setUpdating] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
+  const [previewImage, setPreviewImage] = useState("");
+
+  const uploadProfileImage = async () => {
+  const signatureRes = await axiosClient.get(
+    "/user/profileSignature"
+  );
+
+  const {
+    signature,
+    timestamp,
+    public_id,
+    api_key,
+    cloud_name,
+    upload_url,
+  } = signatureRes.data;
+
+  const formData = new FormData();
+
+  formData.append("file", imageFile);
+  formData.append("api_key", api_key);
+  formData.append("timestamp", timestamp);
+  formData.append("public_id", public_id);
+  formData.append("signature", signature);
+
+  // uploading url to cloudinary
+  const cloudinaryRes = await axios.post(upload_url, formData);
+
+  return cloudinaryRes.data.public_id;
+};
+
+const handleUpdateProfile = async () => {
+  try {
+    setUpdating(true);
+
+    let updatedUserFromImage = null;
+
+    if (imageFile) {
+      const uploadedPublicId = await uploadProfileImage();
+
+      const imageSaveRes = await axiosClient.post(
+        "/user/save",
+        {
+          cloudinaryPublicId: uploadedPublicId,
+        }
+      );
+
+      updatedUserFromImage = imageSaveRes.data.user;
+    }
+
+    const textRes = await axiosClient.put("/user/editProfile", editData);
+
+    setProfile((prev) => ({
+      ...prev,
+      user: {
+        ...prev.user,
+        ...(updatedUserFromImage || {}),
+        ...textRes.data.user,
+      },
+    }));
+
+    setShowEditModal(false);
+    setImageFile(null);
+    setPreviewImage("");
+  } catch (err) {
+    console.error("Update profile error:", err);
+  } finally {
+    setUpdating(false);
+  }
+};
+
+  const problemsPerPage = 6;
   const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchProfile() {
       try {
         const res = await axiosClient.get("/user/profile");
+        // console.log(res);
         setProfile(res.data.profile);
       } catch (err) {
         console.error("Profile Error:", err);
@@ -56,6 +142,44 @@ export default function Profile() {
     fetchProfile();
   }, []);
 
+  const handleDeleteProfile = async () => {
+  const confirmDelete = window.confirm(
+    "Are you sure you want to permanently delete your profile?"
+  );
+
+  if (!confirmDelete) return;
+
+  try {
+    await axiosClient.delete("/user/deleteProfile");
+
+    localStorage.clear();
+
+    window.location.href = "/signup";
+
+  } catch (err) {
+    alert(err.response?.data?.message || "Failed to delete profile");
+  }
+};
+
+const handleRemoveProfileImage = async () => {
+  try {
+    await axiosClient.delete("/user/deleteImage");
+
+    setPreviewImage("");
+    setImageFile(null);
+
+    dispatch(loadUser()); // refresh redux user data
+
+  } catch (err) {
+    console.log(err);
+
+    alert(
+      err.response?.data?.message ||
+      err.message ||
+      "Failed to remove profile image"
+    );
+  }
+};
   const chartData = useMemo(() => {
     if (!profile) return null;
 
@@ -115,6 +239,7 @@ export default function Profile() {
 
   return (
     <MainLayout>
+      
       <section className="min-h-screen px-4 py-24 text-white">
         <div className="mx-auto grid max-w-375 gap-6 xl:grid-cols-[330px_minmax(0,1fr)_390px]">
 
@@ -125,7 +250,7 @@ export default function Profile() {
                 <div className="flex h-32 w-32 items-center justify-center overflow-hidden rounded-full border-4 border-cyan-400/30 bg-slate-900">
                   {user.profileImage ? (
                     <img
-                      src={user.profileImage}
+                      src={user.profileImage || defaultAvatar}
                       alt="profile"
                       className="h-full w-full object-cover"
                     />
@@ -154,6 +279,30 @@ export default function Profile() {
                 {user.bio || "CodeBit learner focused on improving DSA skills."}
               </p>
 
+              <div className="mt-5 flex w-full gap-3">
+                {user.github && (
+                  <a
+                    href={user.github}
+                    target="_blank"
+                    className="flex flex-1 items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/4 px-3 py-3 text-sm text-gray-300 transition hover:border-cyan-400/40 hover:text-cyan-300"
+                  >
+                    <GithubSvg />
+                    GitHub
+                  </a>
+                )}
+
+                {user.linkedin && (
+                  <a
+                    href={user.linkedin}
+                    target="_blank"
+                    className="flex flex-1 items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/4 px-3 py-3 text-sm text-gray-300 transition hover:border-cyan-400/40 hover:text-cyan-300"
+                  >
+                    <LinkedinSvg />
+                    LinkedIn
+                  </a>
+                )}
+              </div>
+
               <div className="mt-6 grid w-full grid-cols-2 gap-3">
                 <ProfileMiniBox label="Solved" value={stats.totalSolved} />
                 <ProfileMiniBox icon={<Trophy />} label="CodeBit Score"value={stats.codebitScore}/>
@@ -167,10 +316,155 @@ export default function Profile() {
                 <p className="mt-1 font-semibold">{joinedDate}</p>
               </div>
 
-              <button className="mt-5 w-full rounded-2xl bg-cyan-400 px-4 py-3 font-semibold text-black transition hover:bg-cyan-300">
+              <button
+                onClick={() => {
+                  setEditData({
+                    name: user.name || "",
+                    bio: user.bio || "",
+                    github: user.github || "",
+                    linkedin: user.linkedin || "",
+                  });
+
+                  setPreviewImage(user.profileImage || "");
+                  setImageFile(null);
+                  setShowEditModal(true);
+                }}
+                className="mt-5 w-full rounded-2xl bg-cyan-400 px-4 py-3 font-semibold text-black transition hover:bg-cyan-300"
+              >
                 Edit Profile
               </button>
+
+              {showEditModal && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
+                <div className="w-full max-w-lg rounded-[2rem] border border-white/10 bg-slate-950 p-6 text-white shadow-2xl">
+
+                  <div className="mb-6">
+                    <h2 className="text-2xl font-bold">Edit Profile</h2>
+                    <p className="mt-1 text-sm text-gray-400">
+                      Update your CodeBit profile
+                    </p>
+                  </div>
+
+                  <div className="mb-5 flex flex-col items-center gap-3">
+                    <img
+                      src={previewImage || user.profileImage || defaultAvatar}
+                      alt="preview"
+                      className="h-24 w-24 rounded-full border-2 border-cyan-400/30 object-cover"
+                    />
+
+                    <label className="cursor-pointer rounded-xl border border-white/10 bg-white/4 px-4 py-2 text-sm hover:border-cyan-400/40">
+                      Choose Image
+                      <input
+                        type="file"
+                        accept="image/*"
+                        hidden
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          if (!file) return;
+
+                          setImageFile(file);
+                          setPreviewImage(URL.createObjectURL(file));
+                        }}
+                      />
+                    </label>
+
+                      {user.profileImage && (
+                        <button
+                          type="button"
+                          onClick={handleRemoveProfileImage}
+                          className="cursor-pointer rounded-xl border px-4 py-2 border-white/10 text-sm text-red-400 hover:text-red-300 transition"
+                        >
+                          Remove Photo
+                        </button>
+                      )}
+                    </div>
+
+                  <div className="space-y-4">
+                    <input
+                      type="text"
+                      placeholder="Name"
+                      value={editData.name}
+                      onChange={(e) =>
+                        setEditData({ ...editData, name: e.target.value })
+                      }
+                        className="w-full rounded-2xl border border-white/10 bg-white/4 px-4 py-3 outline-none focus:border-cyan-400/50"
+                      />
+
+                      <textarea
+                        rows={3}
+                        placeholder="Bio"
+                        value={editData.bio}
+                        onChange={(e) =>
+                          setEditData({ ...editData, bio: e.target.value })
+                        }
+                        className="w-full resize-none rounded-2xl border border-white/10 bg-white/4 px-4 py-3 outline-none focus:border-cyan-400/50"
+                      />
+
+                      <input
+                        type="text"
+                        placeholder="GitHub URL"
+                        value={editData.github}
+                        onChange={(e) =>
+                          setEditData({ ...editData, github: e.target.value })
+                        }
+                        className="w-full rounded-2xl border border-white/10 bg-white/4 px-4 py-3 outline-none focus:border-cyan-400/50"
+                      />
+
+                      <input
+                        type="text"
+                        placeholder="LinkedIn URL"
+                        value={editData.linkedin}
+                        onChange={(e) =>
+                          setEditData({ ...editData, linkedin: e.target.value })
+                        }
+                        className="w-full rounded-2xl border border-white/10 bg-white/4 px-4 py-3 outline-none focus:border-cyan-400/50"
+                      />
+                    </div>
+
+                    <div className="mt-6 flex gap-3">
+                      <button
+                        disabled={updating}
+                        onClick={() => {
+                          setShowEditModal(false);
+                          setImageFile(null);
+                          setPreviewImage("");
+                        }}
+                        className="flex-1 rounded-2xl border border-white/10 bg-white/4 py-3 disabled:opacity-50"
+                      >
+                        Cancel
+                      </button>
+
+                      <button
+                        disabled={updating}
+                        onClick={handleUpdateProfile}
+                        className="flex-1 rounded-2xl bg-cyan-400 py-3 font-semibold text-black transition hover:bg-cyan-300 disabled:opacity-50"
+                      >
+                        {updating ? "Saving..." : "Save Changes"}
+                      </button>
+                    </div>
+                  </div>
+              </div>
+                )}
+              <div className="mt-10 border border-red-500/20 bg-red-500/5 rounded-2xl p-5">
+                  
+                  <h2 className="text-lg font-semibold text-red-400">
+                    Danger Zone
+                  </h2>
+
+                  <p className="text-sm text-gray-400 mt-2">
+                    Permanently delete your account and all associated data.
+                  </p>
+
+                  <button
+                    onClick={handleDeleteProfile}
+                    className="mt-4 px-5 py-2.5 rounded-xl bg-red-600/20 hover:bg-red-600/30 text-red-400 font-medium transition"
+                  >
+                    Delete Profile
+                  </button>
+              </div>
+
             </div>
+            
           </aside>
 
           {/* CENTER CONTENT */}
@@ -203,7 +497,7 @@ export default function Profile() {
                   <div
                     onClick={() => navigate(`/problem/${problem._id}`)}
                     key={problem._id}
-                    className="group rounded-2xl border border-white/10 bg-white/3 p-4 transition hover:border-cyan-400/40 hover:bg-cyan-400/4"
+                    className="group cursor-pointer rounded-2xl border border-white/10 bg-white/3 p-4 transition hover:border-cyan-400/40 hover:bg-cyan-400/4"
                   >
                     <div className="flex items-center justify-between gap-4">
                       <div>
@@ -334,11 +628,17 @@ export default function Profile() {
               </div>
             </div>
           </aside>
+
+        
+          
         </div>
+        
       </section>
     </MainLayout>
   );
 }
+
+
 
 function StatCard({ icon, label, value }) {
   return (
@@ -384,6 +684,22 @@ function DifficultyBadge({ level }) {
     <span className={`rounded-full border px-3 py-1 text-xs capitalize ${styles}`}>
       {level}
     </span>
+  );
+}
+
+function GithubSvg() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current">
+      <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.29 9.42 7.86 10.95.58.1.79-.25.79-.56v-2.1c-3.2.7-3.87-1.38-3.87-1.38-.53-1.34-1.3-1.7-1.3-1.7-1.06-.73.08-.72.08-.72 1.17.08 1.79 1.21 1.79 1.21 1.04 1.78 2.73 1.27 3.4.97.1-.76.4-1.27.73-1.56-2.56-.29-5.26-1.28-5.26-5.7 0-1.26.45-2.29 1.2-3.1-.12-.3-.52-1.47.12-3.06 0 0 .98-.31 3.2 1.18A11.1 11.1 0 0 1 12 6.04c.99 0 1.98.13 2.91.39 2.22-1.49 3.2-1.18 3.2-1.18.64 1.59.24 2.76.12 3.06.75.81 1.2 1.84 1.2 3.1 0 4.43-2.7 5.4-5.27 5.69.42.36.79 1.07.79 2.16v3.2c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z" />
+    </svg>
+  );
+}
+
+function LinkedinSvg() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current">
+      <path d="M4.98 3.5C4.98 4.88 3.86 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5ZM.3 8h4.4v15H.3V8Zm7.1 0h4.22v2.05h.06c.59-1.11 2.03-2.28 4.18-2.28 4.47 0 5.3 2.94 5.3 6.76V23h-4.4v-7.52c0-1.79-.03-4.1-2.5-4.1-2.5 0-2.88 1.95-2.88 3.97V23h-4.4V8Z" />
+    </svg>
   );
 }
 

@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from "react-router";
-import { Plus, Edit, Trash2, Video } from "lucide-react";
+import { Plus, Edit, Trash2, Video,Users } from "lucide-react";
+import AdminNavbar from "./AdminNavbar";
 
 export default function Admin() {
   const navigate = useNavigate();
@@ -42,11 +43,23 @@ export default function Admin() {
       ring: "ring-pink-500/20",
       route: "/admin/video",
     },
+     {
+      key: "users",
+      title: "User Control",
+      description: "Ban, delete and manage user roles",
+      icon: Users,
+      color: "text-cyan-400",
+      ring: "ring-cyan-500/20",
+      route: "/admin/users",
+    },
   ];
 
   return (
+    <div className="bg-linear-to-br from-[#050816] via-[#071a3a] to-[#020617]">
+    <AdminNavbar></AdminNavbar>
     <div className="min-h-screen flex flex-col items-center text-white
       bg-linear-to-br from-[#050816] via-[#071a3a] to-[#020617] p-6">
+      
 
       {/* Heading */}
       <h1 className="text-3xl md:text-4xl font-bold mb-4 tracking-wide mt-10">
@@ -111,6 +124,7 @@ export default function Admin() {
         </div>
 
       </div>
+    </div>
     </div>
   );
 }

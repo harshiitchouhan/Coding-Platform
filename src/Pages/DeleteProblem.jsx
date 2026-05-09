@@ -5,6 +5,7 @@ import MainLayout from "./MainLayout";
 import { useSelector, useDispatch } from "react-redux";
 import { setProblems, deleteProblem} from "../Redux/Features/problem/problemSlice"
 import Pagination from "./Pagination";
+import AdminNavbar from "./AdminNavbar";
 
 
 export default function DeleteProblem() {
@@ -83,7 +84,8 @@ export default function DeleteProblem() {
   const isAllowed = confirmText === "DELETE";
 
   return (
-    <MainLayout>
+    <MainLayout showNavbar={false}>
+      <AdminNavbar></AdminNavbar>
     <div className="min-h-screen text-white p-6">
 
       <h1 className="text-4xl text-gray-300 text-center font-bold mt-10 mb-10">Delete Problems</h1>

@@ -132,7 +132,7 @@ useEffect(() => {
       setOutput(outputText);
 
     } catch (err) {
-  console.log("RUN ERROR:", err.response?.data || err.message);
+  // console.log("RUN ERROR:", err.response?.data || err.message); 
 
   setOutput(
     err.response?.data?.message ||

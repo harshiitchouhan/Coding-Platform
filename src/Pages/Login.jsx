@@ -23,7 +23,7 @@ import { Button } from "@/components/ui/button";
 const formSchema = z
   .object({
     email: z.email("Invalid Email"),
-    password: z.string().min(8, "Min 5 charachters").max(20, "Max 20 chars"),
+    password: z.string().min(8, "Min 8 charachters").max(20, "Max 20 chars"),
   })
 
 

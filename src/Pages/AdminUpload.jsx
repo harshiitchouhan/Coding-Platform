@@ -4,6 +4,7 @@ import axiosClient from "@/Utils/axiosClient";
 import { useState,useEffect } from "react";
 import axios from "axios";
 import MainLayout from "./MainLayout";
+import AdminNavbar from "./AdminNavbar";
 
 export default function AdminUpload() {
   const { problemId } = useParams();
@@ -107,8 +108,9 @@ export default function AdminUpload() {
   };
 
   return (
-    <MainLayout showFooter={false}>
-        <div className="min-h-screen text-white p-6">
+    <MainLayout showFooter={false} showNavbar={false}>
+      <AdminNavbar></AdminNavbar>
+        <div className="min-h-screen text-white p-14">
       <div className="max-w-3xl mx-auto space-y-6">
 
         <h1 className="text-3xl font-bold text-center">

@@ -5,6 +5,7 @@ import { setProblems } from "../Redux/Features/problem/problemSlice";
 import { NavLink, useNavigate } from "react-router";
 import MainLayout from "./MainLayout";
 import Pagination from "./Pagination";
+import AdminNavbar from "./AdminNavbar";
 
 export default function AdminVideo() {
   const dispatch = useDispatch();
@@ -66,15 +67,16 @@ export default function AdminVideo() {
 const handleDelete = async () => {
   try {
     await axiosClient.delete(`/video/delete/${selectedId}`);
-    closeModal();
-  } catch (err) {
-    if (err.response?.status === 404) {
-      alert("No video uploaded for this problem yet.");
-    } else {
-      alert("Failed to delete video.");
-    }
 
-    console.log(err);
+    closeModal();
+    alert("Video deleted successfully");
+  } catch (err) {
+    alert(
+      err.response?.data?.message ||
+      err.response?.data?.error ||
+      "Failed to delete video."
+    );
+
     closeModal();
   }
 };
@@ -82,8 +84,9 @@ const handleDelete = async () => {
   const isAllowed = confirmText === "DELETE";
 
   return (
-    <MainLayout>
-      <div className="min-h-screen text-white p-6">
+    <MainLayout showNavbar={false}>
+      <AdminNavbar></AdminNavbar>
+      <div className="min-h-screen text-white p-12">
         <h1 className="text-3xl font-bold text-center mb-8">
           Manage Problem Videos
         </h1>

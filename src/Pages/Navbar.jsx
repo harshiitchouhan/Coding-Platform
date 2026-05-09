@@ -11,6 +11,7 @@ import { logOut } from "../Redux/Features/Auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import logo from "../CodeBit.png";
 import { useNavigate } from "react-router";
+import profile from "../profile.png"
 
 function Navbar() {
 
@@ -50,7 +51,13 @@ function Navbar() {
 
           <DropdownMenuTrigger asChild>
             <div className="cursor-pointer flex items-center gap-2 px-2 sm:px-3 py-2 rounded-full hover:bg-white/10 transition">
-              <User className="text-white w-6 h-6 sm:w-7 sm:h-7" />
+              
+              <img
+                src={user?.profileImage || profile}
+                alt="profile"
+                className="h-8 w-8 rounded-full object-cover border border-white/10"
+              />
+
               <div className="hidden sm:block text-sm font-medium">
                 {user?.name}
               </div>
@@ -85,7 +92,7 @@ function Navbar() {
     <div className="md:hidden flex justify-center gap-6 py-2 text-white text-sm border-t border-white/10">
       <Link to="/" className="hover:text-blue-400">Home</Link>
       <Link to="/problems" className="hover:text-blue-400">Problems</Link>
-      <Link to="/submissions" className="hover:text-blue-400">Submissions</Link>
+      <Link to="/interview" className="hover:text-blue-400">Interview</Link>
     </div>
 
   </div>

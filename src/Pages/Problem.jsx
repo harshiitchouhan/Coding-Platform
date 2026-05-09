@@ -302,7 +302,9 @@ return (
                 </tbody>
 
             </table>
+            
         </div>
+        
 
         {/* Pagination */}
         <Pagination

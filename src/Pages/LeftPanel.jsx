@@ -298,7 +298,7 @@ function formatExampleInput(input, inputFields = []) {
         <div className="text-gray-400">
         <Editorial secureURL={problem.secureURL} thumbnailURL={problem.thumbnailURL} duration= {problem.duration} editorial ={problem.editorial}/>
         </div>
-      )}
+    )}
 
       {/* Solutions */}
       {activeTab === "solutions" && (
