@@ -108,10 +108,11 @@ useEffect(() => {
   }
 }, []);
 
-// llogged out mei route pr nhi jane denge
+// logged out mei route pr nhi jane denge
 const protect = (component) => {
   return isAuthenticated ? component : <Navigate to="/login" replace />;
 };
+
 const showLoader = useDelayedLoader(loading);
 if (showLoader) return <Authloader />
 if (loading) return null; // prevents flicker completely
@@ -151,7 +152,7 @@ if (loading) return null; // prevents flicker completely
       path="/"
       element={
         <Suspense fallback={<Spinner />}>
-          {isAuthenticated ? <HomePage /> : <Navigate to="/signup" />}
+          <HomePage />
         </Suspense>
       }
     />

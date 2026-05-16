@@ -5,7 +5,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { User } from "lucide-react";
 import { Link } from "react-router";
 import { logOut } from "../Redux/Features/Auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,13 +16,12 @@ function Navbar() {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const {user} = useSelector((state)=>state.auth);
+    const {user ,isAuthenticated} = useSelector((state)=>state.auth);
     const handleLogout = ()=>{
         dispatch(logOut());
         navigate("/login");
  
     }
-
 
   return (
   <div className=" w-full z-50 bg-white/5 backdrop-blur-md border-b border-white/10">
@@ -46,46 +44,75 @@ function Navbar() {
         <Link to="/interview" className="hover:text-blue-400">Interview</Link>
       </div>
 
-      {/* Right: User */}
-      <div className="ml-auto flex items-center">
-        <DropdownMenu>
+    {/* Right: User */}
+    <div className="ml-auto flex items-center">
+      <DropdownMenu>
 
-          <DropdownMenuTrigger asChild>
-            <div className="cursor-pointer flex items-center gap-2 px-2 sm:px-3 py-2 rounded-full hover:bg-white/10 transition">
-              
-              <img
-                src={user?.profileImage || profile}
-                alt="profile"
-                className="h-8 w-8 rounded-full object-cover border border-white/10"
-              />
+        <DropdownMenuTrigger asChild>
+          <div className="cursor-pointer flex items-center gap-2 px-2 sm:px-3 py-2 rounded-full hover:bg-white/10 transition">
 
-              <div className="hidden sm:block text-sm font-medium">
-                {user?.name}
-              </div>
+            <img
+              src={isAuthenticated ? (user?.profileImage || profile) : profile}
+              alt="profile"
+              className="h-8 w-8 rounded-full object-cover border border-white/10"
+            />
+
+            <div className="hidden sm:block text-sm font-medium text-white">
+              {isAuthenticated ? user?.name : "Guest"}
             </div>
-          </DropdownMenuTrigger>
 
-          <DropdownMenuContent className="bg-white/5 backdrop-blur-md border border-white/10 text-white">
-          <DropdownMenuItem 
-          onClick={() => navigate("/profile")}>
-              Profile
-          </DropdownMenuItem>
+          </div>
+        </DropdownMenuTrigger>
 
-            {user?.role === "admin" && (
-            <DropdownMenuItem
-              onClick={() => navigate("/admin")}
-              className="text-blue-400 cursor-pointer"
-            >
-              Admin Panel
-            </DropdownMenuItem>
+      <DropdownMenuContent className="bg-white/5 backdrop-blur-md border border-white/10 text-white">
+          {isAuthenticated ? (
+            <>
+              <DropdownMenuItem
+                onClick={() => navigate("/profile")}
+                className="cursor-pointer"
+              >
+                Profile
+              </DropdownMenuItem>
+
+              {user?.role === "admin" && (
+                <DropdownMenuItem
+                  onClick={() => navigate("/admin")}
+                  className="text-purple-300 cursor-pointer"
+                >
+                  Admin Panel
+                </DropdownMenuItem>
+              )}
+
+              <DropdownMenuItem
+                onClick={handleLogout}
+                className="text-red-500 cursor-pointer"
+              >
+                Logout
+              </DropdownMenuItem>
+            </>
+          ) : (
+            <>
+              <DropdownMenuItem
+                onClick={() => navigate("/login")}
+                className="cursor-pointer"
+              >
+                Login
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                onClick={() => navigate("/signup")}
+                className="text-cyan-400 cursor-pointer"
+              >
+                Signup
+              </DropdownMenuItem>
+            </>
           )}
-            <DropdownMenuItem onClick={handleLogout} className="text-red-500">
-              Logout
-            </DropdownMenuItem>
-          </DropdownMenuContent>
 
-        </DropdownMenu>
-      </div>
+        </DropdownMenuContent>
+
+      </DropdownMenu>
+    </div>
+
 
     </div>
 
