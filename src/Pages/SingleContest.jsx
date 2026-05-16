@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import axiosClient from "@/Utils/axiosClient";
 import MainLayout from "./MainLayout";
-import ContestTopbar from "./ContestTopBar";
+import ContestTopbar from "./ContestTopbar";
 
 import {
   ArrowLeft,
