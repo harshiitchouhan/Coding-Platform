@@ -102,7 +102,7 @@ export default function Problem(){
 // Pagination
     useEffect(() => {
     setCurrentPage(1);
-    }, [filters]);
+    }, [filters,search]);
 
     
     const indexOfLast = currentPage * problemsPerPage;
