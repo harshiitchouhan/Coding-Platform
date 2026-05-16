@@ -240,8 +240,8 @@ const handleRemoveProfileImage = async () => {
   return (
     <MainLayout>
       
-      <section className="min-h-screen px-4 py-24 text-white">
-        <div className="mx-auto grid max-w-375 gap-6 xl:grid-cols-[330px_minmax(0,1fr)_390px]">
+      <section className="min-h-screen px-4 py-12 text-white">
+        <div className="mx-auto grid max-w-375 gap-8 xl:grid-cols-[330px_minmax(0,1fr)_390px]">
 
           {/* LEFT PROFILE */}
           <aside className="h-fit rounded-[2rem] border border-white/10 bg-slate-950/90 p-6 shadow-2xl shadow-cyan-500/5">

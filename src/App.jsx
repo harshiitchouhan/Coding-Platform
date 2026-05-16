@@ -14,12 +14,19 @@ const ProblemPage = lazy(() => import("./Pages/ProblemPage"));
 const About = lazy(() => import("./Pages/About"));
 const Careers = lazy(() => import("./Pages/Careers"));
 const Problem = lazy(() => import("./Pages/Problem"));
-const Spinner = lazy(()=> import("./Pages/Spinner"))
+const Spinner = lazy(()=> import("./Pages/Spinner"));
 const AdminVideo = lazy(()=> import("./Pages/AdminVideo"))
 const AdminUpload = lazy(()=> import("./Pages/AdminUpload"));
 const Profile = lazy(()=> import("./Pages/Profile"));
 const AdminUsers = lazy(()=> import("./Pages/AdminUsers"));
 const AdminUserDetails = lazy(()=> import("./Pages/AdminUserDetails")); 
+const ContestList = lazy(()=> import("./Pages/ContestList")); 
+const SingleContest = lazy(()=> import("./Pages/SingleContest")); 
+const ContestProblemPage = lazy(()=> import("./Pages/ContestProblemPage")); 
+const Leaderboard = lazy(()=> import("./Pages/Leaderboard")); 
+const ContestHistory = lazy(()=> import("./Pages/ContestHistory")); 
+
+
 const NotFoundPage = lazy(()=> import("./Pages/NotFoundPage"));
 
 
@@ -61,11 +68,7 @@ function App() {
     dispatch(loadUser());
 }, [dispatch]);
 
-//  if (loading) {
-//   return (
-//     <Authloader></Authloader>
-//   );
-// }
+
 
 // Flicker Added Html body and css alsoS
   function useDelayedLoader(loading, delay = 300) {
@@ -105,6 +108,10 @@ useEffect(() => {
   }
 }, []);
 
+// llogged out mei route pr nhi jane denge
+const protect = (component) => {
+  return isAuthenticated ? component : <Navigate to="/login" replace />;
+};
 const showLoader = useDelayedLoader(loading);
 if (showLoader) return <Authloader />
 if (loading) return null; // prevents flicker completely
@@ -137,148 +144,252 @@ if (loading) return null; // prevents flicker completely
     //   <Route path="/admin/update" element={<UpdateProblem/>}></Route>
     //   <Route path="/admin/delete" element={<DeleteProblem/>}></Route> */}
     // </Routes>
-<Routes>
+  <Routes>
 
-  <Route
-    path="/"
-    element={
-      <Suspense fallback={<Spinner />}>
-        {isAuthenticated ? <HomePage /> : <Navigate to="/signup" />}
-      </Suspense>
-    }
-  />
+    {/* HOME */}
+    <Route
+      path="/"
+      element={
+        <Suspense fallback={<Spinner />}>
+          {isAuthenticated ? <HomePage /> : <Navigate to="/signup" />}
+        </Suspense>
+      }
+    />
 
-    <Route path="/interview" element={<Interview/>}></Route>
-    <Route path="/profile" element={<Profile />} />
-    <Route path="/admin/users" element={<AdminUsers />} />
-    <Route path="/admin/users/:id" element={<AdminUserDetails />} />
-    <Route path="*" element={<NotFoundPage />} />
-    
-    
-
-  <Route
-    path="/login"
-    element={
-      <Suspense fallback={<Spinner />}>
-        {isAuthenticated ? <Navigate to="/" /> : <Login />}
-      </Suspense>
-    }
-  />
-
-  <Route
-    path="/signup"
-    element={
-      <Suspense fallback={<Spinner />}>
-        {isAuthenticated ? <Navigate to="/" /> : <Signup />}
-      </Suspense>
-    }
-  />
-
-  {/* Admin */}
-  <Route
-    path="/admin"
-    element={
-      <Suspense fallback={<Spinner />}>
-        {isAuthenticated && user?.role === "admin" ? <Admin /> : <Navigate to="/" />}
-      </Suspense>
-    }
-  />
-
-  <Route
-    path="/admin/create"
-    element={
-      <Suspense fallback={<Spinner />}>
-        {isAuthenticated && user?.role === "admin" ? <AdminPanel /> : <Navigate to="/" />}
-      </Suspense>
-    }
-  />
-
-
-  <Route
-    path="/admin/update"
-    element={
-      <Suspense fallback={<Spinner />}>
-        {isAuthenticated && user?.role === "admin" ? <UpdateList /> : <Navigate to="/" />}
-      </Suspense>
-    }
-  />
+    {/* AUTH */}
+    <Route
+      path="/login"
+      element={
+        <Suspense fallback={<Spinner />}>
+          {isAuthenticated ? <Navigate to="/" /> : <Login />}
+        </Suspense>
+      }
+    />
 
     <Route
-    path="/admin/update/:id"
-    element={
-      <Suspense fallback={<Spinner />}>
-        {isAuthenticated && user?.role === "admin" ? <UpdateProblem /> : <Navigate to="/" />}
-      </Suspense>
-    }
-  />
+      path="/signup"
+      element={
+        <Suspense fallback={<Spinner />}>
+          {isAuthenticated ? <Navigate to="/" /> : <Signup />}
+        </Suspense>
+      }
+    />
 
-  <Route
-    path="/admin/delete"
-    element={
-      <Suspense fallback={<Spinner />}>
-        {isAuthenticated && user?.role === "admin" ? <DeleteProblem /> : <Navigate to="/" />}
-      </Suspense>
-    }
-  />
+    {/* PROTECTED USER ROUTES */}
+    <Route
+      path="/problems"
+      element={
+        <Suspense fallback={<Spinner />}>
+          {protect(<Problem />)}
+        </Suspense>
+      }
+    />
 
     <Route
-    path="/admin/upload/:problemId"
-    element={
-      <Suspense fallback={<Spinner />}>
-        {isAuthenticated && user?.role === "admin" ? <AdminUpload /> : <Navigate to="/" />}
-      </Suspense>
-    }
-  />
+      path="/problem/:id"
+      element={
+        <Suspense fallback={<Spinner />}>
+          {protect(<ProblemPage />)}
+        </Suspense>
+      }
+    />
 
     <Route
-    path="/admin/video"
-    element={
-      <Suspense fallback={<Spinner />}>
-        {isAuthenticated && user?.role === "admin" ? <AdminVideo /> : <Navigate to="/" />}
-      </Suspense>
-    }
-  />
+      path="/profile"
+      element={
+        <Suspense fallback={<Spinner />}>
+          {protect(<Profile />)}
+        </Suspense>
+      }
+    />
 
-  {/* Problem Page */}
-  <Route
-    path="/problem/:id"
-    element={
-      <Suspense fallback={<Spinner />}>
-        <ProblemPage />
-      </Suspense>
-    }
-  />
+    <Route
+      path="/interview"
+      element={
+        <Suspense fallback={<Spinner />}>
+          {protect(<Interview />)}
+        </Suspense>
+      }
+    />
 
-  {/* Others */}
-  <Route
-    path="/about"
-    element={
-      <Suspense fallback={<Spinner />}>
-        <About />
-      </Suspense>
-    }
-  />
+    {/* CONTESTS */}
+    <Route
+      path="/contests"
+      element={
+        <Suspense fallback={<Spinner />}>
+          {protect(<ContestList />)}
+        </Suspense>
+      }
+    />
 
-  <Route
-    path="/career"
-    element={
-      <Suspense fallback={<Spinner />}>
-        <Careers />
-      </Suspense>
-    }
-  />
+    <Route
+      path="/contest/:id"
+      element={
+        <Suspense fallback={<Spinner />}>
+          {protect(<SingleContest />)}
+        </Suspense>
+      }
+    />
 
-  <Route
-    path="/problems"
-    element={
-      <Suspense fallback={<Spinner />}>
-        <Problem />
-      </Suspense>
-    }
-  />
+    <Route
+      path="/contest/:contestId/problem/:problemId"
+      element={
+        <Suspense fallback={<Spinner />}>
+          {protect(<ContestProblemPage />)}
+        </Suspense>
+      }
+    />
 
-</Routes>
-  )
+    <Route
+      path="/contest/:contestId/leaderboard"
+      element={
+        <Suspense fallback={<Spinner />}>
+          {protect(<Leaderboard />)}
+        </Suspense>
+      }
+    />
+
+    <Route
+      path="/contests/history"
+      element={
+        <Suspense fallback={<Spinner />}>
+          {protect(<ContestHistory />)}
+        </Suspense>
+      }
+    />
+
+    {/* ADMIN */}
+    <Route
+      path="/admin"
+      element={
+        <Suspense fallback={<Spinner />}>
+          {isAuthenticated && user?.role === "admin"
+            ? <Admin />
+            : <Navigate to="/" />}
+        </Suspense>
+      }
+    />
+
+    <Route
+      path="/admin/create"
+      element={
+        <Suspense fallback={<Spinner />}>
+          {isAuthenticated && user?.role === "admin"
+            ? <AdminPanel />
+            : <Navigate to="/" />}
+        </Suspense>
+      }
+    />
+
+    <Route
+      path="/admin/update"
+      element={
+        <Suspense fallback={<Spinner />}>
+          {isAuthenticated && user?.role === "admin"
+            ? <UpdateList />
+            : <Navigate to="/" />}
+        </Suspense>
+      }
+    />
+
+    <Route
+      path="/admin/update/:id"
+      element={
+        <Suspense fallback={<Spinner />}>
+          {isAuthenticated && user?.role === "admin"
+            ? <UpdateProblem />
+            : <Navigate to="/" />}
+        </Suspense>
+      }
+    />
+
+    <Route
+      path="/admin/delete"
+      element={
+        <Suspense fallback={<Spinner />}>
+          {isAuthenticated && user?.role === "admin"
+            ? <DeleteProblem />
+            : <Navigate to="/" />}
+        </Suspense>
+      }
+    />
+
+    <Route
+      path="/admin/upload/:problemId"
+      element={
+        <Suspense fallback={<Spinner />}>
+          {isAuthenticated && user?.role === "admin"
+            ? <AdminUpload />
+            : <Navigate to="/" />}
+        </Suspense>
+      }
+    />
+
+    <Route
+      path="/admin/video"
+      element={
+        <Suspense fallback={<Spinner />}>
+          {isAuthenticated && user?.role === "admin"
+            ? <AdminVideo />
+            : <Navigate to="/" />}
+        </Suspense>
+      }
+    />
+
+    <Route
+      path="/admin/users"
+      element={
+        <Suspense fallback={<Spinner />}>
+          {isAuthenticated && user?.role === "admin"
+            ? <AdminUsers />
+            : <Navigate to="/" />}
+        </Suspense>
+      }
+    />
+
+    <Route
+      path="/admin/users/:id"
+      element={
+        <Suspense fallback={<Spinner />}>
+          {isAuthenticated && user?.role === "admin"
+            ? <AdminUserDetails />
+            : <Navigate to="/" />}
+        </Suspense>
+      }
+    />
+
+    {/* PUBLIC */}
+    <Route
+      path="/about"
+      element={
+        <Suspense fallback={<Spinner />}>
+          <About />
+        </Suspense>
+      }
+    />
+
+    <Route
+      path="/career"
+      element={
+        <Suspense fallback={<Spinner />}>
+          <Careers />
+        </Suspense>
+      }
+    />
+
+    {/* 404 */}
+    <Route
+      path="*"
+      element={
+        <Suspense fallback={<Spinner />}>
+          <NotFoundPage />
+        </Suspense>
+      }
+    />
+
+  </Routes>
+);
+
 }
 
 export default App

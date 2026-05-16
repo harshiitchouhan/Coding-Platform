@@ -49,11 +49,19 @@ export default function Footer() {
           </Link>
 
           <Link
+            to="/contests"
+            className="transition hover:text-cyan-300"
+          >
+            Contest
+          </Link>
+
+          <Link
             to="/interview"
             className="transition hover:text-cyan-300"
           >
             Interview
           </Link>
+
 
           <Link
             to="/career"

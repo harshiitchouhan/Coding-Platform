@@ -76,7 +76,8 @@ export default function About() {
           <div className="hidden md:flex items-center gap-8 text-sm text-slate-300">
             <Link to="/" className="hover:text-cyan-300 transition">Home</Link>
             <Link to="/problems" className="hover:text-cyan-300 transition">Problems</Link>
-            <Link to="/interview" className="hover:text-cyan-300 transition">Interview</Link>
+            <Link to="/contests" className="hover:text-cyan-300 transition">Contests</Link>
+            <Link to="/interview" className="hover:text-blue-400">Interview</Link>
           </div>
 
           <Link

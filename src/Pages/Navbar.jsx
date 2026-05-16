@@ -42,6 +42,7 @@ function Navbar() {
       <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 gap-x-6 lg:gap-x-10 text-white">
         <Link to="/" className="hover:text-blue-400">Home</Link>
         <Link to="/problems" className="hover:text-blue-400">Problems</Link>
+        <Link to="/contests" className="hover:text-blue-400">Contests</Link>
         <Link to="/interview" className="hover:text-blue-400">Interview</Link>
       </div>
 
@@ -92,6 +93,7 @@ function Navbar() {
     <div className="md:hidden flex justify-center gap-6 py-2 text-white text-sm border-t border-white/10">
       <Link to="/" className="hover:text-blue-400">Home</Link>
       <Link to="/problems" className="hover:text-blue-400">Problems</Link>
+      <Link to="/contests" className="hover:text-blue-400">Contests</Link>
       <Link to="/interview" className="hover:text-blue-400">Interview</Link>
     </div>
 

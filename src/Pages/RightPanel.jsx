@@ -5,10 +5,10 @@ import { ChevronDown } from "lucide-react";
 import { Settings,Sun,Moon } from "lucide-react";
 import { RotateCcw, Copy, Maximize2 } from "lucide-react";
 import Split from "react-split";
-import { Rocket} from "lucide-react";
+import { Rocket,Check,X} from "lucide-react";
 
 // tHEY are cooming from parent problem page
-export default function RightPanel({problemId, problem, language, setLanguage, codeMap, setCodeMap,}) {
+export default function RightPanel({problemId, problem, mode = "practice", fetchContestStats,contestId,language, setLanguage, codeMap, setCodeMap,}) {
 
   // sTATE lIFTING
   // const [codeMap, setCodeMap] = useState({cpp: "",javascript: "",java: ""});
@@ -145,7 +145,7 @@ useEffect(() => {
   };
 
   // SUBMIT CODE
-  const handleSubmit = async () => {
+const handleSubmit = async () => {
   if (submitting || submitCooldown > 0) return;
 
   try {
@@ -155,15 +155,29 @@ useEffect(() => {
     const finalInput =
       activeTab === "custom" ? normalizeInput(input) : "";
 
-    const res = await axiosClient.post(`/submission/submit/${problemId}`, {
+    const submitUrl =
+      mode === "contest"
+        ? `/contest/${contestId}/submit/${problemId}`
+        : `/submission/submit/${problemId}`;
+
+    // console.log("MODE:", mode);
+    // console.log("SUBMIT URL:", submitUrl);
+
+    const res = await axiosClient.post(submitUrl, {
       code: codeMap[language],
       language,
       input: finalInput,
     });
 
-    const data = res.data;
+    // normal submit ke liye data ke ander sab h lekin contest ke liye
+    // data.submission mei h sab jaise status testcases etc
+    const data =
+      mode === "contest"
+        ? res.data.submission
+        : res.data;
 
-    const total = data.testCasesTotal || data.testCasesPassed;
+    const total =
+      data.testCasesTotal || data.testCasesPassed;
 
     setOutput({
       status: data.status,
@@ -172,12 +186,19 @@ useEffect(() => {
       runtime: data.runtime,
       memory: data.memory,
       error: data.errorMsg,
+      points:
+      mode === "contest"
+      ? res.data.contestSubmission?.points
+      : null,
     });
 
-    // successful submit ke baad 10 sec cooldown
+    if (mode === "contest") {
+      fetchContestStats?.();
+    }
     startSubmitCooldown(10);
 
   } catch (err) {
+    //  console.log("RUN ERROR:", err.response?.data || err.message); 
     if (err.response?.status === 429) {
       const retryAfter = err.response?.data?.retryAfter || 10;
 
@@ -185,16 +206,40 @@ useEffect(() => {
 
       setOutput({
         status: "Rate Limited",
-        error: err.response?.data?.message || `Wait ${retryAfter}s before submitting again`,
+        error:
+          err.response?.data?.message ||
+          `Wait ${retryAfter}s before submitting again`,
       });
-
+      
       return;
     }
+    if (err.response?.data?.submission) {
+
+    const data = err.response.data.submission;
 
     setOutput({
-      status: "Error",
-      error: err.response?.data?.message || "Submission failed",
+      status: data.status,
+      passed: data.testCasesPassed,
+      total:
+        data.testCasesTotal ||
+        data.testCasesPassed,
+
+      runtime: data.runtime,
+      memory: data.memory,
+      error: data.errorMsg,
+
+      points:
+        err.response.data.contestSubmission
+          ?.points || 0,
     });
+
+    return;
+  }
+
+    // setOutput({
+    //   status: "Error",
+    //   error: err.response?.data?.message || "Submission failed",
+    // });
 
   } finally {
     setSubmitting(false);
@@ -414,7 +459,12 @@ const handleReset = () => {
                           : "bg-red-500/10 text-red-400"
                         }`}
                     >
-                      {output.status === "accepted" ? "✓" : "✕"}
+                      {/* {output.status === "accepted" ? "" : "✕"} */}
+                      {output.status === "accepted" ? (
+                        <Check className="text-emerald-400" size={26} />
+                      ) : (
+                        <X className="text-red-400" size={26} />
+                      )}
                     </div>
 
                     <div>
@@ -436,21 +486,30 @@ const handleReset = () => {
 
                   {/* Stats */}
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-xl">
-                    <div className="rounded-xl bg-[#111827] border border-white/10 p-4">
-                      <p className="text-xs text-gray-400 mb-1">Passed</p>
-                      <p className="text-lg font-semibold text-white">
-                        {output.passed}/{output.total}
-                      </p>
-                    </div>
 
-                    <div className="rounded-xl bg-[#111827] border border-white/10 p-4">
+                    <div className="rounded-2xl border border-green-400/20 bg-green-500/10 p-4">
                       <p className="text-xs text-gray-400 mb-1">Runtime</p>
                       <p className="text-lg font-semibold text-white">
                         {output.runtime} ms
                       </p>
                     </div>
 
-                    <div className="rounded-xl bg-[#111827] border border-white/10 p-4">
+
+                    {output?.points !== null && output?.points !== undefined && (
+                      <div className="rounded-2xl border border-yellow-400/20 bg-yellow-500/10 p-4">
+                        <p className="text-sm text-gray-400">
+                          Points Earned
+                        </p>
+
+                        <p className="mt-2 text-xl font-black text-yellow-300">
+                          +{output.points}
+                        </p>
+                      </div>
+                    )}
+
+                    
+
+                    <div className="rounded-2xl  border border-green-400/20 bg-green-500/10 p-4">
                       <p className="text-xs text-gray-400 mb-1">Memory</p>
                       <p className="text-lg font-semibold text-white">
                         {output.memory} KB

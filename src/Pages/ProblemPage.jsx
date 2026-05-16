@@ -93,6 +93,8 @@ if (!problem)
         <LeftPanel
             problem={problem}
             // state lifting
+            mode = "practice"
+            contestId
             aiMessages={aiMessages}
             setAiMessages={setAiMessages}
           />
