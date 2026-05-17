@@ -50,6 +50,13 @@ export default function ContestHistory() {
     }
   };
 
+    const gridClass =
+    contests.length === 1
+      ? "mx-auto max-w-[430px] grid-cols-1"
+      : contests.length === 2
+      ? "mx-auto max-w-4xl grid-cols-1 md:grid-cols-2"
+      : "mx-auto max-w-7xl grid-cols-1 md:grid-cols-2 xl:grid-cols-3";
+
   const formatIndianTime = (date) => {
     return new Date(date).toLocaleString("en-IN", {
       timeZone: "Asia/Kolkata",
@@ -95,7 +102,7 @@ export default function ContestHistory() {
           </div>
 
           {loading ? (
-            <div className="grid gap-7 md:grid-cols-2 xl:grid-cols-3">
+            <div className={`grid gap-7  ${gridClass}`}>
               {[1, 2, 3].map((item) => (
                 <div
                   key={item}
@@ -112,7 +119,7 @@ export default function ContestHistory() {
               </p>
             </div>
           ) : (
-            <div className="grid gap-7 md:grid-cols-2 xl:grid-cols-3">
+            <div className={`grid gap-7  ${gridClass}`}>
               {currentContests.map((contest) => (
                 <HistoryCard
                   key={contest._id}

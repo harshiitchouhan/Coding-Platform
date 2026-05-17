@@ -5,6 +5,7 @@ import MainLayout from "./MainLayout";
 import { Search,Shuffle } from "lucide-react";
 import { setProblems } from "@/Redux/Features/problem/problemSlice";
 import Pagination from "./Pagination";
+import tableBg from "../../assets/table.png";
 
 import {
   Select,
@@ -213,105 +214,124 @@ return (
 
   </div>
         </div>
-        {/* TABLE */}
-        <div className="mt-6 overflow-hidden rounded-xl border border-white/10">
+        {/* PREMIUM TABLE */}
+        <div className="relative mt-6 overflow-hidden rounded-[2rem] border border-white/10 bg-[#070B12]/70 shadow-[0_0_60px_rgba(0,0,0,0.45)] backdrop-blur-2xl">
 
-            <table className="w-full text-left">
+            {/* BG IMAGE */}
+            <img
+                src={tableBg}
+                alt="table background"
+                className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-200"
+            />
 
-                {/* Header */}
-                <thead className="bg-white/5 text-gray-300 text-sm uppercase tracking-wider">
-                <tr>
-                    <th className="px-6 py-4">#</th>
-                    <th className="px-6 py-4">Problem</th>
-                    <th className="px-6 py-4">Difficulty</th>
-                    <th className="px-6 py-4">Category</th>
-                    <th className="px-6 py-4">Status</th>
-                </tr>
-                </thead>
+            {/* OVERLAY */}
+            <div className="absolute inset-0 bg-black/45" />
 
-                {/* Body */}
-                <tbody className="divide-y divide-white/5">
+            {/* CYAN GLOW */}
+            <div className="absolute left-0 top-0 h-60 w-60 rounded-full bg-cyan-400/10 blur-[120px]" />
 
-                {currentProblems.map((p, index) => {
+            {/* GOLD GLOW */}
+            <div className="absolute bottom-0 right-0 h-60 w-60 rounded-full bg-yellow-400/10 blur-[120px]" />
 
-                    //convert easy into Easy medium into Medium
-                    const level =
-                    p.difficultyLevel.charAt(0).toUpperCase() +
-                    p.difficultyLevel.slice(1).toLowerCase();
+            {/* CONTENT */}
+            <div className="relative z-10 overflow-x-auto">
 
-                    //   const isSolved = solvedProblems?.some(
-                    //     (sp) => sp._id.toString() === p._id.toString()
-                    // );
+                <table className="w-full text-left border-collapse">
 
-                    return (
-                    <tr
-                        key={p._id}
-                        onClick={() => navigate(`/problem/${p._id}`)}
-                        className="hover:bg-white/5 transition group cursor-pointer"
-                    >
+                    {/* Header */}
+                    <thead className="bg-white/[0.06] backdrop-blur-xl text-gray-300 text-sm uppercase tracking-[0.18em] border-b border-white/10">
+                        <tr>
+                            <th className="px-6 py-5">#</th>
+                            <th className="px-6 py-5">Problem</th>
+                            <th className="px-6 py-5">Difficulty</th>
+                            <th className="px-6 py-5">Category</th>
+                            <th className="px-6 py-5">Status</th>
+                        </tr>
+                    </thead>
 
-                        {/* Serial Number */}
-                        <td className="px-6 py-4 text-gray-400">
-                        {indexOfFirst + index + 1}
-                        </td>
+                    {/* Body */}
+                    <tbody>
 
-                        {/* Title */}
-                        <td className="px-6 py-4 font-medium text-white group-hover:text-cyan-400 transition">
-                        {p.title}
-                        </td>
+                        {currentProblems.map((p, index) => {
 
-                        {/* Difficulty */}
-                        <td className="px-6 py-4">
-                        <span
-                            className={`px-3 py-1 text-xs font-medium rounded-full ${
-                            p.difficultyLevel === "easy"
-                                ? "bg-green-500/10 text-green-400"
-                                : p.difficultyLevel === "medium"
-                                ? "bg-yellow-500/10 text-yellow-400"
-                                : "bg-red-500/10 text-red-400"
-                            }`}
-                        >
-                            {level}
-                        </span>
-                        </td>
+                            const level =
+                                p.difficultyLevel.charAt(0).toUpperCase() +
+                                p.difficultyLevel.slice(1).toLowerCase();
 
-                        {/* Category */}
-                        <td className="px-6 py-4 capitalize text-gray-300">
-                            {p.category}
-                        </td>
+                            return (
+                                <tr
+                                    key={p._id}
+                                    onClick={() => navigate(`/problem/${p._id}`)}
+                                    className="group cursor-pointer border-b border-white/5 bg-white/[0.02] transition duration-300 hover:bg-cyan-400/[0.05]"
+                                >
 
-                        {/* Status (NEW) */}
-                        <td className="px-6 py-4">
-                            {solvedProblems?.some(
-                                (sp) => sp._id.toString() === p._id.toString()
-                            ) ? (
-                                <span className="px-3 py-1 text-xs font-medium rounded-full bg-green-500/10 text-green-400">
-                                Solved
-                                </span>
-                            ) : (
-                                <span className="px-3 py-1 text-xs font-medium rounded-full bg-gray-500/10 text-gray-300">
-                                Unsolved
-                                </span>
-                            )}
-                        </td>
+                                    {/* Number */}
+                                    <td className="px-6 py-5 text-gray-400 font-medium">
+                                        {indexOfFirst + index + 1}
+                                    </td>
 
-                    </tr>
-                    );
-                })}
+                                    {/* Title */}
+                                    <td className="px-6 py-5">
+                                        <span className="font-semibold text-white transition group-hover:text-cyan-300">
+                                            {p.title}
+                                        </span>
+                                    </td>
 
-                </tbody>
+                                    {/* Difficulty */}
+                                    <td className="px-6 py-5">
+                                        <span
+                                            className={`px-3 py-1 text-xs font-bold rounded-full border ${
+                                                p.difficultyLevel === "easy"
+                                                    ? "border-green-400/20 bg-green-500/10 text-green-400"
+                                                    : p.difficultyLevel === "medium"
+                                                    ? "border-yellow-400/20 bg-yellow-500/10 text-yellow-400"
+                                                    : "border-red-400/20 bg-red-500/10 text-red-400"
+                                            }`}
+                                        >
+                                            {level}
+                                        </span>
+                                    </td>
 
-            </table>
-            
+                                    {/* Category */}
+                                    <td className="px-6 py-5">
+                                        <span className="rounded-full bg-white/5 px-3 py-1 text-sm text-gray-300 border border-white/10 capitalize">
+                                            {p.category}
+                                        </span>
+                                    </td>
+
+                                    {/* Status */}
+                                    <td className="px-6 py-5">
+                                        {solvedProblems?.some(
+                                            (sp) => sp._id.toString() === p._id.toString()
+                                        ) ? (
+                                            <span className="rounded-full border border-green-400/20 bg-green-500/10 px-3 py-1 text-xs font-bold text-green-400">
+                                                Solved
+                                            </span>
+                                        ) : (
+                                            <span className="rounded-full border border-gray-400/10 bg-gray-500/10 px-3 py-1 text-xs font-bold text-gray-300">
+                                                Unsolved
+                                            </span>
+                                        )}
+                                    </td>
+
+                                </tr>
+                            );
+                        })}
+
+                    </tbody>
+
+                </table>
+            </div>
         </div>
-        
 
         {/* Pagination */}
-        <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            setCurrentPage={setCurrentPage}
-        />
+        <div className="mt-6">
+            <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                setCurrentPage={setCurrentPage}
+            />
+        </div>
         
     </div>
     </MainLayout>
