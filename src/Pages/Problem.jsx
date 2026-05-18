@@ -143,11 +143,11 @@ return (
 
 </div>
 
-        {/* 🎯 RIGHT - FILTERS */}
+        {/*  RIGHT - FILTERS */}
         <div className="flex flex-wrap gap-3 justify-start md:justify-end">
 
             {/* 🔵 Status */}
-            {/* 🔀 Random Button */}
+            {/* Random Button */}
             <button
             onClick={handleRandomProblem}
             disabled={filteredProblems.length === 0}
@@ -172,7 +172,7 @@ return (
             </SelectContent>
             </Select>
 
-            {/* 🟣 Difficulty */}
+            {/*  Difficulty */}
             <Select
             value={filters.difficultyLevel}
             onValueChange={(value) =>
@@ -190,7 +190,7 @@ return (
             </SelectContent>
             </Select>
 
-            {/* 🟢 Category */}
+            {/*  Category */}
             <Select
             value={filters.category}
             onValueChange={(value) =>

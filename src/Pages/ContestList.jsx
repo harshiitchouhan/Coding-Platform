@@ -13,6 +13,7 @@ import {
   Flame,
   History
 } from "lucide-react";
+import Spinner from "./Spinner";
 
 export default function ContestList() {
   const [contests, setContests] = useState([]);
@@ -156,14 +157,7 @@ export default function ContestList() {
           </div>
 
           {loading ? (
-            <div className={`grid gap-7 ${gridClass}`}>
-              {[1, 2, 3].map((item) => (
-                <div
-                  key={item}
-                  className="h-107.5 animate-pulse rounded-[2rem] border border-white/10 bg-white/5"
-                />
-              ))}
-            </div>
+            <Spinner text ="Loading Contests"/>
           ) : contests.length === 0 ? (
             <div className="mx-auto max-w-3xl rounded-[2rem] border border-white/10 bg-white/6 p-12 text-center backdrop-blur-xl">
               <Trophy className="mx-auto mb-4 text-cyan-300" size={44} />

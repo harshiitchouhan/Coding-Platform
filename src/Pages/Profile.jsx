@@ -33,6 +33,7 @@ import axiosClient from "@/Utils/axiosClient";
 import MainLayout from "./MainLayout";
 import axios from "axios";
 import defaultAvatar  from "../profile.png"
+import Spinner from "./Spinner";
 
 const DIFFICULTY_COLORS = ["#22c55e", "#eab308", "#ef4444"];
 
@@ -201,9 +202,7 @@ const handleRemoveProfileImage = async () => {
   if (loading) {
     return (
       <MainLayout>
-        <div className="flex min-h-screen items-center justify-center text-white">
-          <div className="h-12 w-12 animate-spin rounded-full border-2 border-cyan-400 border-t-transparent" />
-        </div>
+        <Spinner text = "Loading Profile"/>
       </MainLayout>
     );
   }
