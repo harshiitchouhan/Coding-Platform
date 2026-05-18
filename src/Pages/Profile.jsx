@@ -202,7 +202,7 @@ const handleRemoveProfileImage = async () => {
   if (loading) {
     return (
       <MainLayout>
-        <Spinner text = "Loading Profile"/>
+        <Spinner text = "Loading Profile..."/>
       </MainLayout>
     );
   }

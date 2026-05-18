@@ -1,4 +1,4 @@
-export default function Spinner(text="Loading...") {
+export default function Spinner({ text = "Loading..." }) {
   return (
     <div className="min-h-screen w-full relative bg-black overflow-hidden flex items-center justify-center text-white">
 
