@@ -5,7 +5,7 @@ import MainLayout from "./MainLayout";
 import { Search,Shuffle } from "lucide-react";
 import { setProblems } from "@/Redux/Features/problem/problemSlice";
 import Pagination from "./Pagination";
-import tableBg from "../../assets/table.png";
+import tableBg from "../assets/table.png";
 
 import {
   Select,
