@@ -239,7 +239,7 @@ return (
                 <table className="w-full text-left border-collapse">
 
                     {/* Header */}
-                    <thead className="bg-white/[0.06] backdrop-blur-xl text-gray-300 text-sm uppercase tracking-[0.18em] border-b border-white/10">
+                    <thead className="bg-white/6 backdrop-blur-xl text-gray-300 text-sm uppercase tracking-[0.18em] border-b border-white/10">
                         <tr>
                             <th className="px-6 py-5">#</th>
                             <th className="px-6 py-5">Problem</th>
@@ -262,7 +262,7 @@ return (
                                 <tr
                                     key={p._id}
                                     onClick={() => navigate(`/problem/${p._id}`)}
-                                    className="group cursor-pointer border-b border-white/5 bg-white/[0.02] transition duration-300 hover:bg-cyan-400/[0.05]"
+                                    className="group cursor-pointer border-b border-white/5 bg-white/2 transition duration-300 hover:bg-cyan-400/5"
                                 >
 
                                     {/* Number */}
