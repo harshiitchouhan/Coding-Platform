@@ -5,7 +5,7 @@ import { useDispatch , useSelector } from "react-redux";
 import { loginUser } from "../Redux/Features/Auth/authSlice";
 import { Link } from "react-router";
 
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff,Mail } from 'lucide-react';
 import { useState } from 'react';
 
 import {
@@ -93,18 +93,22 @@ function Login (){
                 <Form {...form}>
                   <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
 
-                    {/* Email */}
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="pl-1">Email</FormLabel>
-                          <FormControl>
+                {/* Email */}
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="pl-1">Email</FormLabel>
+
+                        <FormControl>
+                          <div className="relative">
                             <Input
                               placeholder="Enter email"
                               {...field}
-                               className={`bg-white/10 h-10 border-white/20 text-white placeholder:text-gray-300
+                              className={`bg-white/10 h-10 pr-12 border-white/20 text-white placeholder:text-gray-300
+                                [-webkit-text-fill-color:white]
+                                [transition:background-color_9999s_ease-in-out_0s]
                                 ${
                                   form.formState.errors.email
                                     ? "border-red-500 focus-visible:ring-red-500"
@@ -112,12 +116,23 @@ function Login (){
                                     ? "border-green-500 focus-visible:ring-green-500"
                                     : ""
                                 }
-                              `} />
-                          </FormControl>
-                          <FormMessage name = "email" />
-                        </FormItem>
-                      )}
-                    />
+                              `}
+                            />
+
+                            <div
+                              className="absolute right-3 top-1/2 -translate-y-1/2
+                              text-white/40 hover:text-white 
+                              bg-white/5 hover:bg-white/10  p-1.5 rounded-md"
+                            >
+                              <Mail className="h-4 w-4" />
+                            </div>
+                          </div>
+                        </FormControl>
+
+                        <FormMessage name="email" />
+                      </FormItem>
+                    )}
+                  />
         
                     {/* Password */}
                     <FormField
@@ -134,6 +149,8 @@ function Login (){
                                 placeholder="Enter password"
                                 {...field}
                                 className={`bg-white/10 h-10 border-white/20 text-white placeholder:text-gray-300 pr-10
+                                  [-webkit-text-fill-color:white]
+                                  [transition:background-color_9999s_ease-in-out_0s]
                                   ${
                                     form.formState.errors.password
                                       ? "border-red-500 focus-visible:ring-red-500"
@@ -176,10 +193,55 @@ function Login (){
             )}
             <Button
                 type="submit"
-                className="w-full h-12 bg-linear-to-br from-slate-900 via-slate-950 to-slate-900 text-lg transition-colors"> 
+                className="w-full h-12 bg-linear-to-br from-slate-900 via-slate-950 to-slate-900 text-base transition-colors"> 
                 Login   
             </Button> 
+            
+            <div className="flex items-center gap-3">
+              <div className="h-px flex-1 bg-white/10"></div>
 
+              <span className="text-xs text-gray-400">
+                OR
+              </span>
+
+              <div className="h-px flex-1 bg-white/10"></div>
+            </div>
+
+
+            <Button
+              type="button"
+              onClick={() => {
+                  window.location.href =
+                  import.meta.env.VITE_BACKEND_URL + "/auth/google";
+              }}
+              className="w-full h-12 text-base bg-[#0000005c] border-white/10 hover:bg-white/10 text-white flex items-center gap-3"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 48 48"
+                className="w-5 h-5"
+              >
+                <path
+                  fill="#FFC107"
+                  d="M43.611 20.083H42V20H24v8h11.303C33.659 32.657 29.239 36 24 36c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"
+                />
+                <path
+                  fill="#FF3D00"
+                  d="M6.306 14.691l6.571 4.819C14.655 16.108 18.961 13 24 13c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4c-7.682 0-14.347 4.337-17.694 10.691z"
+                />
+                <path
+                  fill="#4CAF50"
+                  d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.219 0-9.626-3.327-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"
+                />
+                <path
+                  fill="#1976D2"
+                  d="M43.611 20.083H42V20H24v8h11.303c-.792 2.237-2.231 4.166-4.084 5.571-.001-.001-.002-.001-.003-.002l6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"
+                />
+              </svg>
+
+              <span>Sign in with Google</span>
+            </Button>
+            
             <div className="text-center text-sm text-gray-300">
                 <span className="pr-2">Don't have an Account</span>
                 
