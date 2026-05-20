@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import axiosClient from "@/Utils/axiosClient";
 import { useSelector, useDispatch } from "react-redux";
-import { setProblems } from "../Redux/Features/problem/problemSlice";
+import { setProblems } from "../../Redux/Features/problem/problemSlice";
 import { NavLink, useNavigate } from "react-router";
-import MainLayout from "./MainLayout";
-import Pagination from "./Pagination";
-import AdminNavbar from "./AdminNavbar";
+import MainLayout from "../layouts/MainLayout";
+import Pagination from "../shared/Pagination";
+import AdminNavbar from "../admin/AdminNavbar";
 
 export default function AdminVideo() {
   const dispatch = useDispatch();

@@ -3,14 +3,14 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/ui/dropdown-menu";
 
 import { Link } from "react-router";
-import { logOut } from "../Redux/Features/Auth/authSlice";
+import { logOut } from "../../Redux/Features/Auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
-import logo from "../CodeBit.png";
+import logo from "../../CodeBit.png";
 import { useNavigate } from "react-router";
-import profile from "../profile.png"
+import profile from "../../profile.png"
 
 function Navbar() {
 

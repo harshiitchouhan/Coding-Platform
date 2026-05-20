@@ -1,6 +1,6 @@
 import { useState } from "react";
 import SubmissionHistory from "./SubmissionHistory";
-import ContestSubmissionHistory from "./ContestSubmissionHistory";
+import ContestSubmissionHistory from "../contests/ContestSubmissionHistory";
 import AIAssistant from "./AIAssistant";
 import Editorial from "./Editorial";
 

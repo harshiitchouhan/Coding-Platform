@@ -1,10 +1,10 @@
-import MainLayout from "./MainLayout";
+import MainLayout from "../layouts/MainLayout";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import axiosClient from "@/Utils/axiosClient";
-import AdminNavbar from "./AdminNavbar";
+import AdminNavbar from "../admin/AdminNavbar";
 
 
 const formSchema = z.object({

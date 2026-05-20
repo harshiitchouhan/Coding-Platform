@@ -1,10 +1,10 @@
 import axiosClient from "@/Utils/axiosClient";
 import { useEffect, useState } from "react"
 import { useSelector,useDispatch } from "react-redux";
-import MainLayout from "./MainLayout";
+import MainLayout from "../components/layouts/MainLayout";
 import { Search,Shuffle } from "lucide-react";
 import { setProblems } from "@/Redux/Features/problem/problemSlice";
-import Pagination from "./Pagination";
+import Pagination from "../components/shared/Pagination";
 import tableBg from "../assets/table.png";
 
 import {
@@ -13,7 +13,7 @@ import {
   SelectValue,
   SelectContent,
   SelectItem,
-} from "@/components/ui/select";
+} from "@/ui/select";
 import { useNavigate } from "react-router";
 
 export default function Problem(){

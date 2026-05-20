@@ -30,10 +30,10 @@ import {
 } from "recharts";
 
 import axiosClient from "@/Utils/axiosClient";
-import MainLayout from "./MainLayout";
+import MainLayout from "../components/layouts/MainLayout";
 import axios from "axios";
 import defaultAvatar  from "../profile.png"
-import Spinner from "./Spinner";
+import Spinner from "../components/shared/Spinner";
 
 const DIFFICULTY_COLORS = ["#22c55e", "#eab308", "#ef4444"];
 

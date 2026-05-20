@@ -12,7 +12,7 @@ import {
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
-import Footer from "./Footer";
+import Footer from "../components/layouts/Footer";
 import profile from "../profile.png"
 
 const questions = [

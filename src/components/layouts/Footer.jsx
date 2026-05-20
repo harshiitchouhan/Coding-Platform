@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import logo from "../CodeBit.png";
+import logo from "../../CodeBit.png";
 
 export default function Footer() {
   return (

@@ -162,7 +162,7 @@ export default function Hero() {
         </section>
 
       {/* COMPANIES */}
-      <section className="relative z-10 px-6 md:px-16 py-20">
+      <section className="relative z-10 px-6 md:px-16 py-12">
         <div className="mx-auto max-w-6xl text-center">
           <h2 className="text-3xl md:text-5xl font-bold text-white">
             Practice with Real Interview Questions From
@@ -182,7 +182,7 @@ export default function Hero() {
       </section>
 
       {/* HOW IT WORKS */}
-      <section className="relative z-10 px-6 md:px-16 py-20 text-white">
+      <section className="relative z-10 px-6 md:px-16 py-12 text-white">
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
             <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl border border-cyan-300/20 bg-cyan-300/10">
@@ -225,7 +225,7 @@ export default function Hero() {
       </section>
 
       {/* CTA */}
-        <div className="mt-24 px-6 md:px-16 mb-24 text-white">
+        <div className="mt-18 px-6 md:px-16 mb-20 text-white">
 
                 <div className="max-w-4xl mx-auto text-center p-10 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md transition-all duration-300 ease-out will-change-transform hover:-translate-y-2 hover:scale-[1.05] hover:border-cyan-400/40 
                                 hover:shadow-[0_10px_40px_rgba(56,189,248,0.25)]">

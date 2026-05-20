@@ -3,8 +3,8 @@ import { useForm } from "react-hook-form";
 import axiosClient from "@/Utils/axiosClient";
 import { useState,useEffect } from "react";
 import axios from "axios";
-import MainLayout from "./MainLayout";
-import AdminNavbar from "./AdminNavbar";
+import MainLayout from "../layouts/MainLayout";
+import AdminNavbar from "../admin/AdminNavbar";
 
 export default function AdminUpload() {
   const { problemId } = useParams();

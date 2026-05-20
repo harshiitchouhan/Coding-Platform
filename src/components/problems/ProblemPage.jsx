@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import axiosClient from "@/Utils/axiosClient";
-import LeftPanel from "./LeftPanel";
-import RightPanel from "./RightPanel";
+import LeftPanel from "../problems/LeftPanel";
+import RightPanel from "../problems/RightPanel";
 import { useParams } from "react-router";
-import MainLayout from "./MainLayout";
+import MainLayout from "../layouts/MainLayout";
 import Split from "react-split";
 
 export default function ProblemPage() {

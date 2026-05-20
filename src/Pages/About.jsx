@@ -12,7 +12,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 
-import Footer from "./Footer";
+import Footer from "../components/layouts/Footer";
 
 export default function About() {
   const stats = [

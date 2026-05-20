@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axiosClient from "@/Utils/axiosClient";
-import MainLayout from "./MainLayout";
+import MainLayout from "../layouts/MainLayout";
 import { useNavigate } from "react-router";
 import {
   Search,
@@ -11,8 +11,8 @@ import {
   Eye,
   Trash2,
 } from "lucide-react";
-import AdminNavbar from "./AdminNavbar";
-import Pagination from "./Pagination";
+import AdminNavbar from "../admin/AdminNavbar";
+import Pagination from "../shared/Pagination";
 
 export default function AdminUsers() {
   const navigate = useNavigate();

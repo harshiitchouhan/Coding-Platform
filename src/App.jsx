@@ -5,29 +5,29 @@ const Login = lazy(() => import("./Pages/Login"));
 const Signup = lazy(() => import("./Pages/Signup"));
 
 const Admin = lazy(() => import("./Pages/Admin"));
-const AdminPanel = lazy(() => import("./Pages/AdminPanel"));
-const UpdateProblem = lazy(()=> import ("./Pages/UpdateProblem"));
-const UpdateList = lazy(()=> import("./Pages/UpdateList"))
-const DeleteProblem = lazy(() => import("./Pages/DeleteProblem"));
+const AdminPanel = lazy(() => import("./components/admin/AdminPanel"));
+const UpdateProblem = lazy(()=> import ("./components/admin/UpdateProblem"));
+const UpdateList = lazy(()=> import("./components/admin/UpdateList"))
+const DeleteProblem = lazy(() => import("./components/admin/DeleteProblem"));
 
-const ProblemPage = lazy(() => import("./Pages/ProblemPage"));
+const ProblemPage = lazy(() => import("./components/problems/ProblemPage"));
 const About = lazy(() => import("./Pages/About"));
 const Careers = lazy(() => import("./Pages/Careers"));
 const Problem = lazy(() => import("./Pages/Problem"));
-const Spinner = lazy(()=> import("./Pages/Spinner"));
-const AdminVideo = lazy(()=> import("./Pages/AdminVideo"))
-const AdminUpload = lazy(()=> import("./Pages/AdminUpload"));
+const Spinner = lazy(()=> import("./components/shared/Spinner"));
+const AdminVideo = lazy(()=> import("./components/admin/AdminVideo"))
+const AdminUpload = lazy(()=> import("./components/admin/AdminUpload"));
 const Profile = lazy(()=> import("./Pages/Profile"));
-const AdminUsers = lazy(()=> import("./Pages/AdminUsers"));
-const AdminUserDetails = lazy(()=> import("./Pages/AdminUserDetails")); 
+const AdminUsers = lazy(()=> import("./components/admin/AdminUsers"));
+const AdminUserDetails = lazy(()=> import("./components/admin/AdminUserDetails")); 
 const ContestList = lazy(()=> import("./Pages/ContestList")); 
-const SingleContest = lazy(()=> import("./Pages/SingleContest")); 
-const ContestProblemPage = lazy(()=> import("./Pages/ContestProblemPage")); 
-const Leaderboard = lazy(()=> import("./Pages/Leaderboard")); 
-const ContestHistory = lazy(()=> import("./Pages/ContestHistory")); 
+const SingleContest = lazy(()=> import("./components/contests/SingleContest")); 
+const ContestProblemPage = lazy(()=> import("./components/contests/ContestProblemPage")); 
+const Leaderboard = lazy(()=> import("./components/contests/Leaderboard")); 
+const ContestHistory = lazy(()=> import("./components/contests/ContestHistory")); 
 
 
-const NotFoundPage = lazy(()=> import("./Pages/NotFoundPage"));
+const NotFoundPage = lazy(()=> import("./components/shared/NotFoundPage"));
 
 
 // const InterviewLayout = lazy(()=> import("./Pages/InterviewLayout"));
@@ -43,7 +43,7 @@ import { Routes,Route, Navigate } from "react-router"
 import {useState, useEffect } from "react"
 import { useDispatch , useSelector } from "react-redux"
 import { loadUser } from "./Redux/Features/Auth/authSlice"
-import Authloader from "./Pages/Authloader"
+import Authloader from "./components/shared/Authloader"
 import Interview from "./Pages/Interview";
 // import MainLayout from "./Pages/MainLayout";
 

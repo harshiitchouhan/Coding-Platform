@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import axiosClient from "@/Utils/axiosClient";
-import MainLayout from "./MainLayout";
-import trophyBg from "../assets/trophy.png";
-import tableBg from "../assets/trophyTable.png";
+import MainLayout from "../layouts/MainLayout";
+import trophyBg from "../../assets/trophyTable.png";
+import tableBg from "../../assets/trophy.png";
 
 import {
   ArrowLeft,

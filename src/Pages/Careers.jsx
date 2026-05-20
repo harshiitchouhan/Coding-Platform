@@ -1,5 +1,5 @@
-import Navbar from "./Navbar";
-import Footer from "./Footer";
+import Navbar from "../components/layouts/Navbar";
+import Footer from "../components/layouts/Footer";
 
 export default function Careers() {
   return (

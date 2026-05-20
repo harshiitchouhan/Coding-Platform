@@ -11,7 +11,7 @@ import {
 
 import { Link, useLocation, useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
-import { logOut } from "../Redux/Features/Auth/authSlice";
+import { logOut } from "../..//Redux/Features/Auth/authSlice";
 
 export default function AdminNavbar() {
   const location = useLocation();

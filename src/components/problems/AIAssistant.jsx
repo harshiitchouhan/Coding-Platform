@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
+import { Button } from "@/ui/button";
+import { Input } from "@/ui/input";
+import { Card } from "@/ui/card";
 import { Sparkles, Send } from "lucide-react";
 import axiosClient from "@/Utils/axiosClient";
 import ReactMarkdown from "react-markdown";

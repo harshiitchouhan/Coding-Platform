@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link,useNavigate } from "react-router";
 import axiosClient from "@/Utils/axiosClient";
-import MainLayout from "./MainLayout";
+import MainLayout from "../components/layouts/MainLayout";
 import {
   Trophy,
   Clock,
@@ -13,7 +13,7 @@ import {
   Flame,
   History
 } from "lucide-react";
-import Spinner from "./Spinner";
+import Spinner from "../components/shared/Spinner";
 
 export default function ContestList() {
   const [contests, setContests] = useState([]);

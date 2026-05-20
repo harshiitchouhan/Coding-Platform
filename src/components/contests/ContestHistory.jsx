@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import axiosClient from "@/Utils/axiosClient";
-import MainLayout from "./MainLayout";
+import MainLayout from "../layouts/MainLayout";
 import {
   ArrowLeft,
   Trophy,
@@ -12,7 +12,7 @@ import {
   ArrowRight,
   History,
 } from "lucide-react";
-import Pagination from "./Pagination";
+import Pagination from "../shared/Pagination";
 
 
 export default function ContestHistory() {

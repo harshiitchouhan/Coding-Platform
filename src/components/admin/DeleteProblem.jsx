@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import axiosClient from "@/Utils/axiosClient";
 import { Trash2 } from "lucide-react";
-import MainLayout from "./MainLayout";
+import MainLayout from "../layouts/MainLayout";
 import { useSelector, useDispatch } from "react-redux";
-import { setProblems, deleteProblem} from "../Redux/Features/problem/problemSlice"
-import Pagination from "./Pagination";
-import AdminNavbar from "./AdminNavbar";
+import { setProblems, deleteProblem} from "../../Redux/Features/problem/problemSlice"
+import Pagination from "../shared/Pagination";
+import AdminNavbar from "../admin/AdminNavbar";
 
 
 export default function DeleteProblem() {

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import axiosClient from "@/Utils/axiosClient";
-import MainLayout from "./MainLayout";
+import MainLayout from "../layouts/MainLayout";
 import { useNavigate, useParams } from "react-router";
-import Pagination from "./Pagination";
+import Pagination from "../shared/Pagination";
 import {
   ArrowLeft,
   Ban,

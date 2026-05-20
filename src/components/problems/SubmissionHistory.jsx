@@ -15,6 +15,7 @@ export default function SubmissionHistory({ problemId }) {
       } catch (err) {
         console.log(err);
       }
+      
     };
 
     fetchSubmissions();

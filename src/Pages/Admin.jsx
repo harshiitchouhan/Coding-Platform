@@ -1,6 +1,6 @@
 import { useNavigate, useLocation } from "react-router";
 import { Plus, Edit, Trash2, Video,Users } from "lucide-react";
-import AdminNavbar from "./AdminNavbar";
+import AdminNavbar from "../components/admin/AdminNavbar";
 
 export default function Admin() {
   const navigate = useNavigate();

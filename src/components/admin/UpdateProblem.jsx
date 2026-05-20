@@ -4,9 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import axiosClient from "@/Utils/axiosClient";
 import { useParams } from "react-router";
-import MainLayout from "./MainLayout";
+import MainLayout from "../layouts/MainLayout";
 import { updateProblem } from "@/Redux/Features/problem/problemSlice";
-import AdminNavbar from "./AdminNavbar";
+import AdminNavbar from "../admin/AdminNavbar";
 
 
 const formSchema = z.object({
