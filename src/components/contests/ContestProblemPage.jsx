@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import Split from "react-split";
 import axiosClient from "@/Utils/axiosClient";
-import LeftPanel from "../components/problems/LeftPanel";
-import RightPanel from "../components/problems/RightPanel";
+import LeftPanel from "../problems/LeftPanel";
+import RightPanel from "../problems/RightPanel";
 
 import {
   ArrowLeft,
