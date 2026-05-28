@@ -19,6 +19,7 @@ import { loadUser } from "../Redux/Features/Auth/authSlice"
 import {
   PieChart,
   Pie,
+  Cell,
   ResponsiveContainer,
   Tooltip,
   BarChart,
