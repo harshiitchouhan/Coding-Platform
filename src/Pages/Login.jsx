@@ -3,7 +3,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch , useSelector } from "react-redux";
 import { loginUser } from "../Redux/Features/Auth/authSlice";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 import { Eye, EyeOff,Mail } from 'lucide-react';
 import { useState } from 'react';
@@ -34,6 +34,7 @@ function Login (){
   const dispatch = useDispatch();
   const {error} = useSelector((state)=>state.auth);
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
     // useEffect(()=>{
     //   if(isAuthenticated){
@@ -51,9 +52,22 @@ function Login (){
         mode: "onSubmit",
       });
     
-      function onSubmit(data) {
-        dispatch(loginUser(data));
-      }
+      async function onSubmit(data) {
+        
+        const result = await dispatch(loginUser(data));
+
+          if (loginUser.rejected.match(result)) {
+
+            if (result.payload?.isVerified === false) {
+
+              navigate("/verify-email", {
+                state: {
+                  email: result.payload.email,
+                },
+              });
+
+            }
+        }}
 
     return(
         <>

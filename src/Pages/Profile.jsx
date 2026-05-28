@@ -19,7 +19,6 @@ import { loadUser } from "../Redux/Features/Auth/authSlice"
 import {
   PieChart,
   Pie,
-  Cell,
   ResponsiveContainer,
   Tooltip,
   BarChart,
@@ -201,9 +200,7 @@ const handleRemoveProfileImage = async () => {
 
   if (loading) {
     return (
-      <MainLayout>
         <Spinner text = "Loading Profile..."/>
-      </MainLayout>
     );
   }
 

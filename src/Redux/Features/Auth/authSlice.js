@@ -8,7 +8,7 @@ export const registeredUser = createAsyncThunk(
         try{
 
             const response = await axiosClient.post("/user/register" , userData);
-            return response.data.user;
+            return response.data;
 
             // response kuch aisa hota hai
             // response = {
@@ -35,7 +35,7 @@ export const loginUser = createAsyncThunk(
             return response.data.user;
         }
         catch(error){
-            return rejectWithValue(error.response?.data?.message || error.message);
+            return rejectWithValue (error.response?.data || {message: error.message});
         }
     }
 )
@@ -98,12 +98,14 @@ const authSlice = createSlice({
         })
 
         //fulfilled
-        .addCase(registeredUser.fulfilled , (state,action)=>{
-            state.user = action.payload;
+        .addCase(registeredUser.fulfilled, (state, action) => {
             state.loading = false;
-            state.isAuthenticated = !!action.payload;
             state.error = null;
-        })
+
+            // OTP flow: account created, but user not logged in yet
+            state.user = null;
+            state.isAuthenticated = false;
+            })
 
         //rejected
         .addCase(registeredUser.rejected , (state,action)=>{
@@ -130,12 +132,11 @@ const authSlice = createSlice({
         })
 
         //rejected
-        .addCase(loginUser.rejected , (state,action)=>{
-            state.error = action.payload || "Some Error Occured";
+        .addCase(loginUser.rejected, (state, action) => {
+            state.error = action.payload?.message || "Some Error Occured";
             state.isAuthenticated = false;
             state.loading = false;
             state.user = null;
-
         })
 
         //authCheck

@@ -3,6 +3,7 @@ import { lazy, Suspense } from "react";
 const HomePage = lazy(() => import("./Pages/HomePage"));
 const Login = lazy(() => import("./Pages/Login"));
 const Signup = lazy(() => import("./Pages/Signup"));
+const VerifyEmail = lazy(() => import("./Pages/VerifyEmail"));
 
 const Admin = lazy(() => import("./Pages/Admin"));
 const AdminPanel = lazy(() => import("./components/admin/AdminPanel"));
@@ -25,27 +26,16 @@ const SingleContest = lazy(()=> import("./components/contests/SingleContest"));
 const ContestProblemPage = lazy(()=> import("./components/contests/ContestProblemPage")); 
 const Leaderboard = lazy(()=> import("./components/contests/Leaderboard")); 
 const ContestHistory = lazy(()=> import("./components/contests/ContestHistory")); 
-
-
 const NotFoundPage = lazy(()=> import("./components/shared/NotFoundPage"));
 
 
-// const InterviewLayout = lazy(()=> import("./Pages/InterviewLayout"));
-// const InterviewHome = lazy(()=> import("./Pages/InterviewHome"));
-// const QuizPage = lazy(()=> import("./Pages/QuizPage"));
-// const ResultPage = lazy(()=> import("./Pages/ResultPage"));
-// // const InterviewWrapper = lazy (()=>import ("./Pages/InterViewWrapper"))
 
-
-// import ProfilePage from "./pages/ProfilePage";
-
-import { Routes,Route, Navigate } from "react-router"
+import { Routes,Route, Navigate,useLocation } from "react-router"
 import {useState, useEffect } from "react"
 import { useDispatch , useSelector } from "react-redux"
 import { loadUser } from "./Redux/Features/Auth/authSlice"
 import Authloader from "./components/shared/Authloader"
 import Interview from "./Pages/Interview";
-// import MainLayout from "./Pages/MainLayout";
 
 
 
@@ -57,11 +47,6 @@ function App() {
   // need to check isAuthenticated // if true -> Home Page else -> Login/Signup
   const {isAuthenticated,loading,user} = useSelector((state)=>state.auth);
   const dispatch = useDispatch();
-
-  // check if user is authenticated
-  // useEffect(()=>{
-  //   dispatch(authCheck());
-  // },[dispatch]);
 
   // bring back user details if he/she refreshes the page
     useEffect(() => {
@@ -113,10 +98,12 @@ const protect = (component) => {
   return isAuthenticated ? component : <Navigate to="/login" replace />;
 };
 
+const location = useLocation();
+
 const showLoader = useDelayedLoader(loading);
 if (showLoader) return <Authloader />
 if (loading) return null; // prevents flicker completely
-// Flicker Added
+// // Flicker Added
 
 
   return (
@@ -161,7 +148,7 @@ if (loading) return null; // prevents flicker completely
     <Route
       path="/login"
       element={
-        <Suspense fallback={<Spinner />}>
+        <Suspense fallback={<Authloader />}>
           {isAuthenticated ? <Navigate to="/" /> : <Login />}
         </Suspense>
       }
@@ -170,7 +157,7 @@ if (loading) return null; // prevents flicker completely
     <Route
       path="/signup"
       element={
-        <Suspense fallback={<Spinner />}>
+        <Suspense fallback={<Authloader />}>
           {isAuthenticated ? <Navigate to="/" /> : <Signup />}
         </Suspense>
       }
@@ -183,6 +170,19 @@ if (loading) return null; // prevents flicker completely
         <Suspense fallback={<Spinner />}>
           {protect(<Problem />)}
         </Suspense>
+      }
+    />
+
+    <Route
+      path="/verify-email"
+      element={
+        location.state?.email ? (
+          <Suspense fallback={<Spinner />}>
+            <VerifyEmail />
+          </Suspense>
+        ) : (
+          <Navigate to="/signup" replace />
+        )
       }
     />
 
@@ -387,6 +387,8 @@ if (loading) return null; // prevents flicker completely
         </Suspense>
       }
     />
+
+
 
   </Routes>
 );
