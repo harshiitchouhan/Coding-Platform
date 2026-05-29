@@ -45,25 +45,16 @@ function Signup() {
   const dispatch = useDispatch();
   //to navigate to a page
   const navigate = useNavigate();
-  // const {isAuthenticated,loading,error} = useSelector((state)=>state.auth);
+  const {isAuthenticated,loading,error} = useSelector((state)=>state.auth);
 
   const [showPassword, setShowPassword] = useState(false);  // for password show and hide
   const [showConfirm, setShowConfirm] = useState(false);  // for confirm show and hide eye
-  const [submitting, setSubmitting] = useState(false);
-  const [localError, setLocalError] = useState(null);
-
-  useEffect(() => {
-  if (!localError) return;
-  const timer = setTimeout(() => setLocalError(null), 5000);
-  return () => clearTimeout(timer); // cleanup if error changes before 5s
-}, [localError]);
-
   // if isauth true then go to homepage
-  // useEffect(()=>{
-  //   if(isAuthenticated){
-  //     navigate("/")  // this navigate is diff from routing one
-  //   }
-  // },[isAuthenticated])
+  useEffect(()=>{
+    if(isAuthenticated){
+      navigate("/")  // this navigate is diff from routing one
+    }
+  },[isAuthenticated])
 
   
 
@@ -78,28 +69,16 @@ function Signup() {
   });
 
   // connecting backend and frontend
-//  async function onSubmit(data) {
-//   const result =  await dispatch(registeredUser(data)).unwrap();
+ async function onSubmit(data) {
+  const result =  await dispatch(registeredUser(data)).unwrap();
 
-//     // await zaruri h otherwise promise return kr rha instead of json
-//     // console.log("REGISTER RESULT:", result);
-//     navigate("/verify-email", {
-//       state: {
-//         email: data.email,
-//       },
-//     });
-// }
-
-async function onSubmit(data) {
-  setSubmitting(true);
-  setLocalError(null);
-  try {
-    await dispatch(registeredUser(data)).unwrap();
-    navigate("/verify-email", { state: { email: data.email } });
-  } catch (err) {
-    setSubmitting(false);
-    setLocalError(err); // err is the string from rejectWithValue
-  }
+    // await zaruri h otherwise promise return kr rha instead of json
+    // console.log("REGISTER RESULT:", result);
+    navigate("/verify-email", {
+      state: {
+        email: data.email,
+      },
+    });
 }
   
 
@@ -143,9 +122,9 @@ async function onSubmit(data) {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
 
-            {localError && (
+            {error && (
               <div className="text-red-400 text-sm bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
-                {localError}
+                {error}
               </div>
             )}
 
@@ -339,7 +318,7 @@ async function onSubmit(data) {
 
             {/* Button Bana Diya To Submit Form */}
 
-            {/* <Button
+            <Button
                 type="submit"
                 disabled={loading}
                 className="w-full h-12 text-lg bg-linear-to-br from-slate-900 via-slate-950 to-slate-900 hover:opacity-90 transition-all disabled:opacity-60"
@@ -352,21 +331,7 @@ async function onSubmit(data) {
                 ) : (
                   "Sign Up"
                 )}
-            </Button> */}
-
-          <Button 
-            type="submit" 
-            disabled={submitting}
-            className="w-full h-12 text-lg bg-linear-to-br from-slate-900 via-slate-950 to-slate-900 hover:opacity-90 transition-all disabled:opacity-60">
-            {submitting ? (
-              <div className="flex items-center gap-2">
-                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                Creating Account...
-              </div>
-            ) : (
-              "Sign Up"
-            )}
-          </Button>
+            </Button>
 
             <div className="flex items-center gap-3">
               <div className="h-px flex-1 bg-white/10"></div>
