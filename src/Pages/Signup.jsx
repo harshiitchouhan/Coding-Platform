@@ -71,18 +71,15 @@ function Signup() {
 
   // connecting backend and frontend
  async function onSubmit(data) {
-  const result =  await dispatch(registeredUser(data));
+  const result =  await dispatch(registeredUser(data)).unwrap();
 
     // await zaruri h otherwise promise return kr rha instead of json
-    console.log("REGISTER RESULT:", result);
-
-  if (registeredUser.fulfilled.match(result)) {
+    // console.log("REGISTER RESULT:", result);
     navigate("/verify-email", {
       state: {
         email: data.email,
       },
     });
-  }
 }
   
 
