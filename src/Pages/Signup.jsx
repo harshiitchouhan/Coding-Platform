@@ -51,11 +51,11 @@ function Signup() {
   const [showConfirm, setShowConfirm] = useState(false);  // for confirm show and hide eye
 
   // if isauth true then go to homepage
-  useEffect(()=>{
-    if(isAuthenticated){
-      navigate("/")  // this navigate is diff from routing one
-    }
-  },[isAuthenticated])
+  // useEffect(()=>{
+  //   if(isAuthenticated){
+  //     navigate("/")  // this navigate is diff from routing one
+  //   }
+  // },[isAuthenticated])
 
   
 
