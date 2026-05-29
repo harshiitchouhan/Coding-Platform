@@ -45,11 +45,19 @@ function Signup() {
   const dispatch = useDispatch();
   //to navigate to a page
   const navigate = useNavigate();
-  const {isAuthenticated,loading,error} = useSelector((state)=>state.auth);
+  // const {isAuthenticated,loading,error} = useSelector((state)=>state.auth);
 
   const [showPassword, setShowPassword] = useState(false);  // for password show and hide
   const [showConfirm, setShowConfirm] = useState(false);  // for confirm show and hide eye
   const [submitting, setSubmitting] = useState(false);
+  const [localError, setLocalError] = useState(null);
+
+  useEffect(() => {
+  if (!localError) return;
+  const timer = setTimeout(() => setLocalError(null), 5000);
+  return () => clearTimeout(timer); // cleanup if error changes before 5s
+}, [localError]);
+
   // if isauth true then go to homepage
   // useEffect(()=>{
   //   if(isAuthenticated){
@@ -84,12 +92,13 @@ function Signup() {
 
 async function onSubmit(data) {
   setSubmitting(true);
+  setLocalError(null);
   try {
     await dispatch(registeredUser(data)).unwrap();
     navigate("/verify-email", { state: { email: data.email } });
-    // don't setSubmitting(false) here — let component unmount
   } catch (err) {
-    setSubmitting(false); // only reset on error
+    setSubmitting(false);
+    setLocalError(err); // err is the string from rejectWithValue
   }
 }
   
@@ -134,9 +143,9 @@ async function onSubmit(data) {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
 
-            {error && (
+            {localError && (
               <div className="text-red-400 text-sm bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
-                {error}
+                {localError}
               </div>
             )}
 
