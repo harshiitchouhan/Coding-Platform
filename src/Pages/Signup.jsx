@@ -49,7 +49,7 @@ function Signup() {
 
   const [showPassword, setShowPassword] = useState(false);  // for password show and hide
   const [showConfirm, setShowConfirm] = useState(false);  // for confirm show and hide eye
-
+  const [submitting, setSubmitting] = useState(false);
   // if isauth true then go to homepage
   // useEffect(()=>{
   //   if(isAuthenticated){
@@ -70,16 +70,27 @@ function Signup() {
   });
 
   // connecting backend and frontend
- async function onSubmit(data) {
-  const result =  await dispatch(registeredUser(data)).unwrap();
+//  async function onSubmit(data) {
+//   const result =  await dispatch(registeredUser(data)).unwrap();
 
-    // await zaruri h otherwise promise return kr rha instead of json
-    // console.log("REGISTER RESULT:", result);
-    navigate("/verify-email", {
-      state: {
-        email: data.email,
-      },
-    });
+//     // await zaruri h otherwise promise return kr rha instead of json
+//     // console.log("REGISTER RESULT:", result);
+//     navigate("/verify-email", {
+//       state: {
+//         email: data.email,
+//       },
+//     });
+// }
+
+async function onSubmit(data) {
+  setSubmitting(true);
+  try {
+    await dispatch(registeredUser(data)).unwrap();
+    navigate("/verify-email", { state: { email: data.email } });
+    // don't setSubmitting(false) here — let component unmount
+  } catch (err) {
+    setSubmitting(false); // only reset on error
+  }
 }
   
 
@@ -319,19 +330,15 @@ function Signup() {
 
             {/* Button Bana Diya To Submit Form */}
 
-            <Button
-                type="submit"
-                disabled={loading}
-                className="w-full h-12 text-lg bg-linear-to-br from-slate-900 via-slate-950 to-slate-900 hover:opacity-90 transition-all disabled:opacity-60"
-              >
-                {loading ? (
-                  <div className="flex items-center gap-2">
-                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                    Creating Account...
-                  </div>
-                ) : (
-                  "Sign Up"
-                )}
+            <Button type="submit" disabled={submitting}>
+              {submitting ? (
+                <div className="flex items-center gap-2">
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                  Creating Account...
+                </div>
+              ) : (
+                "Sign Up"
+              )}
             </Button>
 
             <div className="flex items-center gap-3">
