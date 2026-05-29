@@ -330,16 +330,34 @@ async function onSubmit(data) {
 
             {/* Button Bana Diya To Submit Form */}
 
-            <Button type="submit" disabled={submitting}>
-              {submitting ? (
-                <div className="flex items-center gap-2">
-                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                  Creating Account...
-                </div>
-              ) : (
-                "Sign Up"
-              )}
-            </Button>
+            {/* <Button
+                type="submit"
+                disabled={loading}
+                className="w-full h-12 text-lg bg-linear-to-br from-slate-900 via-slate-950 to-slate-900 hover:opacity-90 transition-all disabled:opacity-60"
+              >
+                {loading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                    Creating Account...
+                  </div>
+                ) : (
+                  "Sign Up"
+                )}
+            </Button> */}
+
+          <Button 
+            type="submit" 
+            disabled={submitting}
+            className="w-full h-12 text-lg bg-linear-to-br from-slate-900 via-slate-950 to-slate-900 hover:opacity-90 transition-all disabled:opacity-60">
+            {submitting ? (
+              <div className="flex items-center gap-2">
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                Creating Account...
+              </div>
+            ) : (
+              "Sign Up"
+            )}
+          </Button>
 
             <div className="flex items-center gap-3">
               <div className="h-px flex-1 bg-white/10"></div>
