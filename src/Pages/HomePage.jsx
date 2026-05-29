@@ -1,8 +1,20 @@
 import Navbar from "../components/layouts/Navbar";
 import Hero from "./Hero";
 import Footer from "../components/layouts/Footer"
+import { useEffect } from "react";
 
 function HomePage() {
+
+    useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+
+    if (token) {
+      // ✅ same domain se cookie set ho rahi hai — incognito mein bhi kaam karega
+      document.cookie = `token=${token}; path=/; max-age=86400; secure; samesite=strict`;
+      window.history.replaceState({}, "", "/"); // URL clean karo
+    }
+  }, []);
 
   return (
     <div className="min-h-screen w-full relative bg-black overflow-hidden">
