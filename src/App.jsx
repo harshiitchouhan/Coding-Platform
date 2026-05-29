@@ -173,7 +173,7 @@ if (loading) return null; // prevents flicker completely
       }
     />
 
-    {/* <Route
+    <Route
       path="/verify-email"
       element={
         location.state?.email ? (
@@ -184,12 +184,12 @@ if (loading) return null; // prevents flicker completely
           <Navigate to="/signup" replace />
         )
       }
-    /> */}
+    />
 
-    <Route
+    {/* <Route
     path="/verify-email"
     element={<VerifyEmail/>}
-    />
+    /> */}
 
     <Route
       path="/problem/:id"
