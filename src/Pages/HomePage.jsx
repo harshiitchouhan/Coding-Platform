@@ -10,15 +10,15 @@ function HomePage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get("token");
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get("token");
 
-    if (token) {
-      document.cookie = `token=${token}; path=/; max-age=86400; secure; samesite=strict`;
-      window.history.replaceState({}, "", "/");
-      dispatch(loadUser()); // ✅ bas yeh karo
-    }
-  }, []);
+  if (token) {
+    localStorage.setItem("token", token); // localStorage mein store karo
+    window.history.replaceState({}, "", "/");
+    dispatch(loadUser());
+  }
+}, []);
 
   return (
     <div className="min-h-screen w-full relative bg-black overflow-hidden">
