@@ -2,17 +2,21 @@ import Navbar from "../components/layouts/Navbar";
 import Hero from "./Hero";
 import Footer from "../components/layouts/Footer"
 import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { loadUser } from "@/Redux/Features/Auth/authSlice";
 
 function HomePage() {
 
-    useEffect(() => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get("token");
 
     if (token) {
-      // ✅ same domain se cookie set ho rahi hai — incognito mein bhi kaam karega
       document.cookie = `token=${token}; path=/; max-age=86400; secure; samesite=strict`;
-      window.history.replaceState({}, "", "/"); // URL clean karo
+      window.history.replaceState({}, "", "/");
+      dispatch(loadUser()); // ✅ bas yeh karo
     }
   }, []);
 
