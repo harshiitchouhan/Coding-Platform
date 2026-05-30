@@ -26,14 +26,14 @@ const formSchema = z.object({
     name: z.string().min(3, "Min Length Should Be 3").max(15, "Max Length Should Be 15"),
     email: z.email("Invalid Email"),
    password: z
-  .string()
-  .min(8, "Password must be at least 8 characters")
-  .regex(
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).+$/,
-    "Password must include uppercase, lowercase, number, and special character"
-  ),
-    confirm: z.string(),
-  })
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).+$/,
+      "Password must include uppercase, lowercase, number, and special character"
+    ),
+      confirm: z.string(),
+    })
   .refine((data) => data.password === data.confirm, {
     message: "Passwords don't match",
     path: ["confirm"],

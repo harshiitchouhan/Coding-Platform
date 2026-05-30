@@ -154,9 +154,22 @@ function Login (){
                       name="password"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="pl-1">Password</FormLabel>
+                          <div className="flex items-center justify-between mb-2">
+                            <FormLabel className="pl-1">
+                              Password
+                            </FormLabel>
+
+                            <Link
+                              to="/forget-password"
+                              className="text-sm text-blue-500 font-medium hover:text-blue-300"
+                            >
+                              Forgot Password?
+                            </Link>
+                          </div>
                             <FormControl>
                             <div className="relative">
+
+                              
                               
                               <Input
                                 type={showPassword ? "text" : "password"}
@@ -174,6 +187,8 @@ function Login (){
                                   }
                                 `}
                               />
+
+                              
 
                               {/* Eye Icon */}
                               <button
@@ -257,7 +272,7 @@ function Login (){
             </Button>
             
             <div className="text-center text-sm text-gray-300">
-                <span className="pr-2">Don't have an Account</span>
+                <span className="pr-2">Don't have an Account?</span>
                 
                 <Link to="/signup" className="text-blue-500 hover:text-blue-300 font-medium transition">
                   Sign Up

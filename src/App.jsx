@@ -27,6 +27,9 @@ const ContestProblemPage = lazy(()=> import("./components/contests/ContestProble
 const Leaderboard = lazy(()=> import("./components/contests/Leaderboard")); 
 const ContestHistory = lazy(()=> import("./components/contests/ContestHistory")); 
 const NotFoundPage = lazy(()=> import("./components/shared/NotFoundPage"));
+const ResetPassword = lazy(()=> import("./Pages/ResetPassword"));
+const ForgetPassword = lazy(()=> import("./Pages/ForgetPassword"));
+
 
 
 
@@ -100,6 +103,13 @@ const protect = (component) => {
 
 const location = useLocation();
 
+// logged in user ko reset-pass and forget-pass na dikhaye
+const publicOnly = (component) => {
+  return !isAuthenticated
+    ? component
+    : <Navigate to="/" replace />;
+};
+
 const showLoader = useDelayedLoader(loading);
 if (showLoader) return <Authloader />
 if (loading) return null; // prevents flicker completely
@@ -171,6 +181,16 @@ if (loading) return null; // prevents flicker completely
           {protect(<Problem />)}
         </Suspense>
       }
+    />
+
+    <Route
+      path="/forget-password"
+      element={publicOnly(<ForgetPassword />)}
+    />
+
+    <Route
+      path="/reset-password/:token"
+      element={publicOnly(<ResetPassword />)}
     />
 
     <Route
