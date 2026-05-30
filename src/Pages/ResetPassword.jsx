@@ -4,6 +4,8 @@ import axiosClient from "@/Utils/axiosClient";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
 
 const resetPasswordSchema = z
   .object({
@@ -25,6 +27,8 @@ const resetPasswordSchema = z
 const ResetPassword = () => {
   const { token } = useParams();
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const {
     register,
@@ -48,7 +52,6 @@ const ResetPassword = () => {
 
   return (
     <div className="min-h-screen w-full relative bg-black overflow-hidden">
-      {/* X-style top glow background */}
       <div
         className="absolute inset-0 z-0"
         style={{
@@ -56,55 +59,64 @@ const ResetPassword = () => {
             "radial-gradient(ellipse 80% 60% at 50% 0%, rgba(56, 189, 248, 0.28), transparent 70%), radial-gradient(ellipse 80% 60% at 50% 100%, rgba(56, 189, 248, 0.22), transparent 70%), radial-gradient(ellipse 60% 40% at 80% 10%, rgba(99, 102, 241, 0.15), transparent 60%), radial-gradient(ellipse 60% 40% at 20% 90%, rgba(99, 102, 241, 0.12), transparent 60%), #000000",
         }}
       />
-
-      {/* Soft floating blur layer */}
       <div className="absolute inset-0 z-0 opacity-60 bg-[radial-gradient(circle_at_30%_40%,rgba(56,189,248,0.08),transparent_40%),radial-gradient(circle_at_70%_60%,rgba(99,102,241,0.08),transparent_45%)]" />
 
-      {/* Content */}
       <div className="relative z-10 flex items-center justify-center min-h-screen px-4">
-        <div
-          className="w-full max-w-md rounded-2xl p-8
-          bg-white/10 backdrop-blur-xl
-          border border-white/20
-          shadow-2xl text-white"
-        >
-          {/* Heading */}
+        <div className="w-full max-w-md rounded-2xl p-8 bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl text-white">
           <div className="text-center space-y-2 mb-8">
-            <h1 className="text-4xl font-bold tracking-tight">
-              Reset Password
-            </h1>
+            <h1 className="text-4xl font-bold tracking-tight">Reset Password</h1>
             <p className="text-sm text-gray-300">
               Enter your new password to regain access to your account.
             </p>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+            {/* New Password */}
             <div>
-              <input
-                type="password"
-                placeholder="New Password"
-                {...register("password")}
-                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 focus:outline-none focus:border-sky-400 placeholder:text-gray-400"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="New Password"
+                  {...register("password")}
+                  className="w-full px-4 py-3 pr-11 rounded-lg bg-white/10 border border-white/20 focus:outline-none focus:border-sky-400 placeholder:text-gray-400
+                      [-webkit-text-fill-color:white]
+                      [transition:background-color_9999s_ease-in-out_0s]"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
               {errors.password && (
-                <p className="mt-1 text-xs text-red-400">
-                  {errors.password.message}
-                </p>
+                <p className="mt-1 text-xs text-red-400">{errors.password.message}</p>
               )}
             </div>
 
+            {/* Confirm Password */}
             <div>
-              <input
-                type="password"
-                placeholder="Confirm Password"
-                {...register("confirmPassword")}
-                className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 focus:outline-none focus:border-sky-400 placeholder:text-gray-400"
-              />
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  placeholder="Confirm Password"
+                  {...register("confirmPassword")}
+                  className="w-full px-4 py-3 pr-11 rounded-lg bg-white/10 border border-white/20 
+                  focus:outline-none focus:border-sky-400 placeholder:text-gray-400
+                  [-webkit-text-fill-color:white]
+                  [transition:background-color_9999s_ease-in-out_0s]"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword((prev) => !prev)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                >
+                  {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
               {errors.confirmPassword && (
-                <p className="mt-1 text-xs text-red-400">
-                  {errors.confirmPassword.message}
-                </p>
+                <p className="mt-1 text-xs text-red-400">{errors.confirmPassword.message}</p>
               )}
             </div>
 
@@ -118,7 +130,6 @@ const ResetPassword = () => {
           </form>
         </div>
       </div>
-      
     </div>
   );
 };
