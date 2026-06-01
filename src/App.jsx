@@ -206,11 +206,6 @@ if (loading) return null; // prevents flicker completely
       }
     />
 
-    {/* <Route
-    path="/verify-email"
-    element={<VerifyEmail/>}
-    /> */}
-
     <Route
       path="/problem/:id"
       element={
