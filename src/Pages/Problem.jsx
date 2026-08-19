@@ -216,6 +216,8 @@ return (
                 <SelectItem value="queue">Queue</SelectItem>
                 <SelectItem value="binary-search">Binary Search</SelectItem>
                 <SelectItem value="hashing">Hashing</SelectItem>
+                <SelectItem value="sliding-window">Sliding Window</SelectItem>
+
 
                 
             </SelectContent>
