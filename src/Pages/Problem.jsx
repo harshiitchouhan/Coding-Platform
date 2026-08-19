@@ -209,6 +209,15 @@ return (
                 <SelectItem value="string">String</SelectItem>
                 <SelectItem value="tree">Tree</SelectItem>
                 <SelectItem value="math">Math</SelectItem>
+                <SelectItem value="recursion">Recursion</SelectItem>
+                <SelectItem value="greedy">Greedy</SelectItem>
+                <SelectItem value="matrix">Matrix</SelectItem>
+                <SelectItem value="stack">Stack</SelectItem>
+                <SelectItem value="queue">Queue</SelectItem>
+                <SelectItem value="binary-search">Binary Search</SelectItem>
+                <SelectItem value="hashing">Hashing</SelectItem>
+
+                
             </SelectContent>
             </Select>
 
