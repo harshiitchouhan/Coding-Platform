@@ -1,431 +1,639 @@
-import { useState} from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router";
-import {
-  Brain,
-  Code2,
-  Server,
-  LayoutGrid,
-  Puzzle,
-  Search,
-  Sparkles,
-  ChevronDown,
-  ChevronUp,
-} from "lucide-react";
+
 import Footer from "../components/layouts/Footer";
-import profile from "../profile.png"
+import profile from "../profile.png";
+import subjects from "./interviewNotes";
 
-const questions = [
-  {
-    category: "JavaScript",
-    level: "Easy",
-    q: "What is the difference between var, let, and const?",
-    a: "var is function-scoped, let and const are block-scoped. const cannot be reassigned.",
-  },
-  {
-    category: "JavaScript",
-    level: "Medium",
-    q: "Explain closures in JavaScript.",
-    a: "A closure is when a function remembers variables from its outer scope even after that outer function has finished executing.",
-  },
-  {
-    category: "JavaScript",
-    level: "Medium",
-    q: "What is event delegation?",
-    a: "Instead of adding listeners to many child elements, we add one listener to the parent and handle events using event.target.",
-  },
-  {
-    category: "JavaScript",
-    level: "Hard",
-    q: "Difference between call, apply, and bind?",
-    a: "call invokes immediately with arguments one by one, apply uses an array, bind returns a new function.",
-  },
-  {
-    category: "React",
-    level: "Easy",
-    q: "What is JSX?",
-    a: "JSX lets us write HTML-like syntax inside JavaScript. React converts it into React elements.",
-  },
-  {
-    category: "React",
-    level: "Medium",
-    q: "Why do we use useEffect?",
-    a: "useEffect handles side effects like API calls, subscriptions, timers, and DOM updates.",
-  },
-  {
-    category: "React",
-    level: "Medium",
-    q: "What is state lifting?",
-    a: "Moving state to a common parent so multiple child components can share and update the same data.",
-  },
-  {
-    category: "React",
-    level: "Hard",
-    q: "What causes unnecessary re-renders in React?",
-    a: "Changing parent state, passing new object/function references, missing memoization, or poor component splitting.",
-  },
-  {
-    category: "CSS Flexbox",
-    level: "Easy",
-    q: "What is the difference between justify-content and align-items?",
-    a: "justify-content aligns items on the main axis, align-items aligns items on the cross axis.",
-  },
-  {
-    category: "CSS Flexbox",
-    level: "Medium",
-    q: "How do you center a div using flexbox?",
-    a: "Use display:flex, justify-content:center, align-items:center.",
-  },
-  {
-    category: "CSS Flexbox",
-    level: "Medium",
-    q: "What does flex-wrap do?",
-    a: "It allows flex items to move to the next line when there is not enough space.",
-  },
-  {
-    category: "CSS Grid",
-    level: "Easy",
-    q: "What is CSS Grid used for?",
-    a: "CSS Grid is used for creating two-dimensional layouts with rows and columns.",
-  },
-  {
-    category: "CSS Grid",
-    level: "Medium",
-    q: "Difference between grid-template-columns and grid-template-rows?",
-    a: "grid-template-columns defines column layout, grid-template-rows defines row layout.",
-  },
-  {
-    category: "CSS Grid",
-    level: "Hard",
-    q: "What does repeat(auto-fit, minmax(250px, 1fr)) do?",
-    a: "It creates responsive columns that automatically fit available space with minimum width 250px.",
-  },
-  {
-    category: "Backend",
-    level: "Easy",
-    q: "What is an API?",
-    a: "An API allows frontend and backend to communicate using requests and responses.",
-  },
-  {
-    category: "Backend",
-    level: "Medium",
-    q: "Difference between authentication and authorization?",
-    a: "Authentication checks who the user is. Authorization checks what the user is allowed to access.",
-  },
-  {
-    category: "Backend",
-    level: "Medium",
-    q: "What are JWT tokens?",
-    a: "JWT tokens store signed user information and are commonly used for authentication.",
-  },
-  {
-    category: "Backend",
-    level: "Hard",
-    q: "Why do we use middleware in Express?",
-    a: "Middleware runs between request and response. It is used for auth, validation, logging, error handling, etc.",
-  },
-  {
-    category: "MongoDB",
-    level: "Easy",
-    q: "What is MongoDB?",
-    a: "MongoDB is a NoSQL database that stores data in document format similar to JSON.",
-  },
-  {
-    category: "MongoDB",
-    level: "Medium",
-    q: "What is the difference between findOne and find?",
-    a: "findOne returns one document, find returns an array of matching documents.",
-  },
-  {
-    category: "MongoDB",
-    level: "Hard",
-    q: "What is populate in Mongoose?",
-    a: "populate replaces referenced ObjectIds with actual documents from another collection.",
-  },
-  {
-    category: "Puzzle",
-    level: "Easy",
-    q: "You have 3 switches outside a room and 3 bulbs inside. You can enter the room only once. How will you find which switch controls which bulb?",
-    a: "Turn on switch 1 for some time, turn it off, turn on switch 2, then enter. Glowing bulb is switch 2, warm bulb is switch 1, cold bulb is switch 3.",
-  },
-  {
-    category: "Puzzle",
-    level: "Medium",
-    q: "A bat and ball cost ₹110 total. Bat costs ₹100 more than ball. What is the cost of the ball?",
-    a: "The ball costs ₹5 and the bat costs ₹105.",
-  },
-  {
-    category: "Puzzle",
-    level: "Medium",
-    q: "You have two ropes. Each rope burns completely in 60 minutes, but unevenly. How will you measure 45 minutes?",
-    a: "Light rope 1 from both ends and rope 2 from one end. When rope 1 finishes after 30 min, light other end of rope 2. It finishes in 15 more min.",
-  },
-  {
-    category: "DSA",
-    level: "Easy",
-    q: "What is the time complexity of binary search?",
-    a: "O(log n), because the search space is divided into half each time.",
-  },
-  {
-    category: "DSA",
-    level: "Medium",
-    q: "Difference between stack and queue?",
-    a: "Stack follows LIFO. Queue follows FIFO.",
-  },
-  {
-    category: "DSA",
-    level: "Hard",
-    q: "Why is hashing useful?",
-    a: "Hashing gives average O(1) lookup, insert, and delete, useful for frequency count and duplicate checking.",
-  },
-];
+const STORAGE_KEY = "codebit-interview-progress-v1";
 
-const categories = [
-  "All",
-  "JavaScript",
-  "React",
-  "CSS Flexbox",
-  "CSS Grid",
-  "Backend",
-  "MongoDB",
-  "Puzzle",
-  "DSA",
-];
+const subjectColors = {
+  dbms: "border-violet-400/20 bg-violet-400/10 text-violet-300",
+  os: "border-sky-400/20 bg-sky-400/10 text-sky-300",
+  sql: "border-emerald-400/20 bg-emerald-400/10 text-emerald-300",
+  frontend: "border-cyan-400/20 bg-cyan-400/10 text-cyan-300",
+  backend: "border-amber-400/20 bg-amber-400/10 text-amber-300",
+};
 
-function getIcon(category) {
-  if (category.includes("CSS")) return <LayoutGrid size={18} />;
-  if (category === "Backend" || category === "MongoDB") return <Server size={18} />;
-  if (category === "Puzzle") return <Puzzle size={18} />;
-  if (category === "React") return <Sparkles size={18} />;
-  return <Code2 size={18} />;
+function readProgress() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+  } catch {
+    return {};
+  }
 }
 
-export default function Interview() {
-  const [activeCategory, setActiveCategory] = useState("All");
-  const [search, setSearch] = useState("");
-  const [openIndex, setOpenIndex] = useState(null);
-  const {user} = useSelector((state)=>state.auth);
-
-  const filteredQuestions = questions.filter((item) => {
-    const matchCategory =
-      activeCategory === "All" || item.category === activeCategory;
-
-    const matchSearch =
-      item.q.toLowerCase().includes(search.toLowerCase()) ||
-      item.category.toLowerCase().includes(search.toLowerCase());
-
-    return matchCategory && matchSearch;
-  });
+function ProgressBar({ completed, total }) {
+  const percentage = total ? (completed / total) * 100 : 0;
 
   return (
-    <div className="min-h-screen bg-[#020617] text-white overflow-hidden">
-      {/* Background */}
-      <div className="fixed inset-0 -z-10">
-        <div className="absolute top-0 left-1/2 h-125 w-175 -translate-x-1/2 rounded-full bg-cyan-500/20 blur-[120px]" />
-        <div className="absolute bottom-0 right-0 h-100 w-125 rounded-full bg-sky-500/10 blur-[120px]" />
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-size-[60px_60px]" />
+    <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
+      <div
+        className="h-full rounded-full bg-cyan-400 transition-all duration-300"
+        style={{ width: `${percentage}%` }}
+      />
+    </div>
+  );
+}
+
+function SectionHeading({ number, title }) {
+  return (
+    <h2 className="mb-4 flex items-center gap-3 text-xl font-bold">
+      <span className="font-mono text-xs text-cyan-400">{number} /</span>
+      {title}
+    </h2>
+  );
+}
+
+function StickyNote({ label, children, variant = "yellow" }) {
+  const colors =
+    variant === "green"
+      ? "bg-[#d8f5e5] text-slate-900"
+      : "bg-[#fff0b8] text-slate-900";
+
+  return (
+    <aside className={`relative rotate-[-0.5deg] rounded-xl p-6 shadow-[6px_7px_0_rgba(0,0,0,.15)] ${colors}`}>
+      <div className="absolute -top-2 left-1/2 h-5 w-20 -translate-x-1/2 rotate-3 bg-white/40" />
+      <p className="mb-2 text-xs font-bold uppercase tracking-widest">{label}</p>
+      <div className="font-serif text-lg leading-8">{children}</div>
+    </aside>
+  );
+}
+
+function CodeSnippet({ snippet }) {
+  const [copied, setCopied] = useState(false);
+
+  async function copyCode() {
+    try {
+      await navigator.clipboard.writeText(snippet.value);
+      setCopied(true);
+    } catch {
+      setCopied(false);
+    }
+  }
+
+  useEffect(() => {
+    if (!copied) return;
+    const timeout = setTimeout(() => setCopied(false), 1800);
+    return () => clearTimeout(timeout);
+  }, [copied]);
+
+  return (
+    <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#050b16] shadow-xl">
+      <div className="flex items-center justify-between border-b border-white/10 bg-white/[.035] px-4 py-3">
+        <span className="text-xs uppercase tracking-wider text-slate-400">
+          {snippet.language}
+        </span>
+        <button
+          type="button"
+          onClick={copyCode}
+          className="text-xs text-cyan-300 transition hover:text-white"
+        >
+          {copied ? "Copied" : "Copy code"}
+        </button>
       </div>
+      <pre className="overflow-x-auto p-5 text-[13px] leading-7 text-sky-100">
+        <code>{snippet.value}</code>
+      </pre>
+    </div>
+  );
+}
 
-    {/* Navbar */}
-      <nav className="relative z-20 border-b border-white/10 bg-black/40 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-400/15 border border-cyan-300/30">
-              <Code2 className="text-cyan-300" size={22} />
-            </div>
-            <span className="text-xl font-bold tracking-wide">
-              Code<span className="text-cyan-300">Bit</span>
+function Navbar({ user }) {
+  return (
+    <nav className="relative z-20 border-b border-white/10 bg-[#08111e]/90 backdrop-blur-xl">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4">
+        <Link to="/" className="text-xl font-black">
+          Code<span className="text-cyan-300">Bit</span>
+        </Link>
+
+        <div className="hidden items-center gap-7 text-sm text-slate-300 md:flex">
+          <Link to="/" className="hover:text-cyan-300">Home</Link>
+          <Link to="/problems" className="hover:text-cyan-300">Problems</Link>
+          <Link to="/contests" className="hover:text-cyan-300">Contests</Link>
+          <Link to="/interview" className="font-semibold text-cyan-300">Interview</Link>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <img
+            src={user?.profileImage || profile}
+            alt="Profile"
+            className="h-9 w-9 rounded-full border border-white/10 object-cover"
+          />
+          <span className="hidden text-sm text-slate-300 sm:block">
+            {user?.name}
+          </span>
+          
+        </div>
+      </div>
+    </nav>
+  );
+}
+
+function HomeView({ progress, onOpenSubject, onOpenTopic }) {
+  const [query, setQuery] = useState("");
+
+  const allTopics = useMemo(
+    () => subjects.flatMap((subject) =>
+      subject.chapters.map((topic) => ({ ...topic, subject }))
+    ),
+    []
+  );
+
+  const completed = allTopics.filter((topic) => progress[topic.id]).length;
+  const results = allTopics.filter((topic) =>
+    `${topic.title} ${topic.summary} ${topic.subject.name} ${topic.explanation.join(" ")}`
+      .toLowerCase()
+      .includes(query.trim().toLowerCase())
+  );
+
+  return (
+    <>
+      <section className="mb-10 grid items-center gap-8 lg:grid-cols-[1.5fr_1fr]">
+        <div>
+          <p className="mb-5 inline-block rounded-full border border-cyan-400/20 bg-cyan-400/10 px-4 py-2 text-xs font-medium text-cyan-300">
+            THE CODEBIT STUDY DESK
+          </p>
+          <h1 className="max-w-3xl text-4xl font-black leading-tight tracking-tight md:text-6xl">
+            Understand the <span className="text-cyan-300">why</span> behind every concept.
+          </h1>
+          <p className="mt-5 max-w-2xl text-base leading-8 text-slate-400">
+            Interview preparation that feels like a personal notebook. Learn the
+            problem first, understand the solution, explore working code, and
+            revise with memorable sticky notes.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-3 text-sm text-slate-300">
+            <span className="rounded-xl border border-white/10 bg-white/5 px-4 py-2">
+              {subjects.length} subjects
             </span>
-          </Link>
-
-          <div className="hidden md:flex items-center gap-8 text-sm text-slate-300">
-            <Link to="/" className="hover:text-cyan-300 transition">Home</Link>
-            <Link to="/problems" className="hover:text-cyan-300 transition">Problems</Link>
-            <Link to="/contests" className="hover:text-cyan-300 transition">Contests</Link>
-            <Link to="/interview" className="hover:text-cyan-300 transition">Interview</Link>
-          </div>
-
-          <div className="cursor-pointer flex items-center gap-2 px-2 sm:px-3 py-2 rounded-full hover:bg-white/10 transition">
-              
-              <img
-                src={user?.profileImage || profile}
-                alt="profile"
-                className="h-8 w-8 rounded-full object-cover border border-white/10"
-              />
-
-              <div className="hidden sm:block text-sm font-medium">
-                {user?.name}
-              </div>
-            </div>
-        </div>
-      </nav>
-
-      {/* Hero */}
-      <section className="mx-auto max-w-7xl px-6 pt-20 pb-12">
-        <div className="grid lg:grid-cols-2 gap-10 items-center">
-          <div>
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-400/10 px-4 py-2 text-sm text-cyan-200">
-              <Sparkles size={16} />
-              Prepare smarter for technical interviews
-            </div>
-
-            <h2 className="text-4xl md:text-6xl font-black leading-tight">
-              Crack Interviews With{" "}
-              <span className="bg-linear-to-r from-cyan-300 via-sky-400 to-blue-500 bg-clip-text text-transparent">
-                Real Questions
-              </span>
-            </h2>
-
-            <p className="mt-6 max-w-xl text-gray-400 text-lg leading-relaxed">
-              Practice JavaScript, React, CSS Flexbox, Grid, Backend, MongoDB,
-              DSA and puzzle-based interview questions — all in one beautiful
-              place.
-            </p>
-
-            <div className="mt-8 flex flex-wrap gap-4">
-              <Link to={"/problems"}>
-              <button className="rounded-xl bg-cyan-400 px-6 py-3 font-semibold text-black hover:bg-cyan-300 transition shadow-lg shadow-cyan-500/20">
-                Start Practice
-              </button>
-              </Link>
-              <button className="rounded-xl border border-white/10 bg-white/5 px-6 py-3 font-semibold text-gray-200 hover:bg-white/10 transition">
-                {questions.length}+ Questions
-              </button>
-            </div>
-          </div>
-
-          <div className="relative rounded-3xl border border-white/10 bg-white/4 p-6 backdrop-blur-xl shadow-2xl">
-            <div className="absolute -top-10 -right-10 h-40 w-40 rounded-full bg-cyan-400/20 blur-3xl" />
-
-            <div className="space-y-4">
-              {["JavaScript", "React", "Backend", "Puzzle"].map((item, i) => (
-                <div
-                  key={item}
-                  className="flex items-center justify-between rounded-2xl border border-white/10 bg-[#0f172a]/80 p-4"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="grid h-10 w-10 place-items-center rounded-xl bg-cyan-400/10 text-cyan-300">
-                      {getIcon(item)}
-                    </div>
-                    <div>
-                      <p className="font-semibold">{item}</p>
-                      <p className="text-xs text-gray-400">
-                        Interview ready questions
-                      </p>
-                    </div>
-                  </div>
-                  <span className="text-sm text-cyan-300 font-semibold">
-                    {i + 5} Qs
-                  </span>
-                </div>
-              ))}
-            </div>
+            <span className="rounded-xl border border-white/10 bg-white/5 px-4 py-2">
+              {allTopics.length} detailed lessons
+            </span>
+            <span className="rounded-xl border border-white/10 bg-white/5 px-4 py-2">
+              {completed} completed
+            </span>
           </div>
         </div>
+
+        <StickyNote label="Note to self">
+          <h2 className="text-2xl font-bold">Don't memorize. Connect the dots.</h2>
+          <p className="mt-3">
+            When you understand the problem a concept solves, the definition
+            becomes easy to remember.
+          </p>
+          <p className="mt-5 text-right text-xs font-semibold">
+            CodeBit Revision Desk
+          </p>
+        </StickyNote>
       </section>
 
-      {/* Main */}
-      <main className="mx-auto max-w-7xl px-6 pb-20">
-        {/* Search + Filters */}
-        <div className="mb-8 rounded-3xl border border-white/10 bg-white/4 p-5 backdrop-blur-xl">
-          <div className="relative mb-5">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-            <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search interview questions..."
-              className="w-full rounded-2xl border border-white/10 bg-[#020617]/80 py-3 pl-12 pr-4 text-sm outline-none focus:border-cyan-400/50"
-            />
-          </div>
+      <div className="mb-8">
+        <label htmlFor="interview-search" className="mb-2 block text-sm text-slate-400">
+          Search the handbook
+        </label>
+        <input
+          id="interview-search"
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder="Search topics, concepts, and explanations..."
+          className="w-full rounded-2xl border border-white/10 bg-[#111d2f] px-5 py-4 text-sm outline-none transition focus:border-cyan-400/50"
+        />
+      </div>
 
-          <div className="flex flex-wrap gap-3">
-            {categories.map((cat) => (
+      {query.trim() ? (
+        <section>
+          <h2 className="mb-5 text-xl font-bold">Search results ({results.length})</h2>
+          <div className="grid gap-3 md:grid-cols-2">
+            {results.map((topic) => (
               <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`rounded-xl px-4 py-2 text-sm font-medium transition ${
-                  activeCategory === cat
-                    ? "bg-cyan-400 text-black"
-                    : "bg-white/5 text-gray-300 hover:bg-white/10"
-                }`}
+                key={topic.id}
+                type="button"
+                onClick={() => onOpenTopic(topic.subject.id, topic.id)}
+                className="rounded-2xl border border-white/10 bg-[#111d2f] p-5 text-left transition hover:border-cyan-400/40"
               >
-                {cat}
+                <span className="text-xs text-cyan-300">{topic.subject.name}</span>
+                <h3 className="mt-1 font-bold">{topic.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-400">{topic.summary}</p>
               </button>
             ))}
           </div>
-        </div>
+          {results.length === 0 && (
+            <p className="text-slate-400">No matching notes found.</p>
+          )}
+        </section>
+      ) : (
+        <section>
+          <p className="text-xs font-semibold uppercase tracking-widest text-cyan-300">
+            Explore the library
+          </p>
+          <h2 className="mb-5 mt-2 text-2xl font-bold">Choose a subject</h2>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {subjects.map((subject) => {
+              const done = subject.chapters.filter((topic) => progress[topic.id]).length;
 
-        {/* Questions */}
-        <div className="grid gap-5 md:grid-cols-2">
-          {filteredQuestions.map((item, index) => (
-            <div
-              key={index}
-              className="group rounded-3xl border border-white/10 bg-[#0f172a]/70 p-5 backdrop-blur-xl transition hover:border-cyan-400/30 hover:bg-[#0f172a]"
-            >
-              <div className="mb-4 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <div className="grid h-10 w-10 place-items-center rounded-xl bg-cyan-400/10 text-cyan-300">
-                    {getIcon(item.category)}
-                  </div>
-
-                  <div>
-                    <p className="text-sm font-semibold text-cyan-300">
-                      {item.category}
-                    </p>
-                    <p className="text-xs text-gray-500">Question #{index + 1}</p>
-                  </div>
-                </div>
-
-                <span
-                  className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                    item.level === "Easy"
-                      ? "bg-emerald-400/10 text-emerald-300"
-                      : item.level === "Medium"
-                      ? "bg-yellow-400/10 text-yellow-300"
-                      : "bg-red-400/10 text-red-300"
-                  }`}
+              return (
+                <button
+                  key={subject.id}
+                  type="button"
+                  onClick={() => onOpenSubject(subject.id)}
+                  className="group rounded-3xl border border-white/10 bg-[#101c2d]/90 p-6 text-left transition duration-300 hover:-translate-y-1 hover:border-cyan-400/30"
                 >
-                  {item.level}
-                </span>
-              </div>
+                  <span className={`mb-5 inline-block rounded-xl border px-3 py-2 text-xs font-semibold uppercase ${subjectColors[subject.id] || subjectColors.frontend}`}>
+                    Study notes
+                  </span>
+                  <h3 className="text-xl font-bold group-hover:text-cyan-300">
+                    {subject.name}
+                  </h3>
+                  <p className="mt-2 min-h-12 text-sm leading-6 text-slate-400">
+                    {subject.description}
+                  </p>
+                  <div className="mt-6 mb-3 flex justify-between text-xs text-slate-400">
+                    <span>{subject.chapters.length} lessons</span>
+                    <span>{done}/{subject.chapters.length} done</span>
+                  </div>
+                  <ProgressBar completed={done} total={subject.chapters.length} />
+                  <p className="mt-5 text-sm font-semibold text-cyan-300">
+                    Open notebook
+                  </p>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      )}
+    </>
+  );
+}
 
-              <h3 className="text-lg font-bold leading-snug text-white">
-                {item.q}
-              </h3>
+function ChapterSidebar({ subject, topicId, progress, onOpenTopic, onBack }) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const completed = subject.chapters.filter((topic) => progress[topic.id]).length;
 
-              <button
-                onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                className="mt-5 flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-gray-300 hover:bg-white/10 transition"
-              >
-                {openIndex === index ? (
-                  <>
-                    Hide Answer <ChevronUp size={16} />
-                  </>
-                ) : (
-                  <>
-                    View Answer <ChevronDown size={16} />
-                  </>
-                )}
-              </button>
+  function selectTopic(id) {
+    onOpenTopic(subject.id, id);
+    setMobileOpen(false);
+  }
 
-              {openIndex === index && (
-                <div className="mt-4 rounded-2xl border border-cyan-400/20 bg-cyan-400/5 p-4 text-sm leading-relaxed text-gray-300">
-                  {item.a}
-                </div>
+  return (
+    <aside>
+      <button
+        type="button"
+        onClick={() => setMobileOpen((value) => !value)}
+        aria-expanded={mobileOpen}
+        className="mb-3 w-full rounded-xl border border-white/10 bg-[#111d2f] p-4 text-left text-sm lg:hidden"
+      >
+        {mobileOpen ? "Hide chapters" : "Show chapters"}
+      </button>
+
+      <div className={`${mobileOpen ? "block" : "hidden"} rounded-3xl border border-white/10 bg-[#101c2d] p-5 lg:sticky lg:top-6 lg:block`}>
+        <button
+          type="button"
+          onClick={onBack}
+          className="mb-5 text-xs text-slate-400 hover:text-white"
+        >
+          All subjects
+        </button>
+        <h2 className="text-xl font-bold">{subject.name}</h2>
+        <p className="mt-2 text-sm leading-6 text-slate-400">
+          {subject.description}
+        </p>
+        <div className="my-5">
+          <ProgressBar completed={completed} total={subject.chapters.length} />
+        </div>
+        <p className="mb-3 text-xs font-bold uppercase tracking-widest text-slate-500">
+          Chapter index
+        </p>
+        <div className="space-y-2">
+          {subject.chapters.map((topic, index) => (
+            <button
+              key={topic.id}
+              type="button"
+              onClick={() => selectTopic(topic.id)}
+              className={`flex w-full items-start gap-3 rounded-xl border p-3 text-left text-sm transition ${
+                topicId === topic.id
+                  ? "border-cyan-400/30 bg-cyan-400/10 text-cyan-200"
+                  : "border-transparent text-slate-300 hover:bg-white/5"
+              }`}
+            >
+              <span className="mt-0.5 text-xs text-slate-500">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <span className="flex-1 leading-5">{topic.title}</span>
+              {progress[topic.id] && (
+                <span className="text-xs text-emerald-300">Done</span>
               )}
-            </div>
+            </button>
           ))}
         </div>
+      </div>
+    </aside>
+  );
+}
 
-        {filteredQuestions.length === 0 && (
-          <div className="rounded-3xl border border-white/10 bg-white/4 p-10 text-center text-gray-400">
-            No questions found.
+function SubjectOverview({ subject, progress, onOpenTopic }) {
+  return (
+    <>
+      <div className="rounded-3xl border border-white/10 bg-[#111d2f] p-7 md:p-9">
+        <p className="mb-3 text-xs font-bold uppercase tracking-widest text-cyan-300">
+          Subject notebook
+        </p>
+        <h1 className="text-3xl font-black md:text-4xl">{subject.name}</h1>
+        <p className="mt-4 max-w-xl leading-8 text-slate-400">
+          {subject.description} Work through the chapters in order or jump
+          straight to the concept you want to revise.
+        </p>
+      </div>
+
+      <div className="mt-6 space-y-3">
+        {subject.chapters.map((topic, index) => (
+          <button
+            key={topic.id}
+            type="button"
+            onClick={() => onOpenTopic(subject.id, topic.id)}
+            className="flex w-full items-center gap-4 rounded-2xl border border-white/10 bg-[#111d2f] p-5 text-left transition hover:border-cyan-400/30"
+          >
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white/5 text-sm text-cyan-300">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <span className="flex-1">
+              <span className="block font-semibold">{topic.title}</span>
+              <span className="mt-1 block text-sm leading-6 text-slate-400">
+                {topic.summary}
+              </span>
+              <span className="mt-2 block text-xs text-slate-500">
+                {topic.time} min read
+              </span>
+            </span>
+            {progress[topic.id] && (
+              <span className="text-xs text-emerald-300">Completed</span>
+            )}
+          </button>
+        ))}
+      </div>
+    </>
+  );
+}
+
+function LessonView({ topic, subject, progress, onToggleProgress, onOpenTopic, onBack }) {
+  const [bookmarks, setBookmarks] = useState({});
+  const index = subject.chapters.findIndex((chapter) => chapter.id === topic.id);
+  const previous = subject.chapters[index - 1];
+  const next = subject.chapters[index + 1];
+
+  return (
+    <article className="overflow-hidden rounded-3xl border border-white/10 bg-[#101c2d] p-5 sm:p-8 md:p-10">
+      <div className="mb-5 flex flex-wrap items-center gap-3 text-xs">
+        <span className="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-cyan-300">
+          CONCEPT NOTES
+        </span>
+        <span className="text-slate-400">{topic.time} min read</span>
+      </div>
+
+      <h1 className="text-3xl font-black leading-tight md:text-4xl">
+        {topic.title}
+      </h1>
+      <p className="mt-4 text-base leading-8 text-slate-400">{topic.summary}</p>
+
+      <div className="mt-6 flex flex-wrap gap-3">
+        <button
+          type="button"
+          onClick={() => onToggleProgress(topic.id)}
+          className={`rounded-xl px-4 py-2 text-sm font-semibold transition ${
+            progress[topic.id]
+              ? "bg-emerald-400/15 text-emerald-300"
+              : "bg-cyan-400 text-slate-950 hover:bg-cyan-300"
+          }`}
+        >
+          {progress[topic.id] ? "Completed" : "Mark as revised"}
+        </button>
+        <button
+          type="button"
+          onClick={() => setBookmarks((value) => ({
+            ...value,
+            [topic.id]: !value[topic.id],
+          }))}
+          className="rounded-xl border border-white/10 px-4 py-2 text-sm text-slate-300 hover:bg-white/5"
+        >
+          {bookmarks[topic.id] ? "Bookmarked" : "Bookmark"}
+        </button>
+      </div>
+
+      <div className="mt-10 space-y-9">
+        <section>
+          <SectionHeading number="01" title="First, what was the problem?" />
+          <p className="leading-8 text-slate-300">{topic.problem}</p>
+        </section>
+
+        <section>
+          <SectionHeading number="02" title="Why did we need this concept?" />
+          <p className="leading-8 text-slate-300">{topic.why}</p>
+        </section>
+
+        <StickyNote label="Think of it like this" variant="green">
+          {topic.analogy}
+        </StickyNote>
+
+        <section>
+          <SectionHeading number="03" title="Let's understand how it works" />
+          <div className="space-y-4">
+            {topic.explanation.map((paragraph, index) => (
+              <p key={index} className="leading-8 text-slate-300">
+                {paragraph}
+              </p>
+            ))}
+          </div>
+        </section>
+
+        <section>
+          <SectionHeading number="04" title="See it in action" />
+          <CodeSnippet snippet={topic.code} />
+        </section>
+
+        <section>
+          <SectionHeading number="05" title="Follow the flow" />
+          <div className="space-y-3">
+            {topic.steps.map((step, index) => (
+              <div
+                key={index}
+                className="flex gap-4 rounded-xl border border-white/10 bg-white/[.025] p-4"
+              >
+                <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-cyan-400/10 text-xs font-bold text-cyan-300">
+                  {index + 1}
+                </span>
+                <p className="text-sm leading-7 text-slate-300">{step}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section>
+          <SectionHeading number="06" title="Common misunderstandings" />
+          <div className="space-y-3">
+            {topic.mistakes.map((mistake, index) => (
+              <p
+                key={index}
+                className="rounded-xl border border-rose-400/10 bg-rose-400/5 p-4 text-sm leading-7 text-slate-300"
+              >
+                {mistake}
+              </p>
+            ))}
+          </div>
+        </section>
+
+        <StickyNote label="Sticky revision note">
+          <strong>{topic.takeaway}</strong>
+        </StickyNote>
+      </div>
+
+      <div className="mt-12 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-6">
+        {previous ? (
+          <button
+            type="button"
+            onClick={() => onOpenTopic(subject.id, previous.id)}
+            className="text-sm text-slate-300 hover:text-cyan-300"
+          >
+            Previous: {previous.title}
+          </button>
+        ) : (
+          <span />
+        )}
+
+        {next ? (
+          <button
+            type="button"
+            onClick={() => onOpenTopic(subject.id, next.id)}
+            className="rounded-xl bg-cyan-400 px-4 py-3 text-sm font-bold text-slate-950 hover:bg-cyan-300"
+          >
+            Next: {next.title}
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={onBack}
+            className="text-sm font-semibold text-cyan-300"
+          >
+            Back to chapters
+          </button>
+        )}
+      </div>
+    </article>
+  );
+}
+
+export default function Interview() {
+  const [subjectId, setSubjectId] = useState(null);
+  const [topicId, setTopicId] = useState(null);
+  const [progress, setProgress] = useState(readProgress);
+  const { user } = useSelector((state) => state.auth);
+
+  const subject = subjects.find((item) => item.id === subjectId);
+  const topic = subject?.chapters.find((item) => item.id === topicId);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+    } catch {
+      // Browsers may disable local storage.
+    }
+  }, [progress]);
+
+  function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function openSubject(id) {
+    setSubjectId(id);
+    setTopicId(null);
+    scrollToTop();
+  }
+
+  function openTopic(nextSubjectId, nextTopicId) {
+    setSubjectId(nextSubjectId);
+    setTopicId(nextTopicId);
+    scrollToTop();
+  }
+
+  function goHome() {
+    setSubjectId(null);
+    setTopicId(null);
+    scrollToTop();
+  }
+
+  function toggleProgress(id) {
+    setProgress((current) => ({ ...current, [id]: !current[id] }));
+  }
+
+  return (
+    <div className="min-h-screen bg-[#070e1b] text-slate-100 selection:bg-cyan-400/30">
+      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_at_80%_0%,rgba(8,145,178,.12),transparent_45%),linear-gradient(rgba(255,255,255,.018)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.018)_1px,transparent_1px)] bg-[length:auto,36px_36px,36px_36px]" />
+
+      <Navbar user={user} />
+
+      <main className="relative mx-auto max-w-7xl px-5 pb-24 pt-10">
+        <nav aria-label="Breadcrumb" className="mb-8 flex flex-wrap items-center gap-2 text-xs text-slate-400">
+          <button type="button" onClick={goHome} className="hover:text-cyan-300">
+            Interview Handbook
+          </button>
+          {subject && (
+            <>
+              <span>/</span>
+              <button
+                type="button"
+                onClick={() => openSubject(subject.id)}
+                className="hover:text-cyan-300"
+              >
+                {subject.name}
+              </button>
+            </>
+          )}
+          {topic && (
+            <>
+              <span>/</span>
+              <span className="text-cyan-300">{topic.title}</span>
+            </>
+          )}
+        </nav>
+
+        {!subject ? (
+          <HomeView
+            progress={progress}
+            onOpenSubject={openSubject}
+            onOpenTopic={openTopic}
+          />
+        ) : (
+          <div className="grid gap-6 lg:grid-cols-[290px_minmax(0,1fr)]">
+            <ChapterSidebar
+              key={subject.id}
+              subject={subject}
+              topicId={topicId}
+              progress={progress}
+              onOpenTopic={openTopic}
+              onBack={goHome}
+            />
+            <div>
+              {topic ? (
+                <LessonView
+                  topic={topic}
+                  subject={subject}
+                  progress={progress}
+                  onToggleProgress={toggleProgress}
+                  onOpenTopic={openTopic}
+                  onBack={() => openSubject(subject.id)}
+                />
+              ) : (
+                <SubjectOverview
+                  subject={subject}
+                  progress={progress}
+                  onOpenTopic={openTopic}
+                />
+              )}
+            </div>
           </div>
         )}
       </main>
 
-      <Footer></Footer>
+      <Footer />
     </div>
-
   );
 }

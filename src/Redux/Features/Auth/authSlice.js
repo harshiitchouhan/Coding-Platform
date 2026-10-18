@@ -85,7 +85,7 @@ export const loadUser = createAsyncThunk(
 const authSlice = createSlice({
     name:"auth",
     initialState : {
-        user : null,
+        user : null,   // user_name
         isAuthenticated : false,
         loading : true,
         error : null
