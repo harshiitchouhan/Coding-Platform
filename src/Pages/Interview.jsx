@@ -456,7 +456,7 @@ function LessonView({ topic, subject, progress, onToggleProgress, onOpenTopic, o
             {topic.steps.map((step, index) => (
               <div
                 key={index}
-                className="flex gap-4 rounded-xl border border-white/10 bg-white/[.025] p-4"
+                className="flex gap-4 rounded-xl border border-white/10 bg-white/2.5 p-4"
               >
                 <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-cyan-400/10 text-xs font-bold text-cyan-300">
                   {index + 1}
@@ -566,7 +566,7 @@ export default function Interview() {
 
   return (
     <div className="min-h-screen bg-[#070e1b] text-slate-100 selection:bg-cyan-400/30">
-      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_at_80%_0%,rgba(8,145,178,.12),transparent_45%),linear-gradient(rgba(255,255,255,.018)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.018)_1px,transparent_1px)] bg-[length:auto,36px_36px,36px_36px]" />
+      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_at_80%_0%,rgba(8,145,178,.12),transparent_45%),linear-gradient(rgba(255,255,255,.018)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.018)_1px,transparent_1px)] bg-size-[auto,36px_36px,36px_36px]" />
 
       <Navbar user={user} />
 
