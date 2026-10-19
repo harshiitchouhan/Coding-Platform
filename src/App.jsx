@@ -29,6 +29,7 @@ const ContestHistory = lazy(()=> import("./components/contests/ContestHistory"))
 const NotFoundPage = lazy(()=> import("./components/shared/NotFoundPage"));
 const ResetPassword = lazy(()=> import("./Pages/ResetPassword"));
 const ForgetPassword = lazy(()=> import("./Pages/ForgetPassword"));
+const Roadmap = lazy(()=> import("./Pages/Roadmap"));
 
 
 
@@ -229,6 +230,15 @@ if (loading) return null; // prevents flicker completely
       element={
         <Suspense fallback={<Spinner />}>
           {protect(<Interview />)}
+        </Suspense>
+      }
+    />
+
+    <Route
+      path="/roadmap"
+      element={
+        <Suspense fallback={<Spinner />}>
+          {protect(<Roadmap />)}
         </Suspense>
       }
     />

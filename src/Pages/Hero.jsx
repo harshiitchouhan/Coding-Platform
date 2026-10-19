@@ -56,7 +56,7 @@ export default function Hero() {
             {/* LEFT */}
             <div>
             <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-cyan-300/25 bg-cyan-300/10 px-4 py-2 text-sm text-cyan-100 shadow-[0_0_30px_rgba(34,211,238,0.15)]">
-                <Sparkles size={16} />
+                {/* <Sparkles size={16} /> */}
                 Built for future developers
             </div>
 
@@ -185,9 +185,9 @@ export default function Hero() {
       <section className="relative z-10 px-6 md:px-16 py-12 text-white">
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl border border-cyan-300/20 bg-cyan-300/10">
+            {/* <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl border border-cyan-300/20 bg-cyan-300/10">
               <Trophy className="text-cyan-300" />
-            </div>
+            </div> */}
 
             <h2 className="text-3xl md:text-5xl font-bold">
               How CodeBit Works
