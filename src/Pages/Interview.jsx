@@ -1,10 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
-import { useSelector } from "react-redux";
 import { Link } from "react-router";
 
 import Footer from "../components/layouts/Footer";
 import profile from "../profile.png";
 import subjects from "./interviewNotes";
+import logo from "../assets/CodeBit.png";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/ui/dropdown-menu";
+
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router";
+import { logOut } from "../Redux/Features/Auth/authSlice";
 
 const STORAGE_KEY = "codebit-interview-progress-v1";
 
@@ -100,30 +110,100 @@ function CodeSnippet({ snippet }) {
   );
 }
 
-function Navbar({ user }) {
+function Navbar() {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const {user ,isAuthenticated} = useSelector((state)=>state.auth);
+    
+
+    const handleLogout = ()=>{
+          dispatch(logOut());
+          navigate("/login");
+   
+      }
+
   return (
     <nav className="relative z-20 border-b border-white/10 bg-[#08111e]/90 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4">
-        <Link to="/" className="text-xl font-black">
-          Code<span className="text-cyan-300">Bit</span>
-        </Link>
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4"> 
+          <Link to="/">
+            <img src={logo} className="h-8 sm:h-10 w-auto object-contain" alt="Codebit logo" />
+          </Link>
+    
 
         <div className="hidden items-center gap-7 text-sm text-slate-300 md:flex">
           <Link to="/" className="hover:text-cyan-300">Home</Link>
           <Link to="/problems" className="hover:text-cyan-300">Problems</Link>
           <Link to="/contests" className="hover:text-cyan-300">Contests</Link>
-          <Link to="/interview" className="font-semibold text-cyan-300">Interview</Link>
+          <Link to="/interview" className="hover:text-cyan-300">Interview</Link>
+          <Link to="/roadmap" className="hover:text-cyan-300">Roadmap</Link>
         </div>
 
         <div className="flex items-center gap-3">
-          <img
-            src={user?.profileImage || profile}
-            alt="Profile"
-            className="h-9 w-9 rounded-full border border-white/10 object-cover"
-          />
-          <span className="hidden text-sm text-slate-300 sm:block">
-            {user?.name}
-          </span>
+        <DropdownMenu>
+
+        <DropdownMenuTrigger asChild>
+          <div className="cursor-pointer flex items-center gap-2 px-2 sm:px-3 py-2 rounded-full hover:bg-white/10 transition">
+
+            <img
+              src={isAuthenticated ? (user?.profileImage || profile) : profile}
+              alt="profile"
+              className="h-8 w-8 rounded-full object-cover border border-white/10"
+            />
+
+            <div className="hidden sm:block text-sm font-medium text-white">
+              {isAuthenticated ? user?.name : "Guest"}
+            </div>
+
+          </div>
+        </DropdownMenuTrigger>
+
+      <DropdownMenuContent className="bg-white/5 backdrop-blur-md border border-white/10 text-white">
+          {isAuthenticated ? (
+            <>
+              <DropdownMenuItem
+                onClick={() => navigate("/profile")}
+                className="cursor-pointer"
+              >
+                Profile
+              </DropdownMenuItem>
+
+              {user?.role === "admin" && (
+                <DropdownMenuItem
+                  onClick={() => navigate("/admin")}
+                  className="text-purple-300 cursor-pointer"
+                >
+                  Admin Panel
+                </DropdownMenuItem>
+              )}
+
+              <DropdownMenuItem
+                onClick={handleLogout}
+                className="text-red-500 cursor-pointer"
+              >
+                Logout
+              </DropdownMenuItem>
+            </>
+          ) : (
+            <>
+              <DropdownMenuItem
+                onClick={() => navigate("/login")}
+                className="cursor-pointer"
+              >
+                Login
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                onClick={() => navigate("/signup")}
+                className="text-cyan-400 cursor-pointer"
+              >
+                Signup
+              </DropdownMenuItem>
+            </>
+          )}
+
+        </DropdownMenuContent>
+
+        </DropdownMenu>
           
         </div>
       </div>
