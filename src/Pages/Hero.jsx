@@ -64,7 +64,7 @@ function CompanyTrack({ duplicate = false }) {
       {companies.map((company) => (
         <span
           key={company}
-          className="shrink-0 whitespace-nowrap rounded-2xl border border-white/10 bg-white/[0.045] px-5 py-3 text-sm font-semibold text-slate-200 backdrop-blur-lg transition-colors duration-300 hover:border-cyan-300/30 hover:bg-cyan-300/[0.07] hover:text-cyan-200 sm:px-7 sm:py-4 sm:text-base"
+          className="shrink-0 whitespace-nowrap rounded-2xl border border-white/10 bg-white/4.5 px-5 py-3 text-sm font-semibold text-slate-200 backdrop-blur-lg transition-colors duration-300 hover:border-cyan-300/30 hover:bg-cyan-300/[0.07] hover:text-cyan-200 sm:px-7 sm:py-4 sm:text-base"
         >
           {company}
         </span>
@@ -150,7 +150,7 @@ export default function Hero() {
         />
 
         <div className={`${containerClass} relative z-10`}>
-          <div className="grid min-w-0 items-center gap-12 py-16 sm:py-20 lg:min-h-[660px] lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-14 lg:py-24">
+          <div className="grid min-w-0 items-center gap-12 py-16 sm:py-20 lg:min-h-165 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-14 lg:py-24">
             {/* HERO TEXT */}
             <motion.div
               className="min-w-0"
@@ -333,7 +333,7 @@ export default function Hero() {
                 whileInView={revealAnimate}
                 viewport={{ once: true, amount: 0.15 }}
                 transition={{ duration: 0.5, delay: reduceMotion ? 0 : index * 0.08 }}
-                className="group relative min-w-0 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-xl transition-colors duration-300 hover:border-cyan-300/30 sm:p-7"
+                className="group relative min-w-0 overflow-hidden rounded-3xl border border-white/10 bg-white/4 p-6 backdrop-blur-xl transition-colors duration-300 hover:border-cyan-300/30 sm:p-7"
               >
                 <div
                   aria-hidden="true"
@@ -383,7 +383,7 @@ export default function Hero() {
               whileInView={revealAnimate}
               viewport={{ once: true, amount: 0.15 }}
               transition={{ duration: 0.6 }}
-              className="group relative flex min-w-0 flex-col overflow-hidden rounded-[2rem] border border-cyan-300/20 bg-white/[0.045] p-5 backdrop-blur-xl sm:p-8"
+              className="group relative flex min-w-0 flex-col overflow-hidden rounded-[2rem] border border-cyan-300/20 bg-white/4.5 p-5 backdrop-blur-xl sm:p-8"
             >
               <div
                 aria-hidden="true"
@@ -422,8 +422,8 @@ export default function Hero() {
                       key={item.step}
                       className={`flex min-w-0 items-center gap-3 rounded-xl border p-3 sm:p-4 ${
                         item.active
-                          ? "border-cyan-300/30 bg-cyan-300/[0.075]"
-                          : "border-white/[0.07] bg-white/[0.025]"
+                          ? "border-cyan-300/30 bg-cyan-300/7.5"
+                          : "border-white/[0.07] bg-white/2.5"
                       }`}
                     >
                       <span className={`flex size-9 shrink-0 items-center justify-center rounded-lg text-xs font-bold ${item.active ? "bg-cyan-300/15 text-cyan-200" : "bg-white/5 text-slate-400"}`}>
@@ -454,7 +454,7 @@ export default function Hero() {
               whileInView={revealAnimate}
               viewport={{ once: true, amount: 0.15 }}
               transition={{ duration: 0.6, delay: reduceMotion ? 0 : 0.1 }}
-              className="group relative flex min-w-0 flex-col overflow-hidden rounded-[2rem] border border-blue-300/20 bg-white/[0.045] p-5 backdrop-blur-xl sm:p-8"
+              className="group relative flex min-w-0 flex-col overflow-hidden rounded-[2rem] border border-blue-300/20 bg-white/4.5 p-5 backdrop-blur-xl sm:p-8"
             >
               <div
                 aria-hidden="true"
@@ -484,14 +484,14 @@ export default function Hero() {
                       className={`rounded-full border px-3 py-1.5 text-xs font-medium ${
                         index === 0
                           ? "border-sky-300/35 bg-sky-300/10 text-sky-200"
-                          : "border-white/10 bg-white/[0.04] text-slate-400"
+                          : "border-white/10 bg-white/4 text-slate-400"
                       }`}
                     >
                       {topic}
                     </span>
                   ))}
                 </div>
-                <div className="rounded-xl border border-white/[0.07] bg-white/[0.025] p-4">
+                <div className="rounded-xl border border-white/[0.07] bg-white/2.5 p-4">
                   <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-sky-300">
                     Topic preview / DBMS
                   </p>
@@ -534,8 +534,8 @@ export default function Hero() {
             transition={{ duration: 0.7 }}
             className="relative mx-auto max-w-6xl overflow-hidden rounded-[2rem] border border-cyan-300/15 bg-white/[0.035] px-5 py-14 text-center shadow-[0_25px_90px_rgba(0,0,0,0.14)] backdrop-blur-xl sm:px-10 sm:py-20 lg:py-24"
           >
-            <div aria-hidden="true" className="pointer-events-none absolute -left-12 top-5 size-32 rounded-3xl border border-cyan-300/10 bg-cyan-300/[0.03] rotate-[-15deg] sm:size-48" />
-            <div aria-hidden="true" className="pointer-events-none absolute -right-12 bottom-5 size-32 rounded-3xl border border-blue-300/10 bg-blue-300/[0.03] rotate-[17deg] sm:size-48" />
+            <div aria-hidden="true" className="pointer-events-none absolute -left-12 top-5 size-32 rounded-3xl border border-cyan-300/10 bg-cyan-300/3 rotate-[-15deg] sm:size-48" />
+            <div aria-hidden="true" className="pointer-events-none absolute -right-12 bottom-5 size-32 rounded-3xl border border-blue-300/10 bg-blue-300/3 rotate-17 sm:size-48" />
             <p className="relative mb-5 text-xs font-semibold uppercase tracking-[0.2em] text-cyan-300 sm:text-sm">
               The CodeBit mindset
             </p>
@@ -556,7 +556,7 @@ export default function Hero() {
                   className={`rounded-full border px-4 py-2 text-xs font-medium sm:px-5 sm:text-sm ${
                     index === 2
                       ? "border-cyan-300/30 bg-cyan-300/10 text-cyan-200"
-                      : "border-white/10 bg-white/[0.045] text-slate-300"
+                      : "border-white/10 bg-white/4.5 text-slate-300"
                   }`}
                 >
                   {step}
@@ -570,7 +570,7 @@ export default function Hero() {
       {/* FINAL CTA */}
       <section className="pb-16 pt-10 text-white sm:pb-24 sm:pt-14">
         <div className={containerClass}>
-          <div className="relative mx-auto max-w-5xl overflow-hidden rounded-3xl border border-white/10 bg-white/[0.05] px-6 py-11 text-center backdrop-blur-xl sm:px-12 sm:py-16">
+          <div className="relative mx-auto max-w-5xl overflow-hidden rounded-3xl border border-white/10 bg-white/5 px-6 py-11 text-center backdrop-blur-xl sm:px-12 sm:py-16">
             <div
               aria-hidden="true"
               className="pointer-events-none absolute inset-x-1/4 -bottom-24 h-36 rounded-full bg-cyan-400/10 blur-3xl"
