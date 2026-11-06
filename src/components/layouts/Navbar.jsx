@@ -41,7 +41,7 @@ function Navbar() {
         <Link to="/" className="hover:text-blue-400">Home</Link>
         <Link to="/problems" className="hover:text-blue-400">Problems</Link>
         <Link to="/contests" className="hover:text-blue-400">Contests</Link>
-        <Link to="/interview" className="hover:text-blue-400">Interview</Link>
+        <Link to="/interview" className="hover:text-blue-400">Revise</Link>
         <Link to="/roadmap" className="hover:text-blue-400">Roadmap</Link>
       </div>
 
@@ -122,7 +122,7 @@ function Navbar() {
       <Link to="/" className="hover:text-blue-400">Home</Link>
       <Link to="/problems" className="hover:text-blue-400">Problems</Link>
       <Link to="/contests" className="hover:text-blue-400">Contests</Link>
-      <Link to="/interview" className="hover:text-blue-400">Interview</Link>
+      <Link to="/interview" className="hover:text-blue-400">Revise</Link>
       <Link to="/roadmap" className="hover:text-blue-400">Roadmap</Link>
     </div>
 
