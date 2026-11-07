@@ -15,6 +15,8 @@ export default function RightPanel({problemId, problem, mode = "practice", fetch
   // const [language, setLanguage] = useState("cpp");
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
+  const [submissionResult, setSubmissionResult] = useState(null);
+  const [selectedCase, setSelectedCase] = useState(0);
   const [loading, setLoading] = useState(false); 
   const [showSettings, setShowSettings] = useState(false);
   const [theme, setTheme] = useState("vs-dark");
@@ -22,6 +24,13 @@ export default function RightPanel({problemId, problem, mode = "practice", fetch
   const [activeTab, setActiveTab] = useState("testcase"); // 
   const [submitCooldown, setSubmitCooldown] = useState(0);
   const [submitting, setSubmitting] = useState(false);
+
+  // Show the problem's visible testcases even before the user presses Run.
+  const visibleCases = Array.isArray(problem?.visibleTestCases)
+    ? problem.visibleTestCases
+    : [];
+  const runCases = Array.isArray(output) ? output : [];
+  const totalCases = Math.max(visibleCases.length, runCases.length);
 
   const startSubmitCooldown = (seconds = 10) => {
   setSubmitCooldown(seconds);
@@ -52,6 +61,35 @@ export default function RightPanel({problemId, problem, mode = "practice", fetch
       .filter(line => line.length > 0)
       .join("\n");
   }
+
+  // Judge0 returns runtime in seconds and memory in KB.
+  const formatRuntime = (seconds) => {
+    if (seconds === null || seconds === undefined || seconds === "") return "—";
+
+    const numericSeconds = Number(seconds);
+    if (!Number.isFinite(numericSeconds)) return "—";
+
+    const milliseconds = numericSeconds * 1000;
+    const decimals = milliseconds < 1 ? 3 : milliseconds < 10 ? 2 : 1;
+    return `${Number(milliseconds.toFixed(decimals))} ms`;
+  };
+
+  const formatMemory = (kilobytes) => {
+    if (kilobytes === null || kilobytes === undefined || kilobytes === "") return "—";
+
+    const numericKilobytes = Number(kilobytes);
+    if (!Number.isFinite(numericKilobytes)) return "—";
+
+    return numericKilobytes >= 1024
+      ? `${Number((numericKilobytes / 1024).toFixed(2))} MB`
+      : `${Number(numericKilobytes.toFixed(2))} KB`;
+  };
+
+  useEffect(() => {
+    setSelectedCase(0);
+    setOutput("");
+    setSubmissionResult(null);
+  }, [problemId]);
 
   // const toggleTheme = () => {
   //   setTheme((prev) => (prev === "vs-dark" ? "light" : "vs-dark"));
@@ -91,6 +129,7 @@ useEffect(() => {
   // RUN CODE
   const handleRun = async () => {
     try {
+      setActiveTab("testcase");
       setLoading(true);
       setOutput("Running...");
 
@@ -107,29 +146,9 @@ useEffect(() => {
       // console.log("INPUT RECEIVED:", req.body.input);
       const results = res.data;
 
-      let outputText = "";
-
-      results.forEach((test, i) => {
-        outputText += `Test ${i + 1}:\n`;
-
-        const stdout = test.stdout?.trim();
-        const stderr = test.stderr?.trim();
-        const compileError = test.compile_output?.trim();
-
-        if (stdout) {
-          outputText += `Output:\n${stdout}\n`;
-        } else if (stderr) {
-          outputText += `Runtime Error:\n${stderr}\n`;
-        } else if (compileError) {
-          outputText += `Compile Error:\n${compileError}\n`;
-        } else {
-          outputText += `No output produced.\n`;
-        }
-
-        outputText += "\n";
-      });
-
-      setOutput(outputText);
+      // Keep each run result separate so users can switch between cases.
+      setSelectedCase(0);
+      setOutput(Array.isArray(results) ? results : []);
 
     } catch (err) {
   // console.log("RUN ERROR:", err.response?.data || err.message); 
@@ -146,11 +165,12 @@ useEffect(() => {
 
   // SUBMIT CODE
 const handleSubmit = async () => {
-  if (submitting || submitCooldown > 0) return;
+  if (submitting || loading || submitCooldown > 0) return;
 
   try {
+    setActiveTab("results");
     setSubmitting(true);
-    setOutput("Submitting...");
+    setSubmissionResult("Submitting...");
 
     const finalInput =
       activeTab === "custom" ? normalizeInput(input) : "";
@@ -177,9 +197,9 @@ const handleSubmit = async () => {
         : res.data;
 
     const total =
-      data.testCasesTotal || data.testCasesPassed;
+      data.testCasesTotal ?? data.testCasesPassed;
 
-    setOutput({
+    setSubmissionResult({
       status: data.status,
       passed: data.testCasesPassed,
       total,
@@ -204,7 +224,7 @@ const handleSubmit = async () => {
 
       startSubmitCooldown(retryAfter);
 
-      setOutput({
+      setSubmissionResult({
         status: "Rate Limited",
         error:
           err.response?.data?.message ||
@@ -217,11 +237,11 @@ const handleSubmit = async () => {
 
     const data = err.response.data.submission;
 
-    setOutput({
+    setSubmissionResult({
       status: data.status,
       passed: data.testCasesPassed,
       total:
-        data.testCasesTotal ||
+        data.testCasesTotal ??
         data.testCasesPassed,
 
       runtime: data.runtime,
@@ -240,6 +260,13 @@ const handleSubmit = async () => {
     //   status: "Error",
     //   error: err.response?.data?.message || "Submission failed",
     // });
+    setSubmissionResult({
+      status: "Error",
+      error:
+        err.response?.data?.message ||
+        (typeof err.response?.data === "string" ? err.response.data : err.message) ||
+        "Submission failed",
+    });
 
   } finally {
     setSubmitting(false);
@@ -382,6 +409,17 @@ const handleReset = () => {
             Testcases
           </button>
 
+          <button
+            onClick={() => setActiveTab("results")}
+            className={`px-4 py-2 text-sm ${
+              activeTab === "results"
+                ? "border-b-2 border-purple-500 text-white"
+                : "text-gray-400"
+            }`}
+          >
+            Results
+          </button>
+
           {/* <button
             onClick={() => setActiveTab("custom")}
             className={`px-4 py-2 text-sm ${
@@ -399,17 +437,18 @@ const handleReset = () => {
         <div className="flex gap-3 py-2">
           <button
             onClick={handleRun}
-            className="bg-green-600 hover:bg-green-700 px-4 py-1.5 rounded-md text-sm text-white"
+            disabled={loading || submitting}
+            className="bg-green-600 hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed px-4 py-1.5 rounded-md text-sm text-white"
           >
-            ▶ Run
+            {loading ? "Running..." : "▶ Run"}
           </button>
 
           <button
             onClick={handleSubmit}
-            disabled={submitting || submitCooldown > 0}
+            disabled={loading || submitting || submitCooldown > 0}
             className={`px-4 py-1.5 rounded-md text-sm text-white flex items-center gap-2
               ${
-                submitting || submitCooldown > 0
+                loading || submitting || submitCooldown > 0
                   ? "bg-gray-600 cursor-not-allowed"
                   : "bg-blue-600 hover:bg-blue-700"
               }`}
@@ -439,13 +478,111 @@ const handleReset = () => {
             {/* OUTPUT */}
             {activeTab === "testcase" && (
               <div className="flex-1 text-sm overflow-auto">
+                {/* RUN OUTPUT */}
+                {totalCases > 0 ? (
+                  <div className="p-4 space-y-4">
+                    {/* Case tabs are available immediately from visibleTestCases. */}
+                    <div className="flex items-center gap-2 flex-wrap">
+                      {Array.from({ length: totalCases }, (_, index) => (
+                        <button
+                          key={index}
+                          type="button"
+                          onClick={() => setSelectedCase(index)}
+                          className={`rounded-lg px-4 py-2 text-sm transition-colors ${
+                            selectedCase === index
+                              ? "bg-purple-500/15 text-purple-300 border border-purple-500/50"
+                              : "bg-white/5 text-gray-400 border border-white/10 hover:text-white hover:bg-white/10"
+                          }`}
+                        >
+                          Case {index + 1}
+                        </button>
+                      ))}
+                    </div>
 
-              {/* RUN OUTPUT */}
-              {typeof output === "string" ? (
+                    {/* Run errors appear above the case, rather than hiding its details. */}
+                    {typeof output === "string" && output && (
+                      <div
+                        className={`rounded-lg border p-3 whitespace-pre-wrap ${
+                          loading
+                            ? "border-purple-500/20 bg-purple-500/5 text-purple-300"
+                            : "border-red-500/20 bg-red-500/10 text-red-300"
+                        }`}
+                      >
+                        {output}
+                      </div>
+                    )}
+
+                    {selectedCase < totalCases && (() => {
+                      const test = runCases[selectedCase];
+                      const visibleCase = visibleCases[selectedCase];
+
+                      const inputValue = visibleCase?.input ?? test?.input ?? null;
+                      const expectedValue =
+                        visibleCase?.output ?? test?.expected_output ?? null;
+
+                      const stdout = test?.stdout?.trim();
+                      const stderr = test?.stderr?.trim();
+                      const compileError = test?.compile_output?.trim();
+                      const actualOutput = test
+                        ? (stdout || "No output produced.")
+                        : "Run code to see output...";
+
+                      return (
+                        <div className="space-y-3">
+                          <div className="space-y-2">
+                            <p className="text-xs font-medium text-gray-400">Input</p>
+                            <pre className="whitespace-pre-wrap wrap-break-word rounded-lg border border-white/10 bg-white/5 p-4 font-mono text-sm text-gray-200">
+                              {inputValue ?? "Not available."}
+                            </pre>
+                          </div>
+
+                          <div className="space-y-2">
+                            <p className="text-xs font-medium text-gray-400">Output</p>
+                            <pre className="whitespace-pre-wrap wrap-break-word rounded-lg border border-white/10 bg-white/5 p-4 font-mono text-sm text-gray-200">
+                              {actualOutput}
+                            </pre>
+                          </div>
+
+                          <div className="space-y-2">
+                            <p className="text-xs font-medium text-gray-400">Expected</p>
+                            <pre className="whitespace-pre-wrap wrap-break-word rounded-lg border border-white/10 bg-white/5 p-4 font-mono text-sm text-gray-200">
+                              {expectedValue ?? "Not available."}
+                            </pre>
+                          </div>
+
+                          {(stderr || compileError) && (
+                            <div className="space-y-2">
+                              <p className="text-xs font-medium text-red-400">
+                                {compileError ? "Compile Error" : "Runtime Error"}
+                              </p>
+                              <pre className="whitespace-pre-wrap wrap-break-word rounded-lg border border-red-500/20 bg-red-500/10 p-4 font-mono text-sm text-red-300">
+                                {compileError || stderr}
+                              </pre>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })()}
+                  </div>
+                ) : (
+                  <div className="text-gray-400 whitespace-pre-wrap p-4">
+                    {typeof output === "string" && output
+                      ? output
+                      : problem
+                        ? "No visible testcases are available for this problem."
+                        : "Loading testcases..."}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {activeTab === "results" && (
+              <div className="flex-1 text-sm overflow-auto">
+              {typeof submissionResult === "string" ? (
                 <div className="text-gray-400 whitespace-pre-wrap p-4">
-                  {output || "Run code to see output..."}
+                  {submissionResult}
                 </div>
-              ) : output ? (
+              ) : submissionResult ? (
 
                 /* SUBMIT OUTPUT CARD */
                 <div className="space-y-5 animate-fadeIn p-4">
@@ -454,13 +591,13 @@ const handleReset = () => {
                   <div className="flex items-center gap-3">
                     <div
                       className={`w-9 h-9 rounded-full flex items-center justify-center text-lg
-                        ${output.status === "accepted"
+                        ${submissionResult.status === "accepted"
                           ? "bg-emerald-500/10 text-emerald-400"
                           : "bg-red-500/10 text-red-400"
                         }`}
                     >
                       {/* {output.status === "accepted" ? "" : "✕"} */}
-                      {output.status === "accepted" ? (
+                      {submissionResult.status === "accepted" ? (
                         <Check className="text-emerald-400" size={26} />
                       ) : (
                         <X className="text-red-400" size={26} />
@@ -470,16 +607,18 @@ const handleReset = () => {
                     <div>
                       <h2
                         className={`text-xl font-bold ${
-                          output.status === "accepted"
+                          submissionResult.status === "accepted"
                             ? "text-emerald-400"
                             : "text-red-400"
                         }`}
                       >
-                        {output.status === "accepted" ? "Accepted" : output.status}
+                        {submissionResult.status === "accepted" ? "Accepted" : submissionResult.status}
                       </h2>
 
                       <p className="text-xs text-gray-400">
-                        {output.passed} / {output.total} testcases passed
+                        {submissionResult.passed != null && submissionResult.total != null
+                          ? `${submissionResult.passed} / ${submissionResult.total} testcases passed`
+                          : "Submission result"}
                       </p>
                     </div>
                   </div>
@@ -490,19 +629,19 @@ const handleReset = () => {
                     <div className="rounded-2xl border border-green-400/20 bg-green-500/10 p-4">
                       <p className="text-xs text-gray-400 mb-1">Runtime</p>
                       <p className="text-lg font-semibold text-white">
-                        {output.runtime} ms
+                        {formatRuntime(submissionResult.runtime)}
                       </p>
                     </div>
 
 
-                    {output?.points !== null && output?.points !== undefined && (
+                    {submissionResult?.points !== null && submissionResult?.points !== undefined && (
                       <div className="rounded-2xl border border-yellow-400/20 bg-yellow-500/10 p-4">
                         <p className="text-sm text-gray-400">
                           Points Earned
                         </p>
 
                         <p className="mt-2 text-xl font-black text-yellow-300">
-                          +{output.points}
+                          +{submissionResult.points}
                         </p>
                       </div>
                     )}
@@ -512,15 +651,15 @@ const handleReset = () => {
                     <div className="rounded-2xl  border border-green-400/20 bg-green-500/10 p-4">
                       <p className="text-xs text-gray-400 mb-1">Memory</p>
                       <p className="text-lg font-semibold text-white">
-                        {output.memory} KB
+                        {formatMemory(submissionResult.memory)}
                       </p>
                     </div>
                   </div>
 
                   {/* Error */}
-                  {output.status !== "accepted" && output.error && (
+                  {submissionResult.status !== "accepted" && submissionResult.error && (
                     <div className="rounded-xl bg-red-500/10 border border-red-500/20 p-4 text-red-400 text-sm whitespace-pre-wrap">
-                      {output.error}
+                      {submissionResult.error}
                     </div>
                     
                   )}
@@ -529,12 +668,12 @@ const handleReset = () => {
 
               ) : (
                 <div className="text-gray-500 p-4">
-                  Run code to see output...
+                  Submit code to see results...
                 </div>
               )}
 
               </div>
-        )}
+            )}
 
           </div>
 
