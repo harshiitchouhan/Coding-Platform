@@ -563,12 +563,18 @@ export default function Hero() {
                 </span>
               ))}
             </div>
+            <Link
+              to="/problems"
+              className="relative mt-8 inline-flex min-h-12 w-full items-center justify-center rounded-xl bg-cyan-300 px-7 py-3 font-semibold text-black shadow-[0_0_20px_rgba(56,189,248,0.2)] transition-colors duration-300 hover:bg-cyan-200 sm:w-auto"
+            >
+              Start Solving
+            </Link>
           </motion.div>
         </div>
       </section>
 
       {/* FINAL CTA */}
-      <section className="pb-16 pt-10 text-white sm:pb-24 sm:pt-14">
+      {/* <section className="pb-16 pt-10 text-white sm:pb-24 sm:pt-14">
         <div className={containerClass}>
           <div className="relative mx-auto max-w-5xl overflow-hidden rounded-3xl border border-white/10 bg-white/5 px-6 py-11 text-center backdrop-blur-xl sm:px-12 sm:py-16">
             <div
@@ -592,7 +598,7 @@ export default function Hero() {
             </Link>
           </div>
         </div>
-      </section>
+      </section> */}
     </>
   );
 }
