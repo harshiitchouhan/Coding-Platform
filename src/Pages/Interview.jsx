@@ -134,7 +134,7 @@ function Navbar() {
           <Link to="/" className="hover:text-cyan-300">Home</Link>
           <Link to="/problems" className="hover:text-cyan-300">Problems</Link>
           <Link to="/contests" className="hover:text-cyan-300">Contests</Link>
-          <Link to="/interview" className="hover:text-cyan-300">Interview</Link>
+          <Link to="/interview" className="hover:text-cyan-300">Revise</Link>
           <Link to="/roadmap" className="hover:text-cyan-300">Roadmap</Link>
         </div>
 
